@@ -1,6 +1,8 @@
 package org.internship.task.passengerservice.controllers;
 
 
+
+
 import org.internship.task.passengerservice.DTO.PassengerRequest;
 import org.internship.task.passengerservice.DTO.PassengerResponse;
 import org.internship.task.passengerservice.repositories.PassengerRepository;
@@ -31,8 +33,8 @@ public class PassengerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<PassengerResponse>> getPassengerById(@PathVariable Long id){
-        return ResponseEntity.ok(passengerService.getAllPassengers());
+    public ResponseEntity<PassengerResponse> getPassengerById(@PathVariable Long id){
+        return ResponseEntity.ok(passengerService.getPassengerById(id));
     }
 
     @PostMapping
