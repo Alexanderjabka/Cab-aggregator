@@ -3,6 +3,8 @@ package org.internship.task.passengerservice.services;
 import org.internship.task.passengerservice.DTO.PassengerRequest;
 import org.internship.task.passengerservice.DTO.PassengerResponse;
 import org.internship.task.passengerservice.entities.Passenger;
+import org.internship.task.passengerservice.exceptions.InvalidPassengerOperationException;
+import org.internship.task.passengerservice.exceptions.PassengerNotFoundException;
 import org.internship.task.passengerservice.repositories.PassengerRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
