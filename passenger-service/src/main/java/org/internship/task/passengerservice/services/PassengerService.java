@@ -1,6 +1,7 @@
 package org.internship.task.passengerservice.services;
 
 
+import jakarta.validation.Valid;
 import org.internship.task.passengerservice.DTO.PassengerRequest;
 import org.internship.task.passengerservice.DTO.PassengerResponse;
 import org.internship.task.passengerservice.entities.Passenger;
@@ -26,6 +27,7 @@ public class PassengerService {
     }
 
     public List<PassengerResponse> getAllPassengers() {
+
         return passengerRepository.findAll().stream().
                 map(passenger -> modelMapper.map(passenger,PassengerResponse.class)).
                 toList();
@@ -43,12 +45,13 @@ public class PassengerService {
     }
     public void createPassenger(PassengerRequest passengerRequest) {
 
-        if (passengerRepository.findByName(passengerRequest.getName()).isPresent()) {
-            throw new InvalidPassengerOperationException("A Passenger with the same Name already exists: " + passengerRequest.getName());
+        if (passengerRepository.findByEmail(passengerRequest.getEmail()).isPresent()) {
+            throw new InvalidPassengerOperationException("A Passenger with the same Email already exists: " + passengerRequest.getEmail());
         }
 
-        Passenger Passenger = modelMapper.map(passengerRequest, Passenger.class);
-        passengerRepository.save(Passenger);
+        Passenger passenger = modelMapper.map(passengerRequest, Passenger.class);
+        passenger.setIsDeleted(false);
+        passengerRepository.save(passenger);
 
     }
 
@@ -64,7 +67,7 @@ public class PassengerService {
             passengerRepository.save(passenger);
         }
     }
-    public void updatePassenger(String email, PassengerRequest passengerRequest) {
+    public void updatePassenger(String email,PassengerRequest passengerRequest) {
         Passenger passenger = passengerRepository.findByEmail(email)
                 .orElseThrow(() -> new PassengerNotFoundException("Passenger not found with Email: " + email));
 
@@ -81,6 +84,7 @@ public class PassengerService {
         passenger.setEmail(passengerRequest.getEmail());
         passenger.setName(passengerRequest.getName());
         passenger.setPhoneNumber(passengerRequest.getPhoneNumber());
+        passenger.setIsDeleted(false);
         passengerRepository.save(passenger);
     }
 
