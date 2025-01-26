@@ -39,11 +39,11 @@ public class Passenger {
     @Pattern(regexp = PHONE_NUMBER, message = "phone number must match +375 format")
     @Size(min = 10, max = 15, message = "phone number must be between 10 and 15 characters")
     @NotBlank(message = "phone number cannot be empty")
-    @Column(name = "phoneNumber")
+    @Column(name = "phone_number")
     private String phoneNumber;
 
 
-    @Column(name = "isDeleted")
+    @Column(name = "is_deleted")
     private Boolean isDeleted = false;
 
 
