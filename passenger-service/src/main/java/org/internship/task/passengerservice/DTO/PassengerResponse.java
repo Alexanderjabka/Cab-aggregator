@@ -12,5 +12,7 @@ public class PassengerResponse {
     private String name;
     private String email;
     private String phoneNumber;
+    private Boolean isDeleted;
+
 
 }

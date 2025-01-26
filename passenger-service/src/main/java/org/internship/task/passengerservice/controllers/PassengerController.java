@@ -3,6 +3,7 @@ package org.internship.task.passengerservice.controllers;
 
 
 
+import jakarta.validation.Valid;
 import org.internship.task.passengerservice.DTO.PassengerRequest;
 import org.internship.task.passengerservice.DTO.PassengerResponse;
 import org.internship.task.passengerservice.repositories.PassengerRepository;
@@ -18,12 +19,10 @@ import java.util.List;
 public class PassengerController {
 
     private final PassengerService passengerService;
-    private final PassengerRepository passengerRepository;
 
     @Autowired
     public PassengerController(PassengerService passengerService, PassengerRepository passengerRepository) {
         this.passengerService = passengerService;
-        this.passengerRepository = passengerRepository;
     }
 
 
@@ -38,13 +37,13 @@ public class PassengerController {
     }
 
     @PostMapping
-    public ResponseEntity<PassengerResponse> addPassenger(@RequestBody PassengerRequest passengerRequest) {
+    public ResponseEntity<PassengerResponse> createPassenger(@Valid @RequestBody PassengerRequest passengerRequest) {
         passengerService.createPassenger(passengerRequest);
 
         return ResponseEntity.status(201).body(passengerService.getPassengerByEmail(passengerRequest.getEmail()));
     }
     @PutMapping("/{email}")
-    public ResponseEntity<String> updatePassenger(@PathVariable String email, @RequestBody PassengerRequest passengerRequest) {
+    public ResponseEntity<String> updatePassenger(@Valid @PathVariable String email,@Valid @RequestBody PassengerRequest passengerRequest) {
         passengerService.updatePassenger(email, passengerRequest);
         return ResponseEntity.ok("Passenger updated successfully");
     }
