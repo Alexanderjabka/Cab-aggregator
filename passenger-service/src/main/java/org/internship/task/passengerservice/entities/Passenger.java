@@ -1,6 +1,5 @@
 package org.internship.task.passengerservice.entities;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,7 +8,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 @Entity
 @Table(name = "passenger")
@@ -35,16 +33,12 @@ public class Passenger {
     @Column(name = "email")
     private String email;
 
-
     @Pattern(regexp = PHONE_NUMBER, message = "phone number must match +375 format")
     @Size(min = 10, max = 15, message = "phone number must be between 10 and 15 characters")
     @NotBlank(message = "phone number cannot be empty")
     @Column(name = "phone_number")
     private String phoneNumber;
 
-
     @Column(name = "is_deleted")
     private Boolean isDeleted = false;
-
-
 }
