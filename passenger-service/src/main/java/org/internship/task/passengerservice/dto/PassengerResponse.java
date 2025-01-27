@@ -1,18 +1,18 @@
-package org.internship.task.passengerservice.DTO;
+package org.internship.task.passengerservice.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class PassengerResponse {
     private Long id;
     private String name;
     private String email;
     private String phoneNumber;
     private Boolean isDeleted;
-
-
 }

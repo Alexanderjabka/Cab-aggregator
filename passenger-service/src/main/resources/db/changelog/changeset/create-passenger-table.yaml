@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: create-passenger-table
+      id: 1
       author: Alexander Popruzhenko
       changes:
         - createTable:
