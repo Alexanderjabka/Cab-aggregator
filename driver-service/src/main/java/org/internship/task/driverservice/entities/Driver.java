@@ -23,7 +23,7 @@ public class Driver {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "driver_id")
-    private Long driverId;
+    private Long id;
 
     @NotBlank(message = "name cannot be empty")
     @Size(min = 2, max = 30, message = "name must be between 2 and 30 characters")
@@ -53,6 +53,6 @@ public class Driver {
     private List<Car> cars;
 
     @Column(name = "is_deleted")
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
 }

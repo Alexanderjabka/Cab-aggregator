@@ -1,12 +1,19 @@
 package org.internship.task.driverservice.dto.drivers;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.internship.task.driverservice.entities.Car;
 import org.internship.task.driverservice.enums.Gender;
-
-public record DriverRequest(
-        String name,
-        String email,
-        String phoneNumber,
-        Gender gender,
-        Car car
-){}
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class DriverRequest{
+        private String name;
+        private String email;
+        private String phoneNumber;
+        private Gender gender;
+        private Car car;
+}

@@ -1,16 +1,23 @@
 package org.internship.task.driverservice.dto.cars;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.internship.task.driverservice.entities.Driver;
 import org.internship.task.driverservice.enums.CarBrand;
 import org.internship.task.driverservice.enums.Color;
 
-public record CarResponse (
-        Long carId,
-        Color color,
-        CarBrand carBrand,
-        String carNumber,
-        short carYear,
-        Driver driver,
-        boolean isDeleted
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class CarResponse {
+    private Color color;
+    private CarBrand carBrand;
+    private String carNumber;
+    private short carYear;
+    private Driver driver;
+    private Boolean isDeleted;
 
-){}
+}

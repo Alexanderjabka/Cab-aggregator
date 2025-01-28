@@ -21,7 +21,7 @@ public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "car_id")
-    private Long carId;
+    private Long id;
 
     @NotBlank(message = "color cannot be empty")
     @Column(name = "color")
@@ -46,6 +46,6 @@ public class Car {
     private Driver driver;
 
     @Column(name = "is_deleted")
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
 }

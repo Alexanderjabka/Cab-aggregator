@@ -33,9 +33,8 @@ public class DriverController {
         return ResponseEntity.status(201).body(driverService.createDriver(driverRequest));
     }
     @PutMapping("/{email}")
-    public ResponseEntity<String> updateDriver(@Valid @PathVariable String email,@Valid @RequestBody DriverRequest driverRequest) {
-        driverService.updateDriver(email, driverRequest);
-        return ResponseEntity.ok("Passenger updated successfully");
+    public ResponseEntity<DriverResponse> updateDriver(@Valid @PathVariable String email,@Valid @RequestBody DriverRequest driverRequest) {
+        return ResponseEntity.status(200).body(driverService.updateDriver(email, driverRequest));
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDriver(@PathVariable Long id) {
