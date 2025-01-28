@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(PassengerNotFoundException.class)
-    public ResponseEntity<String> handleBookNotFoundException(PassengerNotFoundException ex) {
+    public ResponseEntity<String> handlePassengerNotFoundException(PassengerNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
     @ExceptionHandler(InvalidPassengerOperationException.class)
-    public ResponseEntity<String> handleInvalidBookOperationException(InvalidPassengerOperationException ex) {
+    public ResponseEntity<String> handleInvalidPassengerOperationException(InvalidPassengerOperationException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
     @ExceptionHandler(Exception.class)
