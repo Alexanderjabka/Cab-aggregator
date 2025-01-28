@@ -1,6 +1,5 @@
 package org.internship.task.passengerservice.services;
 
-
 import lombok.RequiredArgsConstructor;
 import org.internship.task.passengerservice.dto.PassengerRequest;
 import org.internship.task.passengerservice.dto.PassengerResponse;
@@ -9,47 +8,45 @@ import org.internship.task.passengerservice.exceptions.InvalidPassengerOperation
 import org.internship.task.passengerservice.exceptions.PassengerNotFoundException;
 import org.internship.task.passengerservice.repositories.PassengerRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.internship.task.passengerservice.util.constantMessages.ExceptionMessages.PASSENGER_NOT_FOUND_BY_ID;
+import static org.internship.task.passengerservice.util.constantMessages.ExceptionMessages.PASSENGER_IS_DELETED;
+import static org.internship.task.passengerservice.util.constantMessages.ExceptionMessages.PASSENGER_ALREADY_EXISTS;
+import static org.internship.task.passengerservice.util.constantMessages.ExceptionMessages.PASSENGER_NOT_FOUND_BY_EMAIL;
 
 @Service
 @RequiredArgsConstructor
 public class PassengerService {
-    private static final String PASSENGER_NOT_FOUND_BY_ID = "Passenger not found with ID: ";
-    private static final String PASSENGER_NOT_FOUND_BY_EMAIL = "Passenger not found with Email: ";
-    private static final String PASSENGER_ALREADY_EXISTS = "A Passenger with the same Email already exists: ";
-    private static final String PASSENGER_IS_DELETED = "Passenger is deleted and cannot be updated: ";
+
 
     private final PassengerRepository passengerRepository;
     private final ModelMapper modelMapper;
 
     public List<PassengerResponse> getAllPassengers() {
+        List<Passenger> passengers = passengerRepository.findAll();
+        return passengers.stream()
+                .map(passenger -> modelMapper.map(passenger, PassengerResponse.class))
+                .collect(Collectors.toList());
 
-        return passengerRepository.findAll().stream().
-                map(passenger -> modelMapper.map(passenger,PassengerResponse.class)).
-                toList();
     }
 
     public List<PassengerResponse> getAllPassengersByStatus(boolean isDeleted) {
-
-        return passengerRepository.findByIsDeleted(isDeleted).stream().
-                map(passenger -> modelMapper.map(passenger,PassengerResponse.class)).
-                toList();
+        List<Passenger> passengers = passengerRepository.findByIsDeleted(isDeleted);
+        return passengers.stream()
+                .map(passenger -> modelMapper.map(passenger, PassengerResponse.class))
+                .collect(Collectors.toList());
     }
 
     public PassengerResponse getPassengerById(Long id) {
-        return passengerRepository.findById(id)
-                .map(passenger -> modelMapper.map(passenger, PassengerResponse.class))
-                .orElseThrow(() -> new PassengerNotFoundException(PASSENGER_NOT_FOUND_BY_ID + id));
-    }
+        Passenger passenger = passengerRepository.findById(id)
+                .orElseThrow(() -> new PassengerNotFoundException("Passenger not found by ID: " + id));
 
-    public PassengerResponse getPassengerByEmail(String email) {
-        return passengerRepository.findByEmail(email)
-                .map(passenger -> modelMapper.map(passenger, PassengerResponse.class))
-                .orElseThrow(() -> new PassengerNotFoundException(PASSENGER_NOT_FOUND_BY_EMAIL + email));
+        return modelMapper.map(passenger, PassengerResponse.class);
     }
 
     public PassengerResponse createPassenger(PassengerRequest passengerRequest) {
@@ -77,7 +74,7 @@ public class PassengerService {
             passengerRepository.save(passenger);
         }
     }
-    public void updatePassenger(String email,PassengerRequest passengerRequest) {
+    public PassengerResponse updatePassenger(String email,PassengerRequest passengerRequest) {
         Passenger passenger = passengerRepository.findByEmail(email)
                 .orElseThrow(() -> new PassengerNotFoundException(PASSENGER_NOT_FOUND_BY_EMAIL + email));
 
@@ -94,5 +91,8 @@ public class PassengerService {
         modelMapper.map(passengerRequest,passenger);
         passenger.setIsDeleted(false);
         passengerRepository.save(passenger);
+
+        return modelMapper.map(passenger,PassengerResponse.class);
     }
+
 }
