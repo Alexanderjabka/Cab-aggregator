@@ -44,7 +44,7 @@ public class PassengerService {
 
     public PassengerResponse getPassengerById(Long id) {
         Passenger passenger = passengerRepository.findById(id)
-                .orElseThrow(() -> new PassengerNotFoundException("Passenger not found by ID: " + id));
+                .orElseThrow(() -> new PassengerNotFoundException(PASSENGER_NOT_FOUND_BY_ID + id));
 
         return modelMapper.map(passenger, PassengerResponse.class);
     }
