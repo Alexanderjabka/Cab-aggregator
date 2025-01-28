@@ -10,5 +10,7 @@ public record CarResponse (
         CarBrand carBrand,
         String carNumber,
         short carYear,
-        Driver driver
+        Driver driver,
+        boolean isDeleted
+
 ){}

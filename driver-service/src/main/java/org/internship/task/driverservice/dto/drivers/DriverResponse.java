@@ -9,6 +9,7 @@ public record DriverResponse(
         String email,
         String phoneNumber,
         Gender gender,
-        Car car
+        Car car,
+        boolean isDeleted
 
 ){}

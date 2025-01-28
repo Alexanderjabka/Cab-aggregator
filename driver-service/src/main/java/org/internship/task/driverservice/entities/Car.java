@@ -41,7 +41,11 @@ public class Car {
     @Column(name = "car_year")
     private short carYear;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id")
     private Driver driver;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted = false;
+
 }

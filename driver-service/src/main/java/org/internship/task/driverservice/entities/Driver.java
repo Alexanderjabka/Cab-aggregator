@@ -9,6 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.internship.task.driverservice.enums.Gender;
+
+import java.util.List;
+
 @Entity
 @Table(name = "driver")
 @Data
@@ -45,7 +48,11 @@ public class Driver {
 
     @Size(min = 2, max = 30)
     @NotBlank(message = "car cannot be empty")
-    @OneToOne(mappedBy = "driver",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "driver",cascade = CascadeType.ALL)
     @Column(name = "car")
-    private Car car;
+    private List<Car> cars;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted = false;
+
 }
