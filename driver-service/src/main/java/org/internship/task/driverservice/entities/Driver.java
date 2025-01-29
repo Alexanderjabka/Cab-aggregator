@@ -1,15 +1,21 @@
 package org.internship.task.driverservice.entities;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.internship.task.driverservice.enums.Gender;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,39 +24,25 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Driver {
-    private final static String PHONE_NUMBER = "^\\+375[\\- ]?\\(?\\d{2}\\)?[\\- ]?\\d{7,9}$";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "driver_id")
     private Long id;
 
-    @NotBlank(message = "name cannot be empty")
-    @Size(min = 2, max = 30, message = "name must be between 2 and 30 characters")
     @Column(name = "name")
-    private String driverName;
+    private String name;
 
-    @Email(message = "invalid email format")
-    @NotBlank(message = "email cannot be empty")
     @Column(name = "email")
     private String email;
 
-    @Pattern(regexp = PHONE_NUMBER, message = "phone number must match +375 format")
-    @Size(min = 10, max = 15, message = "phone number must be between 10 and 15 characters")
-    @NotBlank(message = "phone number cannot be empty")
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Size(min = 4,max = 6)
-    @NotBlank(message = "gender cannot be empty")
     @Column(name = "gender")
     private Gender gender;
 
-    @Size(min = 2, max = 30)
-    @NotBlank(message = "car cannot be empty")
-    @OneToMany(mappedBy = "driver",cascade = CascadeType.ALL)
-    @Column(name = "car")
-    private List<Car> cars;
+    @OneToMany(mappedBy = "driver",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Car> cars = new ArrayList<>();
 
     @Column(name = "is_deleted")
     private Boolean isDeleted = false;

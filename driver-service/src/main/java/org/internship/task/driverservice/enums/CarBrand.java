@@ -1,12 +1,14 @@
 package org.internship.task.driverservice.enums;
 
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @ToString
 @Getter
 public enum CarBrand {
-
     TOYOTA("Toyota"),
     FORD("Ford"),
     BMW("BMW"),

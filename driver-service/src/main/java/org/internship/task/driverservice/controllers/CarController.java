@@ -4,8 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.internship.task.driverservice.dto.cars.CarRequest;
 import org.internship.task.driverservice.dto.cars.CarResponse;
-import org.internship.task.driverservice.dto.drivers.DriverRequest;
-import org.internship.task.driverservice.dto.drivers.DriverResponse;
 import org.internship.task.driverservice.services.CarService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

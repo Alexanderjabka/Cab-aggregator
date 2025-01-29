@@ -4,44 +4,45 @@ import lombok.RequiredArgsConstructor;
 import org.internship.task.driverservice.dto.cars.CarRequest;
 import org.internship.task.driverservice.dto.cars.CarResponse;
 import org.internship.task.driverservice.entities.Car;
+import org.internship.task.driverservice.entities.Driver;
+import org.internship.task.driverservice.exceptions.carExceptions.CarNotFoundException;
+import org.internship.task.driverservice.exceptions.carExceptions.InvalidCarOperationException;
 import org.internship.task.driverservice.exceptions.driverException.DriverNotFoundException;
 import org.internship.task.driverservice.exceptions.driverException.InvalidDriverOperationException;
+import org.internship.task.driverservice.mappers.CarMapper;
 import org.internship.task.driverservice.repositories.CarRepository;
 import org.internship.task.driverservice.repositories.DriverRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.CarExceptionMessages.CAR_ALREADY_EXISTS;
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.CarExceptionMessages.CAR_IS_DELETED;
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.CarExceptionMessages.CAR_NOT_FOUND_BY_ID;
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.CarExceptionMessages.CAR_NOT_FOUND_BY_CAR_NUMBER;
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.DriverExceptionMessages.DRIVER_NOT_FOUND_BY_EMAIL;
 
 @Service
 @RequiredArgsConstructor
 public class CarService {
     private final CarRepository carRepository;
     private final DriverRepository driverRepository;
-    private final ModelMapper modelMapper;
 
     public List<CarResponse> getAllCars() {
         List<Car> cars = carRepository.findAll();
-        return cars.stream()
-                .map(car -> modelMapper.map(car, CarResponse.class))
-                .collect(Collectors.toList());
-
+        return CarMapper.toDtoList(cars);
     }
 
     public List<CarResponse> getAllCarsByStatus(boolean status) {
         List<Car> cars = carRepository.findByIsDeleted(status);
-        return cars.stream()
-                .map(car -> modelMapper.map(car, CarResponse.class))
-                .collect(Collectors.toList());
+        return CarMapper.toDtoList(cars);
     }
 
     public CarResponse getCarById(Long id) {
         Car car = carRepository.findById(id)
-                .orElseThrow(() -> new CarNotFoundException("Car not found by ID: " + id));
-
-        return modelMapper.map(car, CarResponse.class);
+                .orElseThrow(() -> new CarNotFoundException(CAR_NOT_FOUND_BY_ID + id));
+        return CarMapper.toDto(car);
     }
 
     public CarResponse createCar(CarRequest carRequest, String driverEmail) {
@@ -49,17 +50,21 @@ public class CarService {
             throw new InvalidCarOperationException(CAR_ALREADY_EXISTS + carRequest.getCarNumber());
         }
 
-        Car car = modelMapper.map(carRequest, Car.class);
+        Car car = CarMapper.toEntity(carRequest);
         car.setIsDeleted(false);
-        car.setDriver(driverRepository.findByEmail(driverEmail).orElseThrow(DRIVER_NOT_FOUND_BY_EMAIL + driverEmail));
+
+        Driver driver = driverRepository.findByEmail(driverEmail)
+                .orElseThrow(() -> new DriverNotFoundException(DRIVER_NOT_FOUND_BY_EMAIL + driverEmail));
+        car.setDriver(driver);
+
         carRepository.save(car);
 
-        return modelMapper.map(car,CarResponse.class);
+        return CarMapper.toDto(car);
     }
 
     public CarResponse updateCar(String carNumber, CarRequest carRequest) {
         Car car = carRepository.findByCarNumber(carNumber)
-                .orElseThrow(() -> new DriverNotFoundException(CAR_NOT_FOUND_BY_CAR_NUMBER + carNumber));
+                .orElseThrow(() -> new CarNotFoundException(CAR_NOT_FOUND_BY_CAR_NUMBER + carNumber));
 
         if (car.getIsDeleted()) {
             throw new InvalidCarOperationException(CAR_IS_DELETED + carNumber);
@@ -71,11 +76,11 @@ public class CarService {
             }
         });
 
-        modelMapper.map(carRequest,car);
+        CarMapper.toEntity(carRequest, car);
         car.setIsDeleted(false);
         carRepository.save(car);
 
-        return modelMapper.map(car, CarResponse.class);
+        return CarMapper.toDto(car);
     }
 
     public void deleteCar(Long id) {

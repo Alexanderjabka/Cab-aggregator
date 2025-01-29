@@ -1,7 +1,6 @@
 package org.internship.task.driverservice.repositories;
 
 import org.internship.task.driverservice.entities.Car;
-import org.internship.task.driverservice.entities.Driver;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
