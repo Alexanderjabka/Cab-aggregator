@@ -1,6 +1,11 @@
 package org.internship.task.driverservice.dto.drivers;
 
-import jakarta.validation.constraints.*;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,6 +41,6 @@ public class DriverRequest{
         @NotBlank(message = PHONE_NUMBER_NOT_EMPTY)
         private String phoneNumber;
 
-        @NotEmpty(message = GENDER_NOT_EMPTY)
+        @NotNull(message = GENDER_NOT_EMPTY)
         private Gender gender;
 }

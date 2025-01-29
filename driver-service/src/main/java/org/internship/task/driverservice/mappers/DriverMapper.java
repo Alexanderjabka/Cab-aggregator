@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DriverMapper {
-    // Преобразование DriverRequest в Driver
     public static Driver toEntity(DriverRequest driverRequest) {
         Driver driver = new Driver();
         driver.setName(driverRequest.getName());
@@ -19,7 +18,6 @@ public class DriverMapper {
         return driver;
     }
 
-    // Преобразование Driver в DriverResponse
     public static DriverResponse toDto(Driver driver) {
         DriverResponse driverResponse = new DriverResponse();
         driverResponse.setDriverId(driver.getId());
@@ -40,12 +38,10 @@ public class DriverMapper {
             return driverResponse;
     }
 
-    // Преобразование списка Driver в список DriverResponse
     public static List<DriverResponse> toDtoList(List<Driver> drivers) {
         return drivers.stream().map(DriverMapper::toDto).collect(Collectors.toList());
     }
 
-    // Маппинг DriverRequest в существующий Driver
     public static void toEntity(DriverRequest driverRequest, Driver driver) {
         driver.setName(driverRequest.getName());
         driver.setEmail(driverRequest.getEmail());

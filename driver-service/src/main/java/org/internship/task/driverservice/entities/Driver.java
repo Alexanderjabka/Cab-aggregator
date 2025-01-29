@@ -1,6 +1,5 @@
 package org.internship.task.driverservice.entities;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -46,5 +45,4 @@ public class Driver {
 
     @Column(name = "is_deleted")
     private Boolean isDeleted = false;
-
 }

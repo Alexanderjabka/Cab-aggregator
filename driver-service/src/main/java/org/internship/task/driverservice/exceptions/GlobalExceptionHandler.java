@@ -31,6 +31,4 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleInvalidCarOperationException(InvalidCarOperationException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
-
-
 }

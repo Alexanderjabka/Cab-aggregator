@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: Alexander Popruzhenko
+      changes:
+        - createTable:
+            tableName: car
+            columns:
+              - column:
+                  name: car_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: car_brand
+                  type: smallint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: car_number
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: car_year
+                  type: smallint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: color
+                  type: smallint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: boolean
+                  defaultValueBoolean: false
+              - column:
+                  name: driver_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: driver_id

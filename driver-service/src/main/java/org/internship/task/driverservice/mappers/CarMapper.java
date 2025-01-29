@@ -17,7 +17,6 @@ public class CarMapper {
         return car;
     }
 
-    // Преобразование Car в CarResponse
     public static CarResponse toDto(Car car) {
         CarResponse carResponse = new CarResponse();
         carResponse.setCarId(car.getId());
@@ -34,12 +33,10 @@ public class CarMapper {
         return carResponse;
     }
 
-    // Преобразование списка Car в список CarResponse
     public static List<CarResponse> toDtoList(List<Car> cars) {
         return cars.stream().map(CarMapper::toDto).collect(Collectors.toList());
     }
 
-    // Маппинг CarRequest в существующий Car
     public static void toEntity(CarRequest carRequest, Car car) {
         car.setColor(carRequest.getColor());
         car.setCarBrand(carRequest.getCarBrand());
