@@ -8,5 +8,6 @@ public final class ValidationMessages {
         public static final String PHONE_NUMBER_INVALID = "Phone number must match +375 format";
         public static final String PHONE_NUMBER_SIZE = "Phone number must be between 10 and 15 characters";
         public static final String PHONE_NUMBER_BLANK = "Phone number cannot be empty";
-        private ValidationMessages(){}
+        private ValidationMessages(){
+        }
 }
