@@ -8,6 +8,7 @@ import org.internship.task.driverservice.exceptions.driverException.DriverNotFou
 import org.internship.task.driverservice.exceptions.driverException.InvalidDriverOperationException;
 import org.internship.task.driverservice.mappers.DriverMapper;
 import org.internship.task.driverservice.repositories.DriverRepository;
+import org.internship.task.driverservice.services.serviceInterfaces.DriverService;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +20,7 @@ import static org.internship.task.driverservice.util.constantMessages.exceptionM
 
 @Service
 @RequiredArgsConstructor
-public class DriverService {
+public class DriverServiceImpl implements DriverService {
 
     private final DriverRepository driverRepository;
 

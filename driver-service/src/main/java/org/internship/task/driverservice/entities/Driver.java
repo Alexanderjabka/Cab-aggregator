@@ -40,7 +40,7 @@ public class Driver {
     @Column(name = "gender")
     private Gender gender;
 
-    @OneToMany(mappedBy = "driver",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "driver",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Car> cars = new ArrayList<>();
 
     @Column(name = "is_deleted")

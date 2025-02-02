@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.internship.task.driverservice.dto.cars.CarRequest;
 import org.internship.task.driverservice.dto.cars.CarResponse;
-import org.internship.task.driverservice.services.CarService;
+import org.internship.task.driverservice.services.CarServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("api/v1/cars")
 @RequiredArgsConstructor
 public class CarController {
-    private final CarService carService;
+    private final CarServiceImpl carService;
     @GetMapping()
     public ResponseEntity<List<CarResponse>> getAllCars(){
         return ResponseEntity.ok(carService.getAllCars());

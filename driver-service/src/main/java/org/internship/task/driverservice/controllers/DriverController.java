@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.internship.task.driverservice.dto.drivers.DriverRequest;
 import org.internship.task.driverservice.dto.drivers.DriverResponse;
-import org.internship.task.driverservice.services.DriverService;
+import org.internship.task.driverservice.services.DriverServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("api/v1/drivers")
 @RequiredArgsConstructor
 public class DriverController {
-    private final DriverService driverService;
+    private final DriverServiceImpl driverService;
 
     @GetMapping()
     public ResponseEntity<List<DriverResponse>> getAllDrivers(){

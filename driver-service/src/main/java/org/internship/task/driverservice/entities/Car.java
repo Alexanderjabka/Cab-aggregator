@@ -23,7 +23,7 @@ import org.internship.task.driverservice.enums.Color;
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "car_id")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "color")

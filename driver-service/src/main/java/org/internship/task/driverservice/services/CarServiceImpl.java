@@ -12,6 +12,7 @@ import org.internship.task.driverservice.exceptions.driverException.InvalidDrive
 import org.internship.task.driverservice.mappers.CarMapper;
 import org.internship.task.driverservice.repositories.CarRepository;
 import org.internship.task.driverservice.repositories.DriverRepository;
+import org.internship.task.driverservice.services.serviceInterfaces.CarService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +26,7 @@ import static org.internship.task.driverservice.util.constantMessages.exceptionM
 
 @Service
 @RequiredArgsConstructor
-public class CarService {
+public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final DriverRepository driverRepository;
 
