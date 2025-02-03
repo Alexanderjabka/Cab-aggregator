@@ -11,24 +11,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(DriverNotFoundException.class)
-    public ResponseEntity<String> handleDriverNotFoundException(DriverNotFoundException ex) {
+
+    @ExceptionHandler({DriverNotFoundException.class, CarNotFoundException.class})
+    public ResponseEntity<String> handleNotFoundException(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
-    @ExceptionHandler(InvalidDriverOperationException.class)
-    public ResponseEntity<String> handleInvalidDriverOperationException(InvalidDriverOperationException ex) {
+
+    @ExceptionHandler({InvalidDriverOperationException.class, InvalidCarOperationException.class})
+    public ResponseEntity<String> handleInvalidOperationException(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
-    }
-    @ExceptionHandler(CarNotFoundException.class)
-    public ResponseEntity<String> handleCarNotFoundException(CarNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-    }
-    @ExceptionHandler(InvalidCarOperationException.class)
-    public ResponseEntity<String> handleInvalidCarOperationException(InvalidCarOperationException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 }

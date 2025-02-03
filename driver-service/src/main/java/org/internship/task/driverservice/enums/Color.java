@@ -8,15 +8,15 @@ import lombok.ToString;
 @ToString
 @Getter
 public enum Color {
-    RED("Red"),
-    BLUE("Blue"),
-    GREEN("Green"),
-    YELLOW("Yellow"),
-    BLACK("Black"),
-    WHITE("White"),
-    PURPLE("Purple"),
-    ORANGE("Orange"),
-    PINK("Pink"),
-    BROWN("Brown");
-    private final String displayName;
+    RED(0),
+    BLUE(1),
+    GREEN(2),
+    YELLOW(3),
+    BLACK(4),
+    WHITE(5),
+    PURPLE(6),
+    ORANGE(7),
+    PINK(8),
+    BROWN(9);
+    private final int displayName;
 }

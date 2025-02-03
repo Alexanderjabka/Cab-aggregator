@@ -20,7 +20,7 @@ public class DriverMapper {
 
     public static DriverResponse toDto(Driver driver) {
         DriverResponse driverResponse = new DriverResponse();
-        driverResponse.setDriverId(driver.getId());
+        driverResponse.setId(driver.getId());
         driverResponse.setName(driver.getName());
         driverResponse.setEmail(driver.getEmail());
         driverResponse.setPhoneNumber(driver.getPhoneNumber());

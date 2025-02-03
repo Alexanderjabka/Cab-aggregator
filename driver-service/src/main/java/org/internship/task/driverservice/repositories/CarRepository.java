@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CarRepository extends JpaRepository<Car,Long> {
-    Optional<Car> findByCarNumber(String email);
+    Optional<Car> findByCarNumber(String carNumber);
     List<Car> findByIsDeleted(Boolean isDeleted);
 }

@@ -47,9 +47,10 @@ public class CarServiceImpl implements CarService {
     }
 
     public CarResponse createCar(CarRequest carRequest, String driverEmail) {
-        if (carRepository.findByCarNumber(carRequest.getCarNumber()).isPresent()) {
-            throw new InvalidCarOperationException(CAR_ALREADY_EXISTS + carRequest.getCarNumber());
-        }
+        carRepository.findByCarNumber(carRequest.getCarNumber())
+                .ifPresent(car -> {
+                    throw new InvalidCarOperationException(CAR_ALREADY_EXISTS + carRequest.getCarNumber());
+                });
 
         Car car = CarMapper.toEntity(carRequest);
         car.setIsDeleted(false);

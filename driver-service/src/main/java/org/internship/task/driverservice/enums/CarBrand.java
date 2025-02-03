@@ -9,15 +9,15 @@ import lombok.ToString;
 @ToString
 @Getter
 public enum CarBrand {
-    TOYOTA("Toyota"),
-    FORD("Ford"),
-    BMW("BMW"),
-    MERCEDES_BENZ("Mercedes-Benz"),
-    AUDI("Audi"),
-    HONDA("Honda"),
-    TESLA("Tesla"),
-    CHEVROLET("Chevrolet"),
-    NISSAN("Nissan"),
-    VOLKSWAGEN("Volkswagen");
-    private final String displayName;
+    TOYOTA(0),
+    FORD(1),
+    BMW(2),
+    MERCEDES_BENZ(3),
+    AUDI(4),
+    HONDA(5),
+    TESLA(6),
+    CHEVROLET(7),
+    NISSAN(8),
+    VOLKSWAGEN(9);
+    private final int displayName;
 }

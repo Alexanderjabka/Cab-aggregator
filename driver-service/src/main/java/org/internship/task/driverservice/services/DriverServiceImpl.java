@@ -42,9 +42,10 @@ public class DriverServiceImpl implements DriverService {
     }
 
     public DriverResponse createDriver(DriverRequest driverRequest) {
-        if (driverRepository.findByEmail(driverRequest.getEmail()).isPresent()) {
-            throw new InvalidDriverOperationException(DRIVER_ALREADY_EXISTS + driverRequest.getEmail());
-        }
+        driverRepository.findByEmail(driverRequest.getEmail())
+                .ifPresent(driver -> {
+                    throw new InvalidDriverOperationException(DRIVER_ALREADY_EXISTS + driverRequest.getEmail());
+                });
 
         Driver driver = DriverMapper.toEntity(driverRequest);
         driver.setIsDeleted(false);

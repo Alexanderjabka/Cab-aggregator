@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DriverResponse{
-        private Long driverId;
+        private Long Id;
         private String name;
         private String email;
         private String phoneNumber;

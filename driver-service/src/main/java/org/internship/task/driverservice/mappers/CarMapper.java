@@ -19,7 +19,7 @@ public class CarMapper {
 
     public static CarResponse toDto(Car car) {
         CarResponse carResponse = new CarResponse();
-        carResponse.setCarId(car.getId());
+        carResponse.setId(car.getId());
         carResponse.setColor(car.getColor());
         carResponse.setCarBrand(car.getCarBrand());
         carResponse.setCarNumber(car.getCarNumber());

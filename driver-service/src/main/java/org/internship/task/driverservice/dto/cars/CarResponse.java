@@ -12,7 +12,7 @@ import org.internship.task.driverservice.enums.Color;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CarResponse {
-    private Long carId;
+    private Long Id;
     private Color color;
     private CarBrand carBrand;
     private String carNumber;
