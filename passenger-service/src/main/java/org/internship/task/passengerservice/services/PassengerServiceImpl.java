@@ -28,6 +28,7 @@ public class PassengerServiceImpl implements PassengerService {
     private final PassengerRepository passengerRepository;
     private final ModelMapper modelMapper;
 
+    @Override
     public List<PassengerResponse> getAllPassengers() {
         List<Passenger> passengers = passengerRepository.findAll();
         return passengers.stream()
@@ -36,6 +37,7 @@ public class PassengerServiceImpl implements PassengerService {
 
     }
 
+    @Override
     public List<PassengerResponse> getAllPassengersByStatus(boolean isDeleted) {
         List<Passenger> passengers = passengerRepository.findByIsDeleted(isDeleted);
         return passengers.stream()
@@ -43,12 +45,15 @@ public class PassengerServiceImpl implements PassengerService {
                 .toList();
     }
 
+    @Override
     public PassengerResponse getPassengerById(Long id) {
         Passenger passenger = passengerRepository.findById(id)
                 .orElseThrow(() -> new PassengerNotFoundException(PASSENGER_NOT_FOUND_BY_ID + id));
 
         return modelMapper.map(passenger, PassengerResponse.class);
     }
+
+    @Override
     @Transactional
     public PassengerResponse createPassenger(PassengerRequest passengerRequest) {
         String email = passengerRequest.getEmail();
@@ -62,6 +67,8 @@ public class PassengerServiceImpl implements PassengerService {
 
         return modelMapper.map(passenger,PassengerResponse.class);
     }
+
+    @Override
     @Transactional
     public void deletePassenger(Long id) {
         if (!passengerRepository.existsById(id)) {
@@ -75,8 +82,11 @@ public class PassengerServiceImpl implements PassengerService {
             passengerRepository.save(passenger);
         }
     }
+
+    @Override
     @Transactional
     public PassengerResponse updatePassenger(String email,PassengerRequest passengerRequest) {
+        String requestEmail = passengerRequest.getEmail();
         Passenger passenger = passengerRepository.findByEmail(email)
                 .orElseThrow(() -> new PassengerNotFoundException(PASSENGER_NOT_FOUND_BY_EMAIL + email));
 
@@ -84,10 +94,9 @@ public class PassengerServiceImpl implements PassengerService {
             throw new InvalidPassengerOperationException(PASSENGER_IS_DELETED + email);
         }
 
-        if (!passenger.getEmail().equals(passengerRequest.getEmail())) {
-            if (passengerRepository.findByEmail(passengerRequest.getEmail()).isPresent()) {
-                throw new InvalidPassengerOperationException(PASSENGER_ALREADY_EXISTS + passengerRequest.getEmail());
-            }
+        if (!passenger.getEmail().equals(requestEmail)
+                && passengerRepository.findByEmail(requestEmail).isPresent()) {
+            throw new InvalidPassengerOperationException(PASSENGER_ALREADY_EXISTS + requestEmail);
         }
 
         modelMapper.map(passengerRequest,passenger);
