@@ -18,6 +18,4 @@ public class RideRequest {
     private Long driverId;
     private String startAddress;
     private String finishAddress;
-    private LocalDateTime orderDateTime;
-    private BigDecimal price;
 }

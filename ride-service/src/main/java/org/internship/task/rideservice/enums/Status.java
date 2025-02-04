@@ -8,12 +8,12 @@ import lombok.ToString;
 @ToString
 @Getter
 public enum Status {
-    CREATED("created"),
-    ACCEPTED("accepted"),
-    EN_ROUTE_TO_PASSENGER("in route to passenger"),
-    EN_ROUTE_TO_DESTINATION("in route to destination"),
-    COMPLETED("completed"),
-    CANCELLED("cancelled");
+    CREATED(0),
+    ACCEPTED(1),
+    EN_ROUTE_TO_PASSENGER(2),
+    EN_ROUTE_TO_DESTINATION(3),
+    COMPLETED(4),
+    CANCELLED(5);
 
-    private final String description;
+    private final int description;
 }
