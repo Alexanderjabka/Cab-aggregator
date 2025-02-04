@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import static org.internship.task.rideservice.util.constants.RideConstants.EARTH_RADIUS;
+
 @Service
 @RequiredArgsConstructor
 public class MapServiceImpl implements MapService{
@@ -14,7 +16,6 @@ public class MapServiceImpl implements MapService{
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    @Override
     public double[] getCoordinates(String address) {
         String url = "https://api.openrouteservice.org/geocode/search?api_key=" + API_KEY + "&text=" + address;
         String response = restTemplate.getForObject(url, String.class);
@@ -32,7 +33,6 @@ public class MapServiceImpl implements MapService{
         }
     }
 
-    @Override
     public double getDistance(String startAddress, String finishAddress) {
         double[] startCoord = getCoordinates(startAddress);
         double[] finishCoord = getCoordinates(finishAddress);
@@ -46,11 +46,9 @@ public class MapServiceImpl implements MapService{
         double dLon = Math.toRadians(finishLon - startLon);
 
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(Math.toRadians(startLat)) * Math.cos(Math.toRadians(finishLat)) *
-                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                Math.cos(Math.toRadians(startLat)) * Math.cos(Math.toRadians(finishLat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        final double EARTH_RADIUS = 6371; // Радиус Земли в км
 
         return EARTH_RADIUS * c; // Расстояние в километрах
     }
