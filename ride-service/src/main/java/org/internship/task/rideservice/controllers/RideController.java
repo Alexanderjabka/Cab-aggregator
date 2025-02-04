@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.internship.task.rideservice.dto.RideRequest;
 import org.internship.task.rideservice.dto.RideResponse;
 import org.internship.task.rideservice.enums.Status;
-import org.internship.task.rideservice.mapService.MapService;
-import org.internship.task.rideservice.services.RideService;
+import org.internship.task.rideservice.services.mapServices.MapServiceImpl;
+import org.internship.task.rideservice.services.rideServices.RideServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +16,7 @@ import java.util.List;
 @RequestMapping("api/v1/rides")
 @RequiredArgsConstructor
 public class RideController {
-    private final RideService rideService;
-    private final MapService mapService;
+    private final RideServiceImpl rideService;
     @GetMapping()
     public ResponseEntity<List<RideResponse>> getAllRides(){
         return ResponseEntity.ok(rideService.getAllRides());
@@ -41,14 +40,5 @@ public class RideController {
     @PutMapping("/change-status/{id}")
     public ResponseEntity<RideResponse> changeStatus(@PathVariable Long id,@Valid @RequestBody Status status) {
         return ResponseEntity.status(200).body(rideService.changeStatus(id,status));
-    }
-    @GetMapping("/coordinates")
-    public double[] getCoordinates(@RequestParam String address) {
-        return mapService.getCoordinates(address);
-    }
-
-    @GetMapping("/distance")
-    public double getDistance(@RequestParam String start, @RequestParam String finish) {
-        return mapService.getDistance(start, finish);
     }
 }

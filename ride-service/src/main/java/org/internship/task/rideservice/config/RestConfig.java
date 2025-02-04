@@ -1,12 +1,11 @@
-package org.internship.task.rideservice.mapService.config;
+package org.internship.task.rideservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-public class AppConfig {
-
+public class RestConfig {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();

@@ -11,13 +11,11 @@ public class RideMapper {
     public static Ride toEntity(RideRequest rideRequest) {
         Ride ride = new Ride();
 
-        ride.setDriverId(rideRequest.getDriverId());
-        ride.setPrice(rideRequest.getPrice());
-//        ride.setStatus(rideRequest.getStatus());
-        ride.setFinishAddress(rideRequest.getFinishAddress());
         ride.setPassengerId(rideRequest.getPassengerId());
+        ride.setDriverId(rideRequest.getDriverId());
         ride.setStartAddress(rideRequest.getStartAddress());
-        ride.setOrderDateTime(rideRequest.getOrderDateTime());
+        ride.setFinishAddress(rideRequest.getFinishAddress());
+
         return ride;
     }
 
@@ -25,12 +23,12 @@ public class RideMapper {
         RideResponse rideResponse = new RideResponse();
 
         rideResponse.setId(ride.getId());
+        rideResponse.setPassengerId(ride.getPassengerId());
         rideResponse.setDriverId(ride.getDriverId());
+        rideResponse.setStartAddress(ride.getStartAddress());
+        rideResponse.setFinishAddress(ride.getFinishAddress());
         rideResponse.setPrice(ride.getPrice());
         rideResponse.setStatus(ride.getStatus());
-        rideResponse.setFinishAddress(ride.getFinishAddress());
-        rideResponse.setPassengerId(ride.getPassengerId());
-        rideResponse.setStartAddress(ride.getStartAddress());
         rideResponse.setOrderDateTime(ride.getOrderDateTime());
 
         return rideResponse;
@@ -42,11 +40,8 @@ public class RideMapper {
 
     public static void toEntity(RideRequest rideRequest, Ride ride) {
         ride.setDriverId(rideRequest.getDriverId());
-        ride.setPrice(rideRequest.getPrice());
-//        ride.setStatus(rideRequest.getStatus());
         ride.setFinishAddress(rideRequest.getFinishAddress());
         ride.setPassengerId(rideRequest.getPassengerId());
         ride.setStartAddress(rideRequest.getStartAddress());
-        ride.setOrderDateTime(rideRequest.getOrderDateTime());
     }
 }

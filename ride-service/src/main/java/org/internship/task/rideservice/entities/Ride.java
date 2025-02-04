@@ -38,7 +38,7 @@ public class Ride {
     private Status status;
 
     @Column(name = "order_date_time")
-    private LocalDateTime orderDateTime;
+    private LocalDateTime orderDateTime = LocalDateTime.now();
 
     @Column(name = "price")
     private BigDecimal price;

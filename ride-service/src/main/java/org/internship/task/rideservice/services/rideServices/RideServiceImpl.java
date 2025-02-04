@@ -1,4 +1,4 @@
-package org.internship.task.rideservice.services;
+package org.internship.task.rideservice.services.rideServices;
 
 import lombok.RequiredArgsConstructor;
 import org.internship.task.rideservice.dto.RideRequest;
@@ -17,29 +17,44 @@ import static org.internship.task.rideservice.util.constantMessages.exceptionMes
 
 @Service
 @RequiredArgsConstructor
-public class RideService {
+public class RideServiceImpl implements RideService{
     private final RideRepository rideRepository;
+
+    @Override
     public List<RideResponse> getAllRides() {
         List<Ride> rides = rideRepository.findAll();
         return RideMapper.toDtoList(rides);
     }
+
+    @Override
     public List<RideResponse> getAllRidesByStatus(Status status) {
         List<Ride> rides = rideRepository.findAllByStatus(status);
         return RideMapper.toDtoList(rides);
     }
+
+    @Override
     public RideResponse getRideById(Long id) {
         Ride ride = rideRepository.findById(id).
                 orElseThrow(()->new RideNotFoundException(RIDE_NOT_FOUND_BY_RIDE_ID + id));
         return RideMapper.toDto(ride);
     }
+
+    @Override
     public RideResponse createRide(RideRequest rideRequest) {
-        if (rideRepository.findByPassengerId(rideRequest.getPassengerId()).isPresent()) {
-            throw new InvalidRideOperationException(RIDE_ALREADY_EXISTS + rideRequest.getPassengerId());
+        if (rideRepository.findByPassengerId(rideRequest.getPassengerId()).isPresent()
+                || rideRepository.findByDriverId(rideRequest.getDriverId()).isPresent()) {
+            throw new InvalidRideOperationException(RIDE_ALREADY_EXISTS);
         }
         Ride ride = RideMapper.toEntity(rideRequest);
+
+        ride.setPrice();
+        ride.setStatus(Status.CREATED);
+
         rideRepository.save(ride);
         return RideMapper.toDto(ride);
     }
+
+    @Override
     public RideResponse updateRide(Long id, RideRequest rideRequest) {
         Ride ride = rideRepository.findById(id)
                 .orElseThrow(() -> new RideNotFoundException(RIDE_NOT_FOUND_BY_RIDE_ID + id));
@@ -53,6 +68,8 @@ public class RideService {
 
         return RideMapper.toDto(ride);
     }
+
+    @Override
     public RideResponse changeStatus(Long id,Status status) {
         Ride ride = rideRepository.findById(id)
                 .orElseThrow(() -> new RideNotFoundException(RIDE_NOT_FOUND_BY_RIDE_ID + id));
@@ -62,7 +79,8 @@ public class RideService {
 
         return RideMapper.toDto(ride);
     }
-
-
-
+    private double setPriceForTheRide(double distance){
+        final double PRICE_PER_KILOMETER = 1.1;
+        return PRICE_PER_KILOMETER*distance;
+    }
 }

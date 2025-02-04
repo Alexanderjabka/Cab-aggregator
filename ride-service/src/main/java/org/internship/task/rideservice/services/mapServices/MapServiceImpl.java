@@ -1,20 +1,20 @@
-package org.internship.task.rideservice.mapService;
+package org.internship.task.rideservice.services.mapServices;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 @RequiredArgsConstructor
-public class MapService {
+public class MapServiceImpl implements MapService{
     private static final String API_KEY = "5b3ce3597851110001cf6248102854531d824446b2e1ea2cbbad9f9d";
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+
+    @Override
     public double[] getCoordinates(String address) {
         String url = "https://api.openrouteservice.org/geocode/search?api_key=" + API_KEY + "&text=" + address;
         String response = restTemplate.getForObject(url, String.class);
@@ -31,6 +31,8 @@ public class MapService {
             throw new RuntimeException("Ошибка получения координат: " + e.getMessage());
         }
     }
+
+    @Override
     public double getDistance(String startAddress, String finishAddress) {
         double[] startCoord = getCoordinates(startAddress);
         double[] finishCoord = getCoordinates(finishAddress);
