@@ -69,7 +69,16 @@ public class RideServiceImpl implements RideService {
             throw new InvalidRideOperationException(RIDE_IS_CANCELLED_OR_COMPLETED  + ride.getStatus());
         }
 
+        if (rideRepository.findByPassengerId(rideRequest.getPassengerId()).isPresent()
+                || rideRepository.findByDriverId(rideRequest.getDriverId()).isPresent()) {
+            throw new InvalidRideOperationException(RIDE_ALREADY_EXISTS);
+        }
+
         RideMapper.toEntity(rideRequest, ride);
+
+        ride.setPrice(PriceServiceImpl.setPriceForTheRide(mapService.getDistance(rideRequest.getStartAddress(),
+                rideRequest.getFinishAddress())));
+
         rideRepository.save(ride);
 
         return RideMapper.toDto(ride);

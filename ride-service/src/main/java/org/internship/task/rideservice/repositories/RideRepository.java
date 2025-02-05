@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface RideRepository extends JpaRepository<Ride,Long> {
     List<Ride> findAllByStatus(Status status);
-    Optional<Long> findByPassengerId(Long id);
-    Optional<Long> findByDriverId(Long id);
+    Optional<Ride> findByPassengerId(Long id);
+    Optional<Ride> findByDriverId(Long id);
 }
