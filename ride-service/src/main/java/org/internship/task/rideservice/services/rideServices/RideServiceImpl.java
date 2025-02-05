@@ -79,6 +79,7 @@ public class RideServiceImpl implements RideService {
         ride.setPrice(PriceServiceImpl.setPriceForTheRide(mapService.getDistance(rideRequest.getStartAddress(),
                 rideRequest.getFinishAddress())));
 
+        RideMapper.toEntity(rideRequest, ride);
         rideRepository.save(ride);
 
         return RideMapper.toDto(ride);
