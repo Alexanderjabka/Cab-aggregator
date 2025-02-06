@@ -7,6 +7,7 @@ public final class CarValidationMessages {
     public static final String INVALID_FORMAT_OF_CAR_NUMBER = "invalid format of car number";
     public static final String CAR_YEAR_CANNOT_BE_LESS_THAN_1990 = "car year cannot be less than 1990";
     public static final String CAR_YEAR_CANNOT_BE_GREATER_THAN_2025 = "car year cannot be greater than 2025";
-    private CarValidationMessages(){
+
+    private CarValidationMessages() {
     }
 }

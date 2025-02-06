@@ -1,5 +1,13 @@
 package org.internship.task.driverservice.services;
 
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.CarExceptionMessages.CAR_ALREADY_EXISTS;
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.CarExceptionMessages.CAR_IS_DELETED;
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.CarExceptionMessages.CAR_NOT_FOUND_BY_CAR_NUMBER;
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.CarExceptionMessages.CAR_NOT_FOUND_BY_ID;
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.DriverExceptionMessages.DRIVER_NOT_FOUND_BY_EMAIL;
+
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.internship.task.driverservice.dto.cars.CarRequest;
 import org.internship.task.driverservice.dto.cars.CarResponse;
@@ -14,45 +22,39 @@ import org.internship.task.driverservice.repositories.CarRepository;
 import org.internship.task.driverservice.repositories.DriverRepository;
 import org.internship.task.driverservice.services.serviceInterfaces.CarService;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.CarExceptionMessages.CAR_ALREADY_EXISTS;
-import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.CarExceptionMessages.CAR_IS_DELETED;
-import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.CarExceptionMessages.CAR_NOT_FOUND_BY_ID;
-import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.CarExceptionMessages.CAR_NOT_FOUND_BY_CAR_NUMBER;
-import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.DriverExceptionMessages.DRIVER_NOT_FOUND_BY_EMAIL;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final DriverRepository driverRepository;
+    private final CarMapper carMapper;
 
     public List<CarResponse> getAllCars() {
         List<Car> cars = carRepository.findAll();
-        return CarMapper.toDtoList(cars);
+        return carMapper.toDtoList(cars);
     }
 
     public List<CarResponse> getAllCarsByStatus(boolean status) {
         List<Car> cars = carRepository.findByIsDeleted(status);
-        return CarMapper.toDtoList(cars);
+        return carMapper.toDtoList(cars);
     }
 
     public CarResponse getCarById(Long id) {
         Car car = carRepository.findById(id)
                 .orElseThrow(() -> new CarNotFoundException(CAR_NOT_FOUND_BY_ID + id));
-        return CarMapper.toDto(car);
+        return carMapper.toDto(car);
     }
 
+    @Transactional
     public CarResponse createCar(CarRequest carRequest, String driverEmail) {
         carRepository.findByCarNumber(carRequest.getCarNumber())
                 .ifPresent(car -> {
                     throw new InvalidCarOperationException(CAR_ALREADY_EXISTS + carRequest.getCarNumber());
                 });
 
-        Car car = CarMapper.toEntity(carRequest);
+        Car car = carMapper.toEntity(carRequest);
         car.setIsDeleted(false);
 
         Driver driver = driverRepository.findByEmail(driverEmail)
@@ -61,9 +63,10 @@ public class CarServiceImpl implements CarService {
 
         carRepository.save(car);
 
-        return CarMapper.toDto(car);
+        return carMapper.toDto(car);
     }
 
+    @Transactional
     public CarResponse updateCar(String carNumber, CarRequest carRequest) {
         Car car = carRepository.findByCarNumber(carNumber)
                 .orElseThrow(() -> new CarNotFoundException(CAR_NOT_FOUND_BY_CAR_NUMBER + carNumber));
@@ -78,13 +81,14 @@ public class CarServiceImpl implements CarService {
             }
         });
 
-        CarMapper.toEntity(carRequest, car);
+        carMapper.toEntity(carRequest);
         car.setIsDeleted(false);
         carRepository.save(car);
 
-        return CarMapper.toDto(car);
+        return carMapper.toDto(car);
     }
 
+    @Transactional
     public void deleteCar(Long id) {
         if (!carRepository.existsById(id)) {
             throw new CarNotFoundException(CAR_NOT_FOUND_BY_ID + id);

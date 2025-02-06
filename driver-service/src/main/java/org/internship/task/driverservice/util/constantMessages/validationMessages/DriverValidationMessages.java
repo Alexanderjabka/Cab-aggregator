@@ -9,6 +9,7 @@ public final class DriverValidationMessages {
     public static final String PHONE_NUMBER_SIZE = "phone number must be between 10 and 15 characters";
     public static final String PHONE_NUMBER_NOT_EMPTY = "phone number cannot be empty";
     public static final String GENDER_NOT_EMPTY = "gender cannot be empty";
-    private DriverValidationMessages(){
+
+    private DriverValidationMessages() {
     }
 }

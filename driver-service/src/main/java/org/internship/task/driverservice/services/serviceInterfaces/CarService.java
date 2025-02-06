@@ -1,9 +1,8 @@
 package org.internship.task.driverservice.services.serviceInterfaces;
 
+import java.util.List;
 import org.internship.task.driverservice.dto.cars.CarRequest;
 import org.internship.task.driverservice.dto.cars.CarResponse;
-
-import java.util.List;
 
 public interface CarService {
     List<CarResponse> getAllCars();

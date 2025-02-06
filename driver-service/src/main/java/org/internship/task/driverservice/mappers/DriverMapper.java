@@ -1,51 +1,42 @@
 package org.internship.task.driverservice.mappers;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.internship.task.driverservice.dto.drivers.DriverRequest;
 import org.internship.task.driverservice.dto.drivers.DriverResponse;
 import org.internship.task.driverservice.entities.Car;
 import org.internship.task.driverservice.entities.Driver;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
-import java.util.List;
-import java.util.stream.Collectors;
+@Mapper(componentModel = "spring")
+public interface DriverMapper {
 
-public class DriverMapper {
-    public static Driver toEntity(DriverRequest driverRequest) {
-        Driver driver = new Driver();
-        driver.setName(driverRequest.getName());
-        driver.setEmail(driverRequest.getEmail());
-        driver.setPhoneNumber(driverRequest.getPhoneNumber());
-        driver.setGender(driverRequest.getGender());
-        return driver;
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "isDeleted", ignore = true)
+    @Mapping(target = "cars", ignore = true)
+    Driver toEntity(DriverRequest driverRequest);
 
-    public static DriverResponse toDto(Driver driver) {
-        DriverResponse driverResponse = new DriverResponse();
-        driverResponse.setId(driver.getId());
-        driverResponse.setName(driver.getName());
-        driverResponse.setEmail(driver.getEmail());
-        driverResponse.setPhoneNumber(driver.getPhoneNumber());
-        driverResponse.setGender(driver.getGender());
-        driverResponse.setIsDeleted(driver.getIsDeleted());
+    @Mapping(target = "carId", source = "cars", qualifiedByName = "mapCarIds")
+    DriverResponse toDto(Driver driver);
 
-        if (driver.getCars() != null && !driver.getCars().isEmpty()) {
-            List<Long> carIds = driver.getCars().stream()
-                    .filter(car -> !car.getIsDeleted()) // Фильтруем только машины, которые не удалены
-                    .map(Car::getId)
-                    .collect(Collectors.toList());
-            driverResponse.setCarId(carIds);
+    List<DriverResponse> toDtoList(List<Driver> drivers);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "isDeleted", ignore = true)
+    @Mapping(target = "cars", ignore = true)
+    void updateEntity(@MappingTarget Driver driver, DriverRequest driverRequest);
+
+    @Named("mapCarIds")
+    static List<Long> mapCarIds(List<Car> cars) {
+        if (cars == null) {
+            return null;
         }
-
-            return driverResponse;
-    }
-
-    public static List<DriverResponse> toDtoList(List<Driver> drivers) {
-        return drivers.stream().map(DriverMapper::toDto).collect(Collectors.toList());
-    }
-
-    public static void toEntity(DriverRequest driverRequest, Driver driver) {
-        driver.setName(driverRequest.getName());
-        driver.setEmail(driverRequest.getEmail());
-        driver.setPhoneNumber(driverRequest.getPhoneNumber());
-        driver.setGender(driverRequest.getGender());
+        return cars.stream()
+                .filter(car -> !Boolean.TRUE.equals(car.getIsDeleted()))
+                .map(Car::getId)
+                .collect(Collectors.toList());
     }
 }
