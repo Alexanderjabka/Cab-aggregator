@@ -13,10 +13,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleRideNotFoundException(RideNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
+
     @ExceptionHandler(InvalidRideOperationException.class)
     public ResponseEntity<String> handleInvalidRiderOperationException(InvalidRideOperationException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());

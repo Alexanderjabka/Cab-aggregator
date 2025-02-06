@@ -1,5 +1,7 @@
 package org.internship.task.rideservice.enums;
 
+import java.util.Arrays;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -14,5 +16,9 @@ public enum Status {
     EN_ROUTE_TO_DESTINATION(3),
     COMPLETED(4),
     CANCELLED(5);
+    public static List<Status> getActiveStatuses() {
+        return Arrays.asList(CREATED, EN_ROUTE_TO_PASSENGER, EN_ROUTE_TO_DESTINATION, ACCEPTED);
+    }
+
     private final int description;
 }
