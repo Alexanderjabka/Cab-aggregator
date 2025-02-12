@@ -13,13 +13,19 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @RequiredArgsConstructor
 public class MapServiceImpl implements MapService {
+
     @Value("${api.key}")
     private String apiKey;
+
+    @Value("${server.url}")
+    private String serverAddress;
+
     private final RestTemplate restTemplate;
+
     private final ObjectMapper objectMapper;
 
     public double[] getCoordinates(String address) {
-        String url = "https://api.openrouteservice.org/geocode/search?api_key=" + apiKey + "&text=" + address;
+        String url = serverAddress + apiKey + "&text=" + address;
         String response = restTemplate.getForObject(url, String.class);
 
         try {
@@ -55,4 +61,5 @@ public class MapServiceImpl implements MapService {
 
         return EARTH_RADIUS * c;
     }
+
 }

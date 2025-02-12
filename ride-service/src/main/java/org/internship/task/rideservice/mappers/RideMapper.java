@@ -19,4 +19,5 @@ public interface RideMapper {
     Ride toEntity(RideRequest rideRequest);
 
     List<RideResponse> toDtoList(List<Ride> rides);
+
 }

@@ -10,6 +10,7 @@ import lombok.ToString;
 @ToString
 @Getter
 public enum Status {
+
     CREATED(0),
     ACCEPTED(1),
     EN_ROUTE_TO_PASSENGER(2),
@@ -21,4 +22,5 @@ public enum Status {
     }
 
     private final int description;
+
 }

@@ -13,6 +13,7 @@ import org.internship.task.rideservice.enums.Status;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RideResponse {
+
     private Long id;
     private Long passengerId;
     private Long driverId;
@@ -21,4 +22,5 @@ public class RideResponse {
     private Status status;
     private LocalDateTime orderDateTime;
     private BigDecimal price;
+
 }

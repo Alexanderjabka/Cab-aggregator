@@ -17,6 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RideRequest {
+
     @NotNull(message = PASSENGER_ID_CANNOT_BE_NULL)
     private Long passengerId;
 
@@ -28,4 +29,5 @@ public class RideRequest {
 
     @NotBlank(message = FINISH_ADDRESS_CANNOT_BE_BLANK)
     private String finishAddress;
+
 }

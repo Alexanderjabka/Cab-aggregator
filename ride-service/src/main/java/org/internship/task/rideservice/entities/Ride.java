@@ -19,6 +19,7 @@ import org.internship.task.rideservice.enums.Status;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Ride {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,4 +45,5 @@ public class Ride {
 
     @Column(name = "price")
     private BigDecimal price;
+
 }

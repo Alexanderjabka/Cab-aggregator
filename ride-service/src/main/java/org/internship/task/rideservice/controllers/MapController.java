@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/map")
 @RequiredArgsConstructor
 public class MapController {
+
     private final MapServiceImpl mapService;
 
     @GetMapping("/coordinates")
@@ -22,4 +23,5 @@ public class MapController {
     public double getDistance(@RequestParam String start, @RequestParam String finish) {
         return mapService.getDistance(start, finish);
     }
+
 }

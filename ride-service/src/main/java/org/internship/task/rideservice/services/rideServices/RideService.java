@@ -3,12 +3,15 @@ package org.internship.task.rideservice.services.rideServices;
 import java.util.List;
 import org.internship.task.rideservice.dto.RideRequest;
 import org.internship.task.rideservice.dto.RideResponse;
+import org.internship.task.rideservice.dto.StatusRequest;
 import org.internship.task.rideservice.enums.Status;
+import org.springframework.http.ResponseEntity;
 
 public interface RideService {
-    List<RideResponse> getAllRides();
 
-    List<RideResponse> getAllRidesByStatus(Status status);
+    ResponseEntity<List<RideResponse>> getAllRides();
+
+    ResponseEntity<List<RideResponse>> getAllRidesByStatus(Status status);
 
     RideResponse getRideById(Long id);
 
@@ -16,5 +19,6 @@ public interface RideService {
 
     RideResponse updateRide(Long id, RideRequest rideRequest);
 
-    RideResponse changeStatus(Long id, Status status);
+    RideResponse changeStatus(Long id, StatusRequest status);
+
 }

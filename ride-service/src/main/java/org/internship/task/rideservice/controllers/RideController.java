@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.internship.task.rideservice.dto.RideRequest;
 import org.internship.task.rideservice.dto.RideResponse;
+import org.internship.task.rideservice.dto.StatusRequest;
 import org.internship.task.rideservice.enums.Status;
 import org.internship.task.rideservice.services.rideServices.RideServiceImpl;
 import org.springframework.http.ResponseEntity;
@@ -14,22 +15,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/v1/rides")
 @RequiredArgsConstructor
 public class RideController {
+
     private final RideServiceImpl rideService;
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<RideResponse>> getAllRides() {
-        return ResponseEntity.ok(rideService.getAllRides());
+        return rideService.getAllRides();
     }
 
-    @GetMapping("/status/{status}")
-    public ResponseEntity<List<RideResponse>> getAllRidesByStatus(@PathVariable Status status) {
-        return ResponseEntity.ok(rideService.getAllRidesByStatus(status));
+    @GetMapping("/status")
+    public ResponseEntity<List<RideResponse>> getAllRidesByStatus(@RequestParam Status status) {
+        return rideService.getAllRidesByStatus(status);
     }
 
     @GetMapping("/{id}")
@@ -49,7 +52,8 @@ public class RideController {
     }
 
     @PutMapping("/change-status/{id}")
-    public ResponseEntity<RideResponse> changeStatus(@PathVariable Long id, @Valid @RequestBody Status status) {
+    public ResponseEntity<RideResponse> changeStatus(@PathVariable Long id, @Valid @RequestBody StatusRequest status) {
         return ResponseEntity.status(200).body(rideService.changeStatus(id, status));
     }
+    
 }

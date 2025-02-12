@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class PriceServiceImpl {
+
     public static BigDecimal setPriceForTheRide(double distanceInKm) {
         BigDecimal distance = BigDecimal.valueOf(distanceInKm);
         BigDecimal tripCost = distance.multiply(PRICE_PER_KILOMETER);
@@ -14,4 +15,5 @@ public class PriceServiceImpl {
 
         return tripCost;
     }
+
 }
