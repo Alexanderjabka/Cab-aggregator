@@ -1,6 +1,7 @@
 package org.internship.task.ratingservice.services;
 
 import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.IS_ALREADY_RATE_THIS_RIDE;
+import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.RATING_IS_NOT_FOUND_BY_ID;
 import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.THIS_PERSON_DOESNT_HAVE_RATING_YET;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +31,21 @@ public class RatingServiceImpl implements RatingService {
     private int recentLimit;
 
     @Override
+    public ResponseEntity<List<RatingResponse>> getAllRatings() {
+        List<Rating> ratings = ratingRepository.findAll();
+        List<RatingResponse> responseList = ratingMapper.ratingToRatingResponseList(ratings);
+
+        return responseList.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(responseList);
+    }
+
+    @Override
     public double getAveragePassengerRating(Long passengerId) {
         Pageable pageable = PageRequest.of(0, recentLimit, Sort.by(Sort.Direction.DESC, "id"));
 
-        List<Rating> ratings = ratingRepository.findLastRatingsForPassenger(passengerId, WhoRate.DRIVER, pageable);
+        List<Rating> ratings = ratingRepository
+                .findByPassengerIdAndWhoRateOrderByIdDesc(passengerId, WhoRate.DRIVER, pageable);
 
         return calculateAverage(ratings);
     }
@@ -40,16 +53,23 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public double getAverageDriverRating(Long driverId) {
         Pageable pageable = PageRequest.of(0, recentLimit, Sort.by(Sort.Direction.DESC, "id"));
-        List<Rating> ratings = ratingRepository.findLastRatingsForDriver(driverId, WhoRate.PASSENGER, pageable);
+        List<Rating> ratings = ratingRepository
+                .findByDriverIdAndWhoRateOrderByIdDesc(driverId, WhoRate.PASSENGER, pageable);
 
         return calculateAverage(ratings);
     }
 
-    private double calculateAverage(List<Rating> ratings) {
-        if (ratings.isEmpty()) {
-            throw new RatingNotFoundException(THIS_PERSON_DOESNT_HAVE_RATING_YET);
-        }
-        return ratings.stream().mapToInt(Rating::getScore).average().orElse(0.0);
+    @Transactional
+    @Override
+    public ResponseEntity<String> deleteRating(Long ratingId) {
+        Rating rating = ratingRepository.findById(ratingId)
+                .orElseThrow(() -> new RatingNotFoundException(RATING_IS_NOT_FOUND_BY_ID + ratingId));
+
+        rating.setIsDeleted(true);
+
+        ratingRepository.save(rating);
+
+        return ResponseEntity.noContent().build();
     }
 
     @Transactional
@@ -65,4 +85,12 @@ public class RatingServiceImpl implements RatingService {
 
         return ratingMapper.ratingToRatingResponse(savedRating);
     }
+
+    private double calculateAverage(List<Rating> ratings) {
+        if (ratings.isEmpty()) {
+            throw new RatingNotFoundException(THIS_PERSON_DOESNT_HAVE_RATING_YET);
+        }
+        return ratings.stream().mapToInt(Rating::getScore).average().orElse(0.0);
+    }
+
 }

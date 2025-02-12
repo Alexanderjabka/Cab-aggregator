@@ -43,3 +43,9 @@ databaseChangeLog:
                   type: smallint
                   constraints:
                     nullable: false
+              - column:
+                  name: is_deleted
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

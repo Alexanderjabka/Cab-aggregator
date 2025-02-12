@@ -14,23 +14,18 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RatingResponse {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
-    @Column(name = "driverId")
     private Long driverId;
 
-    @Column(name = "passengerId")
     private Long passengerId;
 
-    @Column(name = "score")
     private Short score;
 
-    @Column(name = "comment")
     private String comment;
 
-    @Column(name = "rideId")
     private Long rideId;
+
+    private Boolean isDeleted;
 }

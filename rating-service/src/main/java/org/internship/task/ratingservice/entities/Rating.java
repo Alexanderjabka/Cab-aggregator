@@ -11,8 +11,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.internship.task.ratingservice.enums.WhoRate;
 
-import java.util.Random;
-
 @Entity
 @Table(name = "rating")
 @Data
@@ -41,4 +39,7 @@ public class Rating {
 
     @Column(name = "whoRate")
     private WhoRate whoRate;
+
+    @Column(name = "isDeleted")
+    private Boolean isDeleted = false;
 }
