@@ -1,21 +1,21 @@
 package org.internship.task.rideservice.exceptions;
 
 import java.time.LocalDateTime;
-import lombok.Getter;
+import lombok.Builder;
 
-@Getter
-public class ErrorResponse {
-
-    private final int status;
-    private final String error;
-    private final String message;
-    private final LocalDateTime timestamp;
-
-    public ErrorResponse(int status, String error, String message) {
-        this.status = status;
-        this.error = error;
-        this.message = message;
-        this.timestamp = LocalDateTime.now();
+@Builder
+public record ErrorResponse(
+        int status,
+        String error,
+        String message,
+        LocalDateTime timestamp
+) {
+    public static ErrorResponse of(int status, String error, String message) {
+        return ErrorResponse.builder()
+                .status(status)
+                .error(error)
+                .message(message)
+                .timestamp(LocalDateTime.now())
+                .build();
     }
-
 }

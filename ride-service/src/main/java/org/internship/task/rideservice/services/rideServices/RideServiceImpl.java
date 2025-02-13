@@ -9,6 +9,7 @@ import static org.internship.task.rideservice.util.constantMessages.exceptionMes
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.internship.task.rideservice.dto.RideListResponse;
 import org.internship.task.rideservice.dto.RideRequest;
 import org.internship.task.rideservice.dto.RideResponse;
 import org.internship.task.rideservice.dto.StatusRequest;
@@ -32,26 +33,31 @@ public class RideServiceImpl implements RideService {
     private final MapService mapService;
     private final RideMapper rideMapper;
 
+    @Transactional(readOnly = true)
     @Override
-    public ResponseEntity<List<RideResponse>> getAllRides() {
-        List<Ride> rides = rideRepository.findAll();
-        List<RideResponse> responseList = rideMapper.toDtoList(rides);
+    public ResponseEntity<RideListResponse> getAllRides() {
+        List<Ride> rides = rideRepository.findAllByOrderByIdAsc();
 
-        return responseList.isEmpty()
+        return rides.isEmpty()
                 ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(responseList);
+                : ResponseEntity.ok(RideListResponse.builder()
+                .rides(rideMapper.toDtoList(rides))
+                .build());
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public ResponseEntity<List<RideResponse>> getAllRidesByStatus(Status status) {
-        List<Ride> rides = rideRepository.findAllByStatus(status);
-        List<RideResponse> responseList = rideMapper.toDtoList(rides);
+    public ResponseEntity<RideListResponse> getAllRidesByStatus(Status status) {
+        List<Ride> rides = rideRepository.findAllByStatusOrderByIdAsc(status);
 
-        return responseList.isEmpty()
+        return rides.isEmpty()
                 ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(responseList);
+                : ResponseEntity.ok(RideListResponse.builder()
+                .rides(rideMapper.toDtoList(rides))
+                .build());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public RideResponse getRideById(Long id) {
         Ride ride = rideRepository.findById(id)

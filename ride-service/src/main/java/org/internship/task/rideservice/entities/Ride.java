@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.internship.task.rideservice.enums.Status;
 
 @Entity
@@ -40,8 +41,9 @@ public class Ride {
     @Column(name = "status")
     private Status status;
 
-    @Column(name = "order_date_time")
-    private LocalDateTime orderDateTime = LocalDateTime.now();
+    @CreationTimestamp
+    @Column(name = "order_date_time", updatable = false)
+    private LocalDateTime orderDateTime;
 
     @Column(name = "price")
     private BigDecimal price;

@@ -29,8 +29,12 @@ public class MapServiceImpl implements MapService {
         String response = restTemplate.getForObject(url, String.class);
 
         try {
-            JsonNode jsonResponse = objectMapper.readTree(response);
-            JsonNode coordinates = jsonResponse.get("features").get(0).get("geometry").get("coordinates");
+            JsonNode jsonResponse = objectMapper
+                    .readTree(response);
+            JsonNode coordinates = jsonResponse
+                    .get("features").get(0)
+                    .get("geometry")
+                    .get("coordinates");
 
             double lon = coordinates.get(0).asDouble();
             double lat = coordinates.get(1).asDouble();

@@ -3,6 +3,7 @@ package org.internship.task.rideservice.controllers;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.internship.task.rideservice.dto.RideListResponse;
 import org.internship.task.rideservice.dto.RideRequest;
 import org.internship.task.rideservice.dto.RideResponse;
 import org.internship.task.rideservice.dto.StatusRequest;
@@ -26,12 +27,12 @@ public class RideController {
     private final RideServiceImpl rideService;
 
     @GetMapping
-    public ResponseEntity<List<RideResponse>> getAllRides() {
+    public ResponseEntity<RideListResponse> getAllRides() {
         return rideService.getAllRides();
     }
 
     @GetMapping("/status")
-    public ResponseEntity<List<RideResponse>> getAllRidesByStatus(@RequestParam Status status) {
+    public ResponseEntity<RideListResponse> getAllRidesByStatus(@RequestParam Status status) {
         return rideService.getAllRidesByStatus(status);
     }
 
