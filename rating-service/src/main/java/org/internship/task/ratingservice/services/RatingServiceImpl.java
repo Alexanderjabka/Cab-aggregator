@@ -6,6 +6,8 @@ import static org.internship.task.ratingservice.util.constantMessages.exceptionR
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.internship.task.ratingservice.clients.RideClient;
+import org.internship.task.ratingservice.dto.GetRideResponse;
 import org.internship.task.ratingservice.dto.RatingRequest;
 import org.internship.task.ratingservice.dto.RatingResponse;
 import org.internship.task.ratingservice.entities.Rating;
@@ -27,6 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class RatingServiceImpl implements RatingService {
     private final RatingRepository ratingRepository;
     private final RatingMapper ratingMapper;
+    private final RideClient rideClient;
+
+
     @Value("${rating.recent-limit}")
     private int recentLimit;
 
@@ -75,16 +80,25 @@ public class RatingServiceImpl implements RatingService {
     @Transactional
     @Override
     public RatingResponse createRating(RatingRequest ratingRequest) {
+        GetRideResponse rideResponse = rideClient.getRideById(ratingRequest.getRideId());
+        if (rideResponse == null) {
+            throw new InvalidRatingOperationException("Поездка с ID " + ratingRequest.getRideId() + " не найдена!");
+        }
+
+        if (ratingRepository.findByRideIdAndWhoRate(ratingRequest.getRideId(), ratingRequest.getWhoRate()).isPresent()) {
+            throw new InvalidRatingOperationException(ratingRequest.getWhoRate() + IS_ALREADY_RATE_THIS_RIDE);
+        }
+
         Rating rating = ratingMapper.ratingRequestToRating(ratingRequest);
 
-        if (ratingRepository.findByRideIdAndWhoRate(rating.getRideId(), rating.getWhoRate()).isPresent()) {
-            throw new InvalidRatingOperationException(rating.getWhoRate() + IS_ALREADY_RATE_THIS_RIDE);
-        }
+        rating.setPassengerId(rideResponse.getPassengerId());
+        rating.setDriverId(rideResponse.getDriverId());
 
         Rating savedRating = ratingRepository.save(rating);
 
         return ratingMapper.ratingToRatingResponse(savedRating);
     }
+
 
     private double calculateAverage(List<Rating> ratings) {
         if (ratings.isEmpty()) {

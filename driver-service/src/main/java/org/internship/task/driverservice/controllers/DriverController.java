@@ -48,6 +48,17 @@ public class DriverController {
         return ResponseEntity.status(200).body(driverService.updateDriver(email, driverRequest));
     }
 
+    @PutMapping("/assign")
+    public ResponseEntity<DriverResponse> assignDriver() {
+        return ResponseEntity.status(200).body(driverService.getFirstFreeDriverAndChangeStatus());
+    }
+
+    @PutMapping("/release/{driverId}")
+    public ResponseEntity<Void> releaseDriver(@PathVariable Long driverId) {
+        driverService.releaseDriver(driverId);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDriver(@PathVariable Long id) {
         driverService.deleteDriver(id);

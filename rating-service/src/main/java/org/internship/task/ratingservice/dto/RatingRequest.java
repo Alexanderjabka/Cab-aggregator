@@ -24,11 +24,8 @@ import org.internship.task.ratingservice.enums.WhoRate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RatingRequest {
-    @NotNull(message = PASSENGER_ID_CANNOT_BE_NULL)
-    private Long passengerId;
-
-    @NotNull(message = DRIVER_ID_CANNOT_BE_NULL)
-    private Long driverId;
+    @NotNull(message = RIDE_ID_CANNOT_BE_NULL)
+    private Long rideId;
 
     @Min(value = 0, message = MINIMAL_SCORE_IS_0)
     @Max(value = 5, message = MAXIMUM_SCORE_IS_5)
@@ -39,7 +36,4 @@ public class RatingRequest {
 
     @NotNull(message = FIELD_WHO_RATE_CANNOT_BE_NULL)
     private WhoRate whoRate;
-
-    @NotNull(message = RIDE_ID_CANNOT_BE_NULL)
-    private Long rideId;
 }

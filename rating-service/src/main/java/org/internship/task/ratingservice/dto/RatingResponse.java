@@ -21,11 +21,11 @@ public class RatingResponse {
 
     private Long passengerId;
 
+    private Long rideId;
+
     private Short score;
 
     private String comment;
-
-    private Long rideId;
 
     private Boolean isDeleted;
 }

@@ -29,19 +29,19 @@ public class Car {
     @Column(name = "color")
     private Color color;
 
-    @Column(name = "car_brand")
+    @Column(name = "carBrand")
     private CarBrand carBrand;
 
-    @Column(name = "car_number")
+    @Column(name = "carNumber")
     private String carNumber;
 
-    @Column(name = "car_year")
+    @Column(name = "carYear")
     private short carYear;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver_id")
+    @JoinColumn(name = "driverId")
     private Driver driver;
 
-    @Column(name = "is_deleted")
+    @Column(name = "isDeleted")
     private Boolean isDeleted = false;
 }
