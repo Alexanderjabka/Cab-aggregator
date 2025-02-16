@@ -7,7 +7,7 @@ import static org.internship.task.ratingservice.util.constantMessages.exceptionR
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.internship.task.ratingservice.clients.RideClient;
-import org.internship.task.ratingservice.dto.GetRideResponse;
+import org.internship.task.ratingservice.dto.clientsDto.GetRideResponse;
 import org.internship.task.ratingservice.dto.RatingRequest;
 import org.internship.task.ratingservice.dto.RatingResponse;
 import org.internship.task.ratingservice.entities.Rating;

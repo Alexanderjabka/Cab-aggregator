@@ -1,4 +1,4 @@
-package org.internship.task.ratingservice.dto;
+package org.internship.task.ratingservice.dto.clientsDto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

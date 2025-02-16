@@ -1,6 +1,6 @@
 package org.internship.task.rideservice.clients;
 
-import org.internship.task.rideservice.dto.AssignDriverResponse;
+import org.internship.task.rideservice.dto.clientsdDto.AssignDriverResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;

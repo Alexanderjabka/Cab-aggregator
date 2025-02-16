@@ -1,6 +1,6 @@
 package org.internship.task.ratingservice.clients;
 
-import org.internship.task.ratingservice.dto.GetRideResponse;
+import org.internship.task.ratingservice.dto.clientsDto.GetRideResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

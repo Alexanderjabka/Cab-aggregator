@@ -1,8 +1,7 @@
-package org.internship.task.rideservice.dto;
+package org.internship.task.rideservice.dto.clientsdDto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,8 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AssignDriverResponse {
+public class GetPassengerResponse {
     @JsonProperty("id")
-    private Long driverId;
+    private Long passengerId;
 }
-
