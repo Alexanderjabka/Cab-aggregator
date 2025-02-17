@@ -2,6 +2,7 @@ package org.internship.task.passengerservice.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.internship.task.passengerservice.dto.PassengerListResponse;
 import org.internship.task.passengerservice.dto.PassengerRequest;
 import org.internship.task.passengerservice.dto.PassengerResponse;
 import org.internship.task.passengerservice.services.PassengerServiceImpl;
@@ -24,13 +25,13 @@ public class PassengerController {
     private final PassengerServiceImpl passengerService;
 
     @GetMapping
-    public ResponseEntity<List<PassengerResponse>> getAllPassengers() {
-        return ResponseEntity.ok(passengerService.getAllPassengers());
+    public ResponseEntity<PassengerListResponse> getAllPassengers() {
+        return passengerService.getAllPassengers();
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<PassengerResponse>> getAllPassengersByStatus(@PathVariable boolean status) {
-        return ResponseEntity.ok(passengerService.getAllPassengersByStatus(status));
+    public ResponseEntity<PassengerListResponse> getAllPassengersByStatus(@PathVariable boolean status) {
+        return passengerService.getAllPassengersByStatus(status);
     }
 
     @GetMapping("/{id}")

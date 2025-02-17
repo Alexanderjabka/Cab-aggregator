@@ -1,14 +1,14 @@
 package org.internship.task.passengerservice.services;
 
+import org.internship.task.passengerservice.dto.PassengerListResponse;
 import org.internship.task.passengerservice.dto.PassengerRequest;
 import org.internship.task.passengerservice.dto.PassengerResponse;
-
-import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 public interface PassengerService {
-    List<PassengerResponse> getAllPassengers();
+    ResponseEntity<PassengerListResponse> getAllPassengers();
 
-    List<PassengerResponse> getAllPassengersByStatus(boolean isDeleted);
+    ResponseEntity<PassengerListResponse> getAllPassengersByStatus(boolean isDeleted);
 
     PassengerResponse getPassengerById(Long id);
 

@@ -8,6 +8,8 @@ import static org.internship.task.driverservice.util.constantMessages.exceptionM
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.internship.task.driverservice.dto.cars.CarListResponse;
+import org.internship.task.driverservice.dto.drivers.DriverListResponse;
 import org.internship.task.driverservice.dto.drivers.DriverRequest;
 import org.internship.task.driverservice.dto.drivers.DriverResponse;
 import org.internship.task.driverservice.entities.Driver;
@@ -16,6 +18,7 @@ import org.internship.task.driverservice.exceptions.driverException.InvalidDrive
 import org.internship.task.driverservice.mappers.DriverMapper;
 import org.internship.task.driverservice.repositories.DriverRepository;
 import org.internship.task.driverservice.services.serviceInterfaces.DriverService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,18 +29,29 @@ public class DriverServiceImpl implements DriverService {
     private final DriverRepository driverRepository;
     private final DriverMapper driverMapper;
 
+    @Transactional(readOnly = true)
     @Override
-    public List<DriverResponse> getAllDrivers() {
+    public ResponseEntity<DriverListResponse> getAllDrivers() {
         List<Driver> drivers = driverRepository.findAllByOrderByIdAsc();
-        return driverMapper.toDtoList(drivers);
+        return drivers.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(DriverListResponse.builder()
+                .drivers(driverMapper.toDtoList(drivers))
+                .build());
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public List<DriverResponse> getAllDriversByStatus(boolean status) {
+    public ResponseEntity<DriverListResponse> getAllDriversByStatus(boolean status) {
         List<Driver> drivers = driverRepository.findByIsDeletedOrderByIdAsc(status);
-        return driverMapper.toDtoList(drivers);
+        return drivers.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(DriverListResponse.builder()
+                .drivers(driverMapper.toDtoList(drivers))
+                .build());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public DriverResponse getDriverById(Long id) {
         Driver driver = driverRepository.findById(id)
@@ -46,7 +60,7 @@ public class DriverServiceImpl implements DriverService {
         return driverMapper.toDto(driver);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public DriverResponse getFirstFreeDriverAndChangeStatus() {
         Driver driver = driverRepository.findFirstByIsInRideFalseOrderByIdAsc()

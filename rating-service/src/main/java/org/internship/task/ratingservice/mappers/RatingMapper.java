@@ -16,6 +16,6 @@ public interface RatingMapper {
 
     RatingResponse ratingToRatingResponse(Rating rating);
 
-    List<RatingResponse> ratingToRatingResponseList(List<Rating> ratings);
+    List<RatingResponse> toDtoList(List<Rating> ratings);
 
 }

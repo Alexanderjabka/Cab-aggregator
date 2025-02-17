@@ -8,6 +8,7 @@ import static org.internship.task.passengerservice.util.constantMessages.Excepti
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.internship.task.passengerservice.dto.PassengerListResponse;
 import org.internship.task.passengerservice.dto.PassengerRequest;
 import org.internship.task.passengerservice.dto.PassengerResponse;
 import org.internship.task.passengerservice.entities.Passenger;
@@ -15,6 +16,7 @@ import org.internship.task.passengerservice.exceptions.InvalidPassengerOperation
 import org.internship.task.passengerservice.exceptions.PassengerNotFoundException;
 import org.internship.task.passengerservice.mappers.PassengerMapper;
 import org.internship.task.passengerservice.repositories.PassengerRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,18 +27,29 @@ public class PassengerServiceImpl implements PassengerService {
     private final PassengerRepository passengerRepository;
     private final PassengerMapper passengerMapper;
 
+    @Transactional(readOnly = true)
     @Override
-    public List<PassengerResponse> getAllPassengers() {
+    public ResponseEntity<PassengerListResponse> getAllPassengers() {
         List<Passenger> passengers = passengerRepository.findAllByOrderByIdAsc();
-        return passengerMapper.toDtoList(passengers);
+        return passengers.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(PassengerListResponse.builder()
+                .passengers(passengerMapper.toDtoList(passengers))
+                .build());
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public List<PassengerResponse> getAllPassengersByStatus(boolean isDeleted) {
+    public ResponseEntity<PassengerListResponse> getAllPassengersByStatus(boolean isDeleted) {
         List<Passenger> passengers = passengerRepository.findByIsDeletedOrderByIdAsc(isDeleted);
-        return passengerMapper.toDtoList(passengers);
+        return passengers.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(PassengerListResponse.builder()
+                .passengers(passengerMapper.toDtoList(passengers))
+                .build());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public PassengerResponse getPassengerById(Long id) {
         Passenger passenger = passengerRepository.findById(id)

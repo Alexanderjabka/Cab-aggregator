@@ -7,6 +7,7 @@ import static org.internship.task.ratingservice.util.constantMessages.exceptionR
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.internship.task.ratingservice.clients.RideClient;
+import org.internship.task.ratingservice.dto.RatingListResponse;
 import org.internship.task.ratingservice.dto.RatingRequest;
 import org.internship.task.ratingservice.dto.RatingResponse;
 import org.internship.task.ratingservice.dto.clientsDto.GetRideResponse;
@@ -35,16 +36,19 @@ public class RatingServiceImpl implements RatingService {
     @Value("${rating.recent-limit}")
     private int recentLimit;
 
+    @Transactional(readOnly = true)
     @Override
-    public ResponseEntity<List<RatingResponse>> getAllRatings() {
+    public ResponseEntity<RatingListResponse> getAllRatings() {
         List<Rating> ratings = ratingRepository.findAllByOrderByIdAsc();
-        List<RatingResponse> responseList = ratingMapper.ratingToRatingResponseList(ratings);
 
-        return responseList.isEmpty()
+        return ratings.isEmpty()
                 ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(responseList);
+                : ResponseEntity.ok(RatingListResponse.builder()
+                .ratings(ratingMapper.toDtoList(ratings))
+                .build());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public double getAveragePassengerRating(Long passengerId) {
         Pageable pageable = PageRequest.of(0, recentLimit, Sort.by(Sort.Direction.DESC, "id"));
@@ -55,6 +59,7 @@ public class RatingServiceImpl implements RatingService {
         return calculateAverage(ratings);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public double getAverageDriverRating(Long driverId) {
         Pageable pageable = PageRequest.of(0, recentLimit, Sort.by(Sort.Direction.DESC, "id"));

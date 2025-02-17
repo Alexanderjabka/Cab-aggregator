@@ -9,6 +9,7 @@ import static org.internship.task.driverservice.util.constantMessages.exceptionM
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.internship.task.driverservice.dto.cars.CarListResponse;
 import org.internship.task.driverservice.dto.cars.CarRequest;
 import org.internship.task.driverservice.dto.cars.CarResponse;
 import org.internship.task.driverservice.entities.Car;
@@ -21,6 +22,7 @@ import org.internship.task.driverservice.mappers.CarMapper;
 import org.internship.task.driverservice.repositories.CarRepository;
 import org.internship.task.driverservice.repositories.DriverRepository;
 import org.internship.task.driverservice.services.serviceInterfaces.CarService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,16 +33,27 @@ public class CarServiceImpl implements CarService {
     private final DriverRepository driverRepository;
     private final CarMapper carMapper;
 
-    public List<CarResponse> getAllCars() {
+    @Transactional(readOnly = true)
+    public ResponseEntity<CarListResponse> getAllCars() {
         List<Car> cars = carRepository.findAllByOrderByIdAsc();
-        return carMapper.toDtoList(cars);
+        return cars.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(CarListResponse.builder()
+                .cars(carMapper.toDtoList(cars))
+                .build());
     }
 
-    public List<CarResponse> getAllCarsByStatus(boolean status) {
+    @Transactional(readOnly = true)
+    public ResponseEntity<CarListResponse> getAllCarsByStatus(boolean status) {
         List<Car> cars = carRepository.findByIsDeletedOrderByIdAsc(status);
-        return carMapper.toDtoList(cars);
+        return cars.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(CarListResponse.builder()
+                .cars(carMapper.toDtoList(cars))
+                .build());
     }
 
+    @Transactional(readOnly = true)
     public CarResponse getCarById(Long id) {
         Car car = carRepository.findById(id)
                 .orElseThrow(() -> new CarNotFoundException(CAR_NOT_FOUND_BY_ID + id));

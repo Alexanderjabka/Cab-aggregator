@@ -1,13 +1,15 @@
 package org.internship.task.ratingservice.services;
 
 import java.util.List;
+
+import org.internship.task.ratingservice.dto.RatingListResponse;
 import org.internship.task.ratingservice.dto.RatingRequest;
 import org.internship.task.ratingservice.dto.RatingResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface RatingService {
 
-    ResponseEntity<List<RatingResponse>> getAllRatings();
+    ResponseEntity<RatingListResponse> getAllRatings();
 
     RatingResponse createRating(RatingRequest ratingRequest);
 
