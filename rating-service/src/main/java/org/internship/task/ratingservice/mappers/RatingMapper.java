@@ -11,6 +11,7 @@ import org.mapstruct.Mapping;
 public interface RatingMapper {
 
     @Mapping(target = "isDeleted", constant = "false")
+    @Mapping(target = "whoRate", source = "whoRate")
     Rating ratingRequestToRating(RatingRequest ratingRequest);
 
     RatingResponse ratingToRatingResponse(Rating rating);

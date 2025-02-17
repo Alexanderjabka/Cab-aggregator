@@ -7,9 +7,9 @@ import static org.internship.task.ratingservice.util.constantMessages.exceptionR
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.internship.task.ratingservice.clients.RideClient;
-import org.internship.task.ratingservice.dto.clientsDto.GetRideResponse;
 import org.internship.task.ratingservice.dto.RatingRequest;
 import org.internship.task.ratingservice.dto.RatingResponse;
+import org.internship.task.ratingservice.dto.clientsDto.GetRideResponse;
 import org.internship.task.ratingservice.entities.Rating;
 import org.internship.task.ratingservice.enums.WhoRate;
 import org.internship.task.ratingservice.exceptions.ratingExceptions.InvalidRatingOperationException;
@@ -37,7 +37,7 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public ResponseEntity<List<RatingResponse>> getAllRatings() {
-        List<Rating> ratings = ratingRepository.findAll();
+        List<Rating> ratings = ratingRepository.findAllByOrderByIdAsc();
         List<RatingResponse> responseList = ratingMapper.ratingToRatingResponseList(ratings);
 
         return responseList.isEmpty()
@@ -50,7 +50,7 @@ public class RatingServiceImpl implements RatingService {
         Pageable pageable = PageRequest.of(0, recentLimit, Sort.by(Sort.Direction.DESC, "id"));
 
         List<Rating> ratings = ratingRepository
-                .findByPassengerIdAndWhoRateOrderByIdDesc(passengerId, WhoRate.DRIVER, pageable);
+                .findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(passengerId, WhoRate.DRIVER, pageable);
 
         return calculateAverage(ratings);
     }
@@ -59,7 +59,7 @@ public class RatingServiceImpl implements RatingService {
     public double getAverageDriverRating(Long driverId) {
         Pageable pageable = PageRequest.of(0, recentLimit, Sort.by(Sort.Direction.DESC, "id"));
         List<Rating> ratings = ratingRepository
-                .findByDriverIdAndWhoRateOrderByIdDesc(driverId, WhoRate.PASSENGER, pageable);
+                .findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(driverId, WhoRate.PASSENGER, pageable);
 
         return calculateAverage(ratings);
     }
@@ -85,7 +85,7 @@ public class RatingServiceImpl implements RatingService {
             throw new InvalidRatingOperationException("Поездка с ID " + ratingRequest.getRideId() + " не найдена!");
         }
 
-        if (ratingRepository.findByRideIdAndWhoRate(ratingRequest.getRideId(), ratingRequest.getWhoRate()).isPresent()) {
+        if (ratingRepository.findByRideIdAndWhoRateAndIsDeletedFalse(ratingRequest.getRideId(), ratingRequest.getWhoRate()).isPresent()) {
             throw new InvalidRatingOperationException(ratingRequest.getWhoRate() + IS_ALREADY_RATE_THIS_RIDE);
         }
 
@@ -93,6 +93,7 @@ public class RatingServiceImpl implements RatingService {
 
         rating.setPassengerId(rideResponse.getPassengerId());
         rating.setDriverId(rideResponse.getDriverId());
+        rating.setIsDeleted(false);
 
         Rating savedRating = ratingRepository.save(rating);
 

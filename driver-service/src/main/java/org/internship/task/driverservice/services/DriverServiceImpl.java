@@ -28,13 +28,13 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public List<DriverResponse> getAllDrivers() {
-        List<Driver> drivers = driverRepository.findAll();
+        List<Driver> drivers = driverRepository.findAllByOrderByIdAsc();
         return driverMapper.toDtoList(drivers);
     }
 
     @Override
     public List<DriverResponse> getAllDriversByStatus(boolean status) {
-        List<Driver> drivers = driverRepository.findByIsDeleted(status);
+        List<Driver> drivers = driverRepository.findByIsDeletedOrderByIdAsc(status);
         return driverMapper.toDtoList(drivers);
     }
 
@@ -51,6 +51,13 @@ public class DriverServiceImpl implements DriverService {
     public DriverResponse getFirstFreeDriverAndChangeStatus() {
         Driver driver = driverRepository.findFirstByIsInRideFalseOrderByIdAsc()
                 .orElseThrow(() -> new DriverNotFoundException("Нет свободных водителей"));
+
+        boolean hasCars = driver.getCars().stream()
+                .anyMatch(car -> car.getIsDeleted() == Boolean.FALSE);
+
+        if (!hasCars) {
+            throw new RuntimeException("У водителя нет машины, чтобы принять заказ");
+        }
 
         driver.setIsInRide(true);
         driverRepository.save(driver);
@@ -105,7 +112,7 @@ public class DriverServiceImpl implements DriverService {
             }
         });
 
-        driverMapper.updateEntity(driver, driverRequest); // Используем updateEntity вместо toEntity
+        driverMapper.updateEntity(driver, driverRequest);
         driverRepository.save(driver);
 
         return driverMapper.toDto(driver);

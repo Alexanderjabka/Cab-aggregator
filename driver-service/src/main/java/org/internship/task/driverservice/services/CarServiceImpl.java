@@ -32,12 +32,12 @@ public class CarServiceImpl implements CarService {
     private final CarMapper carMapper;
 
     public List<CarResponse> getAllCars() {
-        List<Car> cars = carRepository.findAll();
+        List<Car> cars = carRepository.findAllByOrderByIdAsc();
         return carMapper.toDtoList(cars);
     }
 
     public List<CarResponse> getAllCarsByStatus(boolean status) {
-        List<Car> cars = carRepository.findByIsDeleted(status);
+        List<Car> cars = carRepository.findByIsDeletedOrderByIdAsc(status);
         return carMapper.toDtoList(cars);
     }
 

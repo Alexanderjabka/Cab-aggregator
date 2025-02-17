@@ -8,5 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CarRepository extends JpaRepository<Car, Long> {
     Optional<Car> findByCarNumber(String carNumber);
 
-    List<Car> findByIsDeleted(Boolean isDeleted);
+    List<Car> findByIsDeletedOrderByIdAsc(Boolean isDeleted);
+
+    List<Car> findAllByOrderByIdAsc();
 }

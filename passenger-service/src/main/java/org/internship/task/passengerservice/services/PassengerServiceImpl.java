@@ -1,56 +1,47 @@
 package org.internship.task.passengerservice.services;
 
+import static org.internship.task.passengerservice.util.constantMessages.ExceptionMessages.PASSENGER_ALREADY_EXISTS;
+import static org.internship.task.passengerservice.util.constantMessages.ExceptionMessages.PASSENGER_IS_DELETED;
+import static org.internship.task.passengerservice.util.constantMessages.ExceptionMessages.PASSENGER_NOT_FOUND_BY_EMAIL;
+import static org.internship.task.passengerservice.util.constantMessages.ExceptionMessages.PASSENGER_NOT_FOUND_BY_ID;
+
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.internship.task.passengerservice.dto.PassengerRequest;
 import org.internship.task.passengerservice.dto.PassengerResponse;
 import org.internship.task.passengerservice.entities.Passenger;
 import org.internship.task.passengerservice.exceptions.InvalidPassengerOperationException;
 import org.internship.task.passengerservice.exceptions.PassengerNotFoundException;
+import org.internship.task.passengerservice.mappers.PassengerMapper;
 import org.internship.task.passengerservice.repositories.PassengerRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static org.internship.task.passengerservice.util.constantMessages.ExceptionMessages.PASSENGER_NOT_FOUND_BY_ID;
-import static org.internship.task.passengerservice.util.constantMessages.ExceptionMessages.PASSENGER_IS_DELETED;
-import static org.internship.task.passengerservice.util.constantMessages.ExceptionMessages.PASSENGER_ALREADY_EXISTS;
-import static org.internship.task.passengerservice.util.constantMessages.ExceptionMessages.PASSENGER_NOT_FOUND_BY_EMAIL;
 
 @Service
 @RequiredArgsConstructor
 public class PassengerServiceImpl implements PassengerService {
 
-
     private final PassengerRepository passengerRepository;
-    private final ModelMapper modelMapper;
+    private final PassengerMapper passengerMapper;
 
     @Override
     public List<PassengerResponse> getAllPassengers() {
-        List<Passenger> passengers = passengerRepository.findAll();
-        return passengers.stream()
-                .map(passenger -> modelMapper.map(passenger, PassengerResponse.class))
-                .toList();
-
+        List<Passenger> passengers = passengerRepository.findAllByOrderByIdAsc();
+        return passengerMapper.toDtoList(passengers);
     }
 
     @Override
     public List<PassengerResponse> getAllPassengersByStatus(boolean isDeleted) {
-        List<Passenger> passengers = passengerRepository.findByIsDeleted(isDeleted);
-        return passengers.stream()
-                .map(passenger -> modelMapper.map(passenger, PassengerResponse.class))
-                .toList();
+        List<Passenger> passengers = passengerRepository.findByIsDeletedOrderByIdAsc(isDeleted);
+        return passengerMapper.toDtoList(passengers);
     }
 
     @Override
     public PassengerResponse getPassengerById(Long id) {
         Passenger passenger = passengerRepository.findById(id)
                 .orElseThrow(() -> new PassengerNotFoundException(PASSENGER_NOT_FOUND_BY_ID + id));
-
-        return modelMapper.map(passenger, PassengerResponse.class);
+        return passengerMapper.toDto(passenger);
     }
 
     @Override
@@ -61,11 +52,11 @@ public class PassengerServiceImpl implements PassengerService {
             throw new InvalidPassengerOperationException(PASSENGER_ALREADY_EXISTS + email);
         }
 
-        Passenger passenger = modelMapper.map(passengerRequest, Passenger.class);
+        Passenger passenger = passengerMapper.toEntity(passengerRequest);
         passenger.setIsDeleted(false);
         passengerRepository.save(passenger);
 
-        return modelMapper.map(passenger,PassengerResponse.class);
+        return passengerMapper.toDto(passenger);
     }
 
     @Override
@@ -85,7 +76,7 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     @Transactional
-    public PassengerResponse updatePassenger(String email,PassengerRequest passengerRequest) {
+    public PassengerResponse updatePassenger(String email, PassengerRequest passengerRequest) {
         String requestEmail = passengerRequest.getEmail();
         Passenger passenger = passengerRepository.findByEmail(email)
                 .orElseThrow(() -> new PassengerNotFoundException(PASSENGER_NOT_FOUND_BY_EMAIL + email));
@@ -99,11 +90,9 @@ public class PassengerServiceImpl implements PassengerService {
             throw new InvalidPassengerOperationException(PASSENGER_ALREADY_EXISTS + requestEmail);
         }
 
-        modelMapper.map(passengerRequest,passenger);
-        passenger.setIsDeleted(false);
+        passengerMapper.updateEntity(passenger, passengerRequest);
         passengerRepository.save(passenger);
 
-        return modelMapper.map(passenger,PassengerResponse.class);
+        return passengerMapper.toDto(passenger);
     }
-
 }

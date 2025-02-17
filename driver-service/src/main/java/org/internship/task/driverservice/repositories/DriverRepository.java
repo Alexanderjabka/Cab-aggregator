@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface DriverRepository extends JpaRepository<Driver, Long> {
     Optional<Driver> findByEmail(String email);
 
-    List<Driver> findByIsDeleted(Boolean isDeleted);
+    List<Driver> findByIsDeletedOrderByIdAsc(Boolean isDeleted);
+
+    List<Driver> findAllByOrderByIdAsc();
 
     Optional<Driver> findFirstByIsInRideFalseOrderByIdAsc();
 

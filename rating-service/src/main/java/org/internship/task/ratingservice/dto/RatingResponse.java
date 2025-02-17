@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.internship.task.ratingservice.enums.WhoRate;
 
 @Getter
 @Setter
@@ -26,6 +27,8 @@ public class RatingResponse {
     private Short score;
 
     private String comment;
+
+    private WhoRate whoRate;
 
     private Boolean isDeleted;
 }
