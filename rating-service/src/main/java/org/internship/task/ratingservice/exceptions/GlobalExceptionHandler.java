@@ -12,9 +12,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RatingNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleRatingNotFoundException(RatingNotFoundException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(
+        ErrorResponse errorResponse = ErrorResponse.of(
                 HttpStatus.NOT_FOUND.value(),
-                "Rating Not Found",
+                "Not Found",
                 ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
@@ -22,9 +22,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidRatingOperationException.class)
     public ResponseEntity<ErrorResponse> handleInvalidRatingOperationException(InvalidRatingOperationException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(
+        ErrorResponse errorResponse = ErrorResponse.of(
                 HttpStatus.BAD_REQUEST.value(),
-                "Invalid Rating Operation",
+                "Bad Request",
                 ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
@@ -32,10 +32,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-        ErrorResponse errorResponse = new ErrorResponse(
+        ErrorResponse errorResponse = ErrorResponse.of(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Internal Server Error",
-                "An unexpected error occurred"
+                ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }

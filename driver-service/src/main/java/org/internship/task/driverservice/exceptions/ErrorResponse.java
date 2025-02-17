@@ -1,4 +1,4 @@
-package org.internship.task.ratingservice.exceptions;
+package org.internship.task.driverservice.exceptions;
 
 import java.time.LocalDateTime;
 import lombok.Builder;
