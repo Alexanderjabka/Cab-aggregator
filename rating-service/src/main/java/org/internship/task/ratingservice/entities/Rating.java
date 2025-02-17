@@ -17,10 +17,14 @@ import org.internship.task.ratingservice.enums.WhoRate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Rating {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "rideId")
+    private Long rideId;
 
     @Column(name = "driverId")
     private Long driverId;
@@ -33,9 +37,6 @@ public class Rating {
 
     @Column(name = "comment")
     private String comment;
-
-    @Column(name = "rideId")
-    private Long rideId;
 
     @Column(name = "whoRate")
     private WhoRate whoRate;

@@ -7,13 +7,13 @@ import org.springframework.http.ResponseEntity;
 
 public interface RatingService {
 
-    public ResponseEntity<List<RatingResponse>> getAllRatings();
+    ResponseEntity<List<RatingResponse>> getAllRatings();
 
-    public RatingResponse createRating(RatingRequest ratingRequest);
+    RatingResponse createRating(RatingRequest ratingRequest);
 
-    public ResponseEntity<String> deleteRating(Long ratingId);
+    ResponseEntity<String> deleteRating(Long ratingId);
 
-    public double getAverageDriverRating(Long driverId);
+    double getAverageDriverRating(Long driverId);
 
-    public double getAveragePassengerRating(Long passengerId);
+    double getAveragePassengerRating(Long passengerId);
 }

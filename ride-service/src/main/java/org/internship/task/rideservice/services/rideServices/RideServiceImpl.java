@@ -1,18 +1,19 @@
 package org.internship.task.rideservice.services.rideServices;
 
-
-import static org.internship.task.rideservice.util.constantMessages.exceptionMessages.RideExceptionMessages.RIDE_MEMBERS_ALREADY_HAVE_RIDES;
 import static org.internship.task.rideservice.util.constantMessages.exceptionMessages.RideExceptionMessages.RIDE_NOT_FOUND_BY_RIDE_ID;
 import static org.internship.task.rideservice.util.constantMessages.exceptionMessages.RideExceptionMessages.RIDE_STATUS_IS_INCORRECT;
-import static org.internship.task.rideservice.util.constantMessages.exceptionMessages.RideExceptionMessages.THIS_DRIVER_ALREADY_HAS_RIDE;
 import static org.internship.task.rideservice.util.constantMessages.exceptionMessages.RideExceptionMessages.THIS_PASSENGER_ALREADY_HAS_RIDE;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.internship.task.rideservice.clients.DriverClient;
+import org.internship.task.rideservice.clients.PassengerClient;
 import org.internship.task.rideservice.dto.RideListResponse;
 import org.internship.task.rideservice.dto.RideRequest;
 import org.internship.task.rideservice.dto.RideResponse;
 import org.internship.task.rideservice.dto.StatusRequest;
+import org.internship.task.rideservice.dto.clientsdDto.AssignDriverResponse;
+import org.internship.task.rideservice.dto.clientsdDto.GetPassengerResponse;
 import org.internship.task.rideservice.entities.Ride;
 import org.internship.task.rideservice.enums.Status;
 import org.internship.task.rideservice.exceptions.rideExceptions.InvalidRideOperationException;
@@ -32,6 +33,8 @@ public class RideServiceImpl implements RideService {
     private final RideRepository rideRepository;
     private final MapService mapService;
     private final RideMapper rideMapper;
+    private final DriverClient driverClient;
+    private final PassengerClient passengerClient;
 
     @Transactional(readOnly = true)
     @Override
@@ -68,18 +71,24 @@ public class RideServiceImpl implements RideService {
     @Transactional
     @Override
     public RideResponse createRide(RideRequest rideRequest) {
-        List<Status> activeStatuses = Status.getActiveStatuses();
+        GetPassengerResponse passengerResponse = passengerClient.getPassengerById(rideRequest.getPassengerId());
 
-        boolean hasActiveRide = rideRepository
-                .existsByPassengerIdAndStatusIn(rideRequest.getPassengerId(), activeStatuses)
-                || rideRepository
-                .existsByDriverIdAndStatusIn(rideRequest.getDriverId(), activeStatuses);
+        if (passengerResponse == null) {
+            throw new InvalidRideOperationException("There isnt passenger with this id " + rideRequest.getPassengerId());
+        }
 
-        if (hasActiveRide) {
-            throw new InvalidRideOperationException(RIDE_MEMBERS_ALREADY_HAVE_RIDES);
+        if (rideRepository.existsByPassengerIdAndStatusIn(passengerResponse.getPassengerId(), Status.getActiveStatuses())) {
+            throw new InvalidRideOperationException(THIS_PASSENGER_ALREADY_HAS_RIDE);
+        }
+
+        AssignDriverResponse assignDriverResponse = driverClient.assignDriver();
+        if (assignDriverResponse == null || assignDriverResponse.getDriverId() == null) {
+            throw new InvalidRideOperationException("No available drivers at the moment.");
         }
 
         Ride ride = rideMapper.toEntity(rideRequest);
+        ride.setPassengerId(passengerResponse.getPassengerId());
+        ride.setDriverId(assignDriverResponse.getDriverId());
         ride.setPrice(PriceServiceImpl.setPriceForTheRide(
                 mapService.getDistance(rideRequest.getStartAddress(), rideRequest.getFinishAddress())));
         ride.setStatus(Status.CREATED);
@@ -87,6 +96,7 @@ public class RideServiceImpl implements RideService {
         rideRepository.save(ride);
         return rideMapper.toDto(ride);
     }
+
 
     @Transactional
     @Override
@@ -98,27 +108,11 @@ public class RideServiceImpl implements RideService {
             throw new InvalidRideOperationException(RIDE_STATUS_IS_INCORRECT + ride.getStatus());
         }
 
-        List<Status> activeStatuses = Status.getActiveStatuses();
-
-        boolean isPassengerChanged = !ride.getPassengerId().equals(rideRequest.getPassengerId());
-        boolean isDriverChanged = !ride.getDriverId().equals(rideRequest.getDriverId());
-
-        if (isPassengerChanged) {
-            boolean hasActiveRide = rideRepository.existsByPassengerIdAndStatusIn(
-                    rideRequest.getPassengerId(), activeStatuses);
-            if (hasActiveRide) {
+        if (!ride.getPassengerId().equals(rideRequest.getPassengerId())) {
+            if (rideRepository.existsByPassengerIdAndStatusIn(rideRequest.getPassengerId(), Status.getActiveStatuses())) {
                 throw new InvalidRideOperationException(THIS_PASSENGER_ALREADY_HAS_RIDE + rideRequest.getPassengerId());
             }
             ride.setPassengerId(rideRequest.getPassengerId());
-        }
-
-        if (isDriverChanged) {
-            boolean hasActiveRide = rideRepository.existsByDriverIdAndStatusIn(
-                    rideRequest.getDriverId(), activeStatuses);
-            if (hasActiveRide) {
-                throw new InvalidRideOperationException(THIS_DRIVER_ALREADY_HAS_RIDE + rideRequest.getDriverId());
-            }
-            ride.setDriverId(rideRequest.getDriverId());
         }
 
         ride.setStartAddress(rideRequest.getStartAddress());
@@ -142,6 +136,10 @@ public class RideServiceImpl implements RideService {
 
         ride.setStatus(status.getStatus());
         rideRepository.save(ride);
+
+        if (status.getStatus() == Status.CANCELLED || status.getStatus() == Status.COMPLETED) {
+            driverClient.releaseDriver(ride.getDriverId());
+        }
 
         return rideMapper.toDto(ride);
     }

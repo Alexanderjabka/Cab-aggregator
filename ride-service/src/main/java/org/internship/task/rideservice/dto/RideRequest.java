@@ -21,9 +21,6 @@ public class RideRequest {
     @NotNull(message = PASSENGER_ID_CANNOT_BE_NULL)
     private Long passengerId;
 
-    @NotNull(message = DRIVER_ID_CANNOT_BE_NULL)
-    private Long driverId;
-
     @NotBlank(message = START_ADDRESS_CANNOT_BE_BLANK)
     private String startAddress;
 

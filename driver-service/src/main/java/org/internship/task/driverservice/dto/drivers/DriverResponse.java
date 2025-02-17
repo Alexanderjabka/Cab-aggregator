@@ -19,4 +19,5 @@ public class DriverResponse {
     private Gender gender;
     private List<Long> carId;
     private Boolean isDeleted;
+    private Boolean isInRide;
 }

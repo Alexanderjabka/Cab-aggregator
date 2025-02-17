@@ -33,15 +33,19 @@ public class Driver {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "phone_number")
+    @Column(name = "phoneNumber")
     private String phoneNumber;
 
     @Column(name = "gender")
     private Gender gender;
 
-    @OneToMany(mappedBy = "driver",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Car> cars = new ArrayList<>();
 
-    @Column(name = "is_deleted")
+    @Column(name = "isDeleted")
     private Boolean isDeleted = false;
+
+    @Column(name = "isInRide")
+    private Boolean isInRide = false;
+
 }

@@ -16,6 +16,7 @@ public interface DriverMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "isDeleted", ignore = true)
+    @Mapping(target = "isInRide", ignore = true)
     @Mapping(target = "cars", ignore = true)
     Driver toEntity(DriverRequest driverRequest);
 
@@ -26,6 +27,7 @@ public interface DriverMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "isDeleted", ignore = true)
+    @Mapping(target = "isInRide", ignore = true)
     @Mapping(target = "cars", ignore = true)
     void updateEntity(@MappingTarget Driver driver, DriverRequest driverRequest);
 

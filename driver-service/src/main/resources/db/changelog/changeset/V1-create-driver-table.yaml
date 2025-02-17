@@ -37,3 +37,7 @@ databaseChangeLog:
                   name: is_deleted
                   type: boolean
                   defaultValueBoolean: false
+              - column:
+                  name: is_in_ride
+                  type: boolean
+                  defaultValueBoolean: false

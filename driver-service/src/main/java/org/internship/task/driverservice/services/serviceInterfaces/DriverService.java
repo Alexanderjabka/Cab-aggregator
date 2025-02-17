@@ -15,5 +15,9 @@ public interface DriverService {
 
     DriverResponse updateDriver(String email, DriverRequest driverRequest);
 
+    public DriverResponse getFirstFreeDriverAndChangeStatus();
+
+    public void releaseDriver(Long driverId);
+
     void deleteDriver(Long id);
 }

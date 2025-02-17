@@ -48,6 +48,34 @@ public class DriverServiceImpl implements DriverService {
 
     @Transactional
     @Override
+    public DriverResponse getFirstFreeDriverAndChangeStatus() {
+        Driver driver = driverRepository.findFirstByIsInRideFalseOrderByIdAsc()
+                .orElseThrow(() -> new DriverNotFoundException("Нет свободных водителей"));
+
+        driver.setIsInRide(true);
+        driverRepository.save(driver);
+
+        return driverMapper.toDto(driver);
+    }
+
+    @Transactional
+    @Override
+    public void releaseDriver(Long driverId) {
+        Driver driver = driverRepository.findById(driverId)
+                .orElseThrow(() -> new DriverNotFoundException("Водитель с ID " + driverId + " не найден"));
+
+        if (!driver.getIsInRide()) {
+            throw new InvalidDriverOperationException("Водитель с ID " + driverId + " уже свободен");
+        }
+
+        driver.setIsInRide(false);
+
+        driverRepository.save(driver);
+    }
+
+
+    @Transactional
+    @Override
     public DriverResponse createDriver(DriverRequest driverRequest) {
         driverRepository.findByEmail(driverRequest.getEmail())
                 .ifPresent(driver -> {
