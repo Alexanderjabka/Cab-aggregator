@@ -1,7 +1,6 @@
 package org.internship.task.driverservice.controllers;
 
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.internship.task.driverservice.dto.cars.CarListResponse;
 import org.internship.task.driverservice.dto.cars.CarRequest;

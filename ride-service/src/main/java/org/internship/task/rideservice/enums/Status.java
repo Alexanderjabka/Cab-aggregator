@@ -17,10 +17,11 @@ public enum Status {
     EN_ROUTE_TO_DESTINATION(3),
     COMPLETED(4),
     CANCELLED(5);
+
+    private final int description;
+
     public static List<Status> getActiveStatuses() {
         return Arrays.asList(CREATED, EN_ROUTE_TO_PASSENGER, EN_ROUTE_TO_DESTINATION, ACCEPTED);
     }
-
-    private final int description;
 
 }

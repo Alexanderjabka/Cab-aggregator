@@ -1,5 +1,14 @@
 package org.internship.task.passengerservice.dto;
 
+import static org.internship.task.passengerservice.util.constantMessages.ValidationMessages.EMAIL_BLANK;
+import static org.internship.task.passengerservice.util.constantMessages.ValidationMessages.EMAIL_INVALID;
+import static org.internship.task.passengerservice.util.constantMessages.ValidationMessages.NAME_BLANK;
+import static org.internship.task.passengerservice.util.constantMessages.ValidationMessages.NAME_SIZE;
+import static org.internship.task.passengerservice.util.constantMessages.ValidationMessages.PHONE_NUMBER_BLANK;
+import static org.internship.task.passengerservice.util.constantMessages.ValidationMessages.PHONE_NUMBER_INVALID;
+import static org.internship.task.passengerservice.util.constantMessages.ValidationMessages.PHONE_NUMBER_SIZE;
+import static org.internship.task.passengerservice.util.reqEx.PassengerReqEx.PHONE_NUMBER;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -8,10 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import static org.internship.task.passengerservice.util.constantMessages.ValidationMessages.*;
-import static org.internship.task.passengerservice.util.constantMessages.ValidationMessages.EMAIL_BLANK;
-import static org.internship.task.passengerservice.util.reqEx.PassengerReqEx.PHONE_NUMBER;
 
 @Getter
 @Setter

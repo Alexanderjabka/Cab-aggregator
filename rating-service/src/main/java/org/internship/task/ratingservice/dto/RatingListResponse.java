@@ -5,6 +5,6 @@ import lombok.Builder;
 
 @Builder
 public record RatingListResponse(
-        List<RatingResponse> ratings
+    List<RatingResponse> ratings
 ) {
 }

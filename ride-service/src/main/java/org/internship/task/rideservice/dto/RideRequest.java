@@ -1,6 +1,5 @@
 package org.internship.task.rideservice.dto;
 
-import static org.internship.task.rideservice.util.constantMessages.validationMessages.RideValidationMessages.DRIVER_ID_CANNOT_BE_NULL;
 import static org.internship.task.rideservice.util.constantMessages.validationMessages.RideValidationMessages.FINISH_ADDRESS_CANNOT_BE_BLANK;
 import static org.internship.task.rideservice.util.constantMessages.validationMessages.RideValidationMessages.PASSENGER_ID_CANNOT_BE_NULL;
 import static org.internship.task.rideservice.util.constantMessages.validationMessages.RideValidationMessages.START_ADDRESS_CANNOT_BE_BLANK;

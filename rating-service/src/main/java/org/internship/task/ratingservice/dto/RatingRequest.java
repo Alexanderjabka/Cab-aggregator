@@ -1,12 +1,9 @@
 package org.internship.task.ratingservice.dto;
 
 import static org.internship.task.ratingservice.util.constantMessages.validationRatingMessages.RatingValidationMessages.COMMENT_MUST_BE_BETWEEN_3_AND_255;
-import static org.internship.task.ratingservice.util.constantMessages.validationRatingMessages.RatingValidationMessages.DRIVER_ID_CANNOT_BE_NULL;
 import static org.internship.task.ratingservice.util.constantMessages.validationRatingMessages.RatingValidationMessages.FIELD_WHO_RATE_CANNOT_BE_NULL;
-import static org.internship.task.ratingservice.util.constantMessages.validationRatingMessages.RatingValidationMessages.IS_DELETED_CANNOT_BE_NULL;
 import static org.internship.task.ratingservice.util.constantMessages.validationRatingMessages.RatingValidationMessages.MAXIMUM_SCORE_IS_5;
 import static org.internship.task.ratingservice.util.constantMessages.validationRatingMessages.RatingValidationMessages.MINIMAL_SCORE_IS_0;
-import static org.internship.task.ratingservice.util.constantMessages.validationRatingMessages.RatingValidationMessages.PASSENGER_ID_CANNOT_BE_NULL;
 import static org.internship.task.ratingservice.util.constantMessages.validationRatingMessages.RatingValidationMessages.RIDE_ID_CANNOT_BE_NULL;
 
 import jakarta.validation.constraints.Max;

@@ -14,10 +14,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MapServiceImpl implements MapService {
 
+    private final MapClient mapClient;
     @Value("${api.key}")
     private String apiKey;
-
-    private final MapClient mapClient;
 
     public double[] getCoordinates(String address) {
         try {
@@ -28,7 +27,7 @@ public class MapServiceImpl implements MapService {
             }
 
             List<Double> coordinates = response.getFeatures().get(0).getGeometry().getCoordinates();
-            return new double[]{coordinates.get(0), coordinates.get(1)};
+            return new double[] {coordinates.get(0), coordinates.get(1)};
         } catch (Exception e) {
             throw new RuntimeException(ERROR_GET_COORDINATES + e.getMessage());
         }
@@ -47,8 +46,8 @@ public class MapServiceImpl implements MapService {
         double deltaLon = Math.toRadians(finishLon - startLon);
 
         double a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-                Math.cos(Math.toRadians(startLat)) * Math.cos(Math.toRadians(finishLat))
-                        * Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+            Math.cos(Math.toRadians(startLat)) * Math.cos(Math.toRadians(finishLat))
+                * Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 

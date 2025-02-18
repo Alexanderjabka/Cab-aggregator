@@ -12,8 +12,10 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
 
     List<Rating> findAllByOrderByIdAsc();
 
-    List<Rating> findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(Long passengerId, WhoRate whoRate, Pageable pageable);
+    List<Rating> findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(Long passengerId, WhoRate whoRate,
+                                                                           Pageable pageable);
 
-    List<Rating> findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(Long driverId, WhoRate whoRate, Pageable pageable);
+    List<Rating> findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(Long driverId, WhoRate whoRate,
+                                                                        Pageable pageable);
 
 }

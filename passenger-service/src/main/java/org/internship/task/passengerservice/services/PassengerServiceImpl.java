@@ -32,10 +32,10 @@ public class PassengerServiceImpl implements PassengerService {
     public ResponseEntity<PassengerListResponse> getAllPassengers() {
         List<Passenger> passengers = passengerRepository.findAllByOrderByIdAsc();
         return passengers.isEmpty()
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(PassengerListResponse.builder()
-                .passengers(passengerMapper.toDtoList(passengers))
-                .build());
+            ? ResponseEntity.noContent().build()
+            : ResponseEntity.ok(PassengerListResponse.builder()
+            .passengers(passengerMapper.toDtoList(passengers))
+            .build());
     }
 
     @Transactional(readOnly = true)
@@ -43,17 +43,17 @@ public class PassengerServiceImpl implements PassengerService {
     public ResponseEntity<PassengerListResponse> getAllPassengersByStatus(boolean isDeleted) {
         List<Passenger> passengers = passengerRepository.findByIsDeletedOrderByIdAsc(isDeleted);
         return passengers.isEmpty()
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(PassengerListResponse.builder()
-                .passengers(passengerMapper.toDtoList(passengers))
-                .build());
+            ? ResponseEntity.noContent().build()
+            : ResponseEntity.ok(PassengerListResponse.builder()
+            .passengers(passengerMapper.toDtoList(passengers))
+            .build());
     }
 
     @Transactional(readOnly = true)
     @Override
     public PassengerResponse getPassengerById(Long id) {
         Passenger passenger = passengerRepository.findById(id)
-                .orElseThrow(() -> new PassengerNotFoundException(PASSENGER_NOT_FOUND_BY_ID + id));
+            .orElseThrow(() -> new PassengerNotFoundException(PASSENGER_NOT_FOUND_BY_ID + id));
         return passengerMapper.toDto(passenger);
     }
 
@@ -92,14 +92,14 @@ public class PassengerServiceImpl implements PassengerService {
     public PassengerResponse updatePassenger(String email, PassengerRequest passengerRequest) {
         String requestEmail = passengerRequest.getEmail();
         Passenger passenger = passengerRepository.findByEmail(email)
-                .orElseThrow(() -> new PassengerNotFoundException(PASSENGER_NOT_FOUND_BY_EMAIL + email));
+            .orElseThrow(() -> new PassengerNotFoundException(PASSENGER_NOT_FOUND_BY_EMAIL + email));
 
         if (passenger.getIsDeleted()) {
             throw new InvalidPassengerOperationException(PASSENGER_IS_DELETED + email);
         }
 
         if (!passenger.getEmail().equals(requestEmail)
-                && passengerRepository.findByEmail(requestEmail).isPresent()) {
+            && passengerRepository.findByEmail(requestEmail).isPresent()) {
             throw new InvalidPassengerOperationException(PASSENGER_ALREADY_EXISTS + requestEmail);
         }
 

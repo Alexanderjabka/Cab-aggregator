@@ -5,6 +5,6 @@ import lombok.Builder;
 
 @Builder
 public record CarListResponse(
-        List<CarResponse> cars
+    List<CarResponse> cars
 ) {
 }

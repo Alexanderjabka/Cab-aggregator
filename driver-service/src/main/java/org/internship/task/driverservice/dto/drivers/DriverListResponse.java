@@ -5,6 +5,6 @@ import lombok.Builder;
 
 @Builder
 public record DriverListResponse(
-        List<DriverResponse> drivers
+    List<DriverResponse> drivers
 ) {
 }

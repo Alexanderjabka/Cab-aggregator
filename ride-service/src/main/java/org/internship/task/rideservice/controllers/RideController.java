@@ -1,7 +1,6 @@
 package org.internship.task.rideservice.controllers;
 
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.internship.task.rideservice.dto.RideListResponse;
 import org.internship.task.rideservice.dto.RideRequest;
@@ -56,5 +55,5 @@ public class RideController {
     public ResponseEntity<RideResponse> changeStatus(@PathVariable Long id, @Valid @RequestBody StatusRequest status) {
         return ResponseEntity.status(200).body(rideService.changeStatus(id, status));
     }
-    
+
 }

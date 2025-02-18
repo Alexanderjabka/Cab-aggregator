@@ -1,7 +1,5 @@
 package org.internship.task.rideservice.services.rideServices;
 
-import java.util.List;
-
 import org.internship.task.rideservice.dto.RideListResponse;
 import org.internship.task.rideservice.dto.RideRequest;
 import org.internship.task.rideservice.dto.RideResponse;
