@@ -86,9 +86,6 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public RatingResponse createRating(RatingRequest ratingRequest) {
         GetRideResponse rideResponse = rideClient.getRideById(ratingRequest.getRideId());
-        if (rideResponse == null) {
-            throw new InvalidRatingOperationException("Поездка с ID " + ratingRequest.getRideId() + " не найдена!");
-        }
 
         if (ratingRepository.findByRideIdAndWhoRateAndIsDeletedFalse(ratingRequest.getRideId(),
             ratingRequest.getWhoRate()).isPresent()) {

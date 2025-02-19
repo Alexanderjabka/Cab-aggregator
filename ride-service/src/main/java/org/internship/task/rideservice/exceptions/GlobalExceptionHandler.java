@@ -1,5 +1,6 @@
 package org.internship.task.rideservice.exceptions;
 
+import org.internship.task.rideservice.exceptions.feignExceptions.FeignClientException;
 import org.internship.task.rideservice.exceptions.rideExceptions.InvalidRideOperationException;
 import org.internship.task.rideservice.exceptions.rideExceptions.RideNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(FeignClientException.class)
+    public ResponseEntity<ErrorResponse> handleFeignClientException(FeignClientException ex) {
+        ErrorResponse errorResponse = ErrorResponse.of(
+            ex.getErrorResponse().status(),
+            ex.getErrorResponse().error(),
+            ex.getErrorResponse().message()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
 
     @ExceptionHandler(RideNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleRideNotFoundException(RideNotFoundException ex) {

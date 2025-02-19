@@ -73,20 +73,12 @@ public class RideServiceImpl implements RideService {
     public RideResponse createRide(RideRequest rideRequest) {
         GetPassengerResponse passengerResponse = passengerClient.getPassengerById(rideRequest.getPassengerId());
 
-        if (passengerResponse == null) {
-            throw new InvalidRideOperationException(
-                "There isnt passenger with this id " + rideRequest.getPassengerId());
-        }
-
         if (rideRepository.existsByPassengerIdAndStatusIn(passengerResponse.getPassengerId(),
             Status.getActiveStatuses())) {
             throw new InvalidRideOperationException(THIS_PASSENGER_ALREADY_HAS_RIDE);
         }
 
         AssignDriverResponse assignDriverResponse = driverClient.assignDriver();
-        if (assignDriverResponse == null || assignDriverResponse.getDriverId() == null) {
-            throw new InvalidRideOperationException("No available drivers at the moment.");
-        }
 
         Ride ride = rideMapper.toEntity(rideRequest);
         ride.setPassengerId(passengerResponse.getPassengerId());
@@ -98,7 +90,6 @@ public class RideServiceImpl implements RideService {
         rideRepository.save(ride);
         return rideMapper.toDto(ride);
     }
-
 
     @Transactional
     @Override
@@ -146,5 +137,4 @@ public class RideServiceImpl implements RideService {
 
         return rideMapper.toDto(ride);
     }
-
 }

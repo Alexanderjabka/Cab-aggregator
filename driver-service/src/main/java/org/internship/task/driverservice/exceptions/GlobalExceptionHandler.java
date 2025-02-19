@@ -3,6 +3,7 @@ package org.internship.task.driverservice.exceptions;
 import org.internship.task.driverservice.exceptions.carExceptions.CarNotFoundException;
 import org.internship.task.driverservice.exceptions.carExceptions.InvalidCarOperationException;
 import org.internship.task.driverservice.exceptions.driverException.DriverNotFoundException;
+import org.internship.task.driverservice.exceptions.driverException.HandleDriverHasNoCarException;
 import org.internship.task.driverservice.exceptions.driverException.InvalidDriverOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-    @ExceptionHandler({InvalidDriverOperationException.class, InvalidCarOperationException.class})
+    @ExceptionHandler({InvalidDriverOperationException.class, InvalidCarOperationException.class,
+        HandleDriverHasNoCarException.class})
     public ResponseEntity<ErrorResponse> handleInvalidOperationException(RuntimeException ex) {
         ErrorResponse errorResponse = ErrorResponse.of(
             HttpStatus.BAD_REQUEST.value(),

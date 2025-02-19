@@ -7,4 +7,6 @@ public class RatingExceptionMessages {
 
     public static final String RATING_IS_NOT_FOUND_BY_ID = "Rating is not found by id ";
 
+    public static final String RIDE_WITH_THIS_ID_WAS_NOT_FOUND = "Ride with this ID was not found ";
+
 }

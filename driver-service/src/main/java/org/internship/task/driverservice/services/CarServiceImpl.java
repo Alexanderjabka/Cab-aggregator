@@ -17,7 +17,6 @@ import org.internship.task.driverservice.entities.Driver;
 import org.internship.task.driverservice.exceptions.carExceptions.CarNotFoundException;
 import org.internship.task.driverservice.exceptions.carExceptions.InvalidCarOperationException;
 import org.internship.task.driverservice.exceptions.driverException.DriverNotFoundException;
-import org.internship.task.driverservice.exceptions.driverException.InvalidDriverOperationException;
 import org.internship.task.driverservice.mappers.CarMapper;
 import org.internship.task.driverservice.repositories.CarRepository;
 import org.internship.task.driverservice.repositories.DriverRepository;
@@ -90,11 +89,12 @@ public class CarServiceImpl implements CarService {
 
         carRepository.findByCarNumber(carRequest.getCarNumber()).ifPresent(existingCar -> {
             if (!existingCar.getId().equals(car.getId())) {
-                throw new InvalidDriverOperationException(CAR_ALREADY_EXISTS + carRequest.getCarNumber());
+                throw new InvalidCarOperationException(CAR_ALREADY_EXISTS + carRequest.getCarNumber());
             }
         });
 
-        carMapper.toEntity(carRequest);
+        carMapper.updateEntity(car, carRequest);
+
         car.setIsDeleted(false);
         carRepository.save(car);
 

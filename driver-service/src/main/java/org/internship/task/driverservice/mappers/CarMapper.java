@@ -6,6 +6,7 @@ import org.internship.task.driverservice.dto.cars.CarResponse;
 import org.internship.task.driverservice.entities.Car;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface CarMapper {
@@ -19,4 +20,9 @@ public interface CarMapper {
     CarResponse toDto(Car car);
 
     List<CarResponse> toDtoList(List<Car> cars);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "isDeleted", ignore = true)
+    @Mapping(target = "driver", ignore = true)
+    void updateEntity(@MappingTarget Car car, CarRequest carRequest);
 }
