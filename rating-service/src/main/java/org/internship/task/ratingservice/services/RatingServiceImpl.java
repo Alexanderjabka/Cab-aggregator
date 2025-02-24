@@ -2,6 +2,7 @@ package org.internship.task.ratingservice.services;
 
 import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.IS_ALREADY_RATE_THIS_RIDE;
 import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.RATING_IS_NOT_FOUND_BY_ID;
+import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.RIDE_WITH_THIS_ID_WAS_NOT_FOUND;
 import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.THIS_PERSON_DOESNT_HAVE_RATING_YET;
 
 import java.util.List;
@@ -85,7 +86,7 @@ public class RatingServiceImpl implements RatingService {
     @Transactional
     @Override
     public RatingResponse createRating(RatingRequest ratingRequest) {
-        GetRideResponse rideResponse = rideClient.getRideById(ratingRequest.getRideId());
+        GetRideResponse rideResponse = rideClient.getRideByIdAndAbilityToRate(ratingRequest.getRideId());
 
         if (ratingRepository.findByRideIdAndWhoRateAndIsDeletedFalse(ratingRequest.getRideId(),
             ratingRequest.getWhoRate()).isPresent()) {

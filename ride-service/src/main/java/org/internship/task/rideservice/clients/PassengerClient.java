@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "passenger-service", url = "http://localhost:8080/api/v1/passengers", configuration = FeignClientConfig.class)
 public interface PassengerClient {
-    @GetMapping("/{id}")
-    GetPassengerResponse getPassengerById(@PathVariable Long id);
+    @GetMapping("/isFree/{id}")
+    GetPassengerResponse getPassengerByIdAndStatus(@PathVariable Long id);
 }

@@ -12,6 +12,5 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
 
     List<Driver> findAllByOrderByIdAsc();
 
-    Optional<Driver> findFirstByIsInRideFalseAndCarsIsNotEmptyOrderByIdAsc();
-
+    List<Driver> findByIsInRideFalseAndIsDeletedFalseOrderByIdAsc();
 }

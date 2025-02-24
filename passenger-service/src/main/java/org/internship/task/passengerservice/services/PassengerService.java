@@ -12,6 +12,8 @@ public interface PassengerService {
 
     PassengerResponse getPassengerById(Long id);
 
+    PassengerResponse getPassengerByIdAndStatus(Long id);
+
     PassengerResponse createPassenger(PassengerRequest passengerRequest);
 
     void deletePassenger(Long id);

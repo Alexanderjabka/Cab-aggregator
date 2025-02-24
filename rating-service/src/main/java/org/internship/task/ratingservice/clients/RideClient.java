@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "ride-service", url = "http://localhost:8082/api/v1/rides", configuration = FeignClientConfig.class)
 public interface RideClient {
-    @GetMapping("/{id}")
-    GetRideResponse getRideById(@PathVariable Long id);
+    @GetMapping("/canBeRate/{id}")
+    GetRideResponse getRideByIdAndAbilityToRate(@PathVariable Long id);
 }

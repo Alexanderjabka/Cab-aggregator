@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PassengerRepository extends JpaRepository<Passenger, Long> {
     Optional<Passenger> findByEmail(String email);
 
+    Optional<Passenger> findByIdAndIsDeletedFalse(Long id);
+
     List<Passenger> findByIsDeletedOrderByIdAsc(Boolean isDeleted);
 
     List<Passenger> findAllByOrderByIdAsc();

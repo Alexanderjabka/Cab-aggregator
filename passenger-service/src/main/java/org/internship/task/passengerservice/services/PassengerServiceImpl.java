@@ -58,6 +58,13 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
+    public PassengerResponse getPassengerByIdAndStatus(Long id) {
+        Passenger passenger = passengerRepository.findByIdAndIsDeletedFalse(id)
+            .orElseThrow(() -> new PassengerNotFoundException(PASSENGER_NOT_FOUND_BY_ID + id));
+        return passengerMapper.toDto(passenger);
+    }
+
+    @Override
     @Transactional
     public PassengerResponse createPassenger(PassengerRequest passengerRequest) {
         String email = passengerRequest.getEmail();

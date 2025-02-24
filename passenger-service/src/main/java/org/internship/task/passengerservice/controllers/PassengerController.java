@@ -38,6 +38,11 @@ public class PassengerController {
         return ResponseEntity.ok(passengerService.getPassengerById(id));
     }
 
+    @GetMapping("/isFree/{id}")
+    public ResponseEntity<PassengerResponse> getPassengerByIdAndStatus(@PathVariable Long id) {
+        return ResponseEntity.ok(passengerService.getPassengerByIdAndStatus(id));
+    }
+
     @PostMapping
     public ResponseEntity<PassengerResponse> createPassenger(@Valid @RequestBody PassengerRequest passengerRequest) {
         return ResponseEntity.status(201).body(passengerService.createPassenger(passengerRequest));

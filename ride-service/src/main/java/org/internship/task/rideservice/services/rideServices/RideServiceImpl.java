@@ -2,6 +2,7 @@ package org.internship.task.rideservice.services.rideServices;
 
 import static org.internship.task.rideservice.util.constantMessages.exceptionMessages.RideExceptionMessages.RIDE_NOT_FOUND_BY_RIDE_ID;
 import static org.internship.task.rideservice.util.constantMessages.exceptionMessages.RideExceptionMessages.RIDE_STATUS_IS_INCORRECT;
+import static org.internship.task.rideservice.util.constantMessages.exceptionMessages.RideExceptionMessages.RIDE_STATUS_IS_INCORRECT_TO_RATE;
 import static org.internship.task.rideservice.util.constantMessages.exceptionMessages.RideExceptionMessages.THIS_PASSENGER_ALREADY_HAS_RIDE;
 
 import java.util.List;
@@ -68,10 +69,21 @@ public class RideServiceImpl implements RideService {
         return rideMapper.toDto(ride);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public RideResponse getRideByIdAndAbilityToRate(Long id) {
+        Ride ride = rideRepository.findById(id)
+            .orElseThrow(() -> new RideNotFoundException(RIDE_NOT_FOUND_BY_RIDE_ID + id));
+        if (ride.getStatus().equals(Status.CANCELLED) || ride.getStatus().equals(Status.COMPLETED)) {
+            return rideMapper.toDto(ride);
+        }
+        throw new InvalidRideOperationException(RIDE_STATUS_IS_INCORRECT_TO_RATE + ride.getStatus());
+    }
+
     @Transactional
     @Override
     public RideResponse createRide(RideRequest rideRequest) {
-        GetPassengerResponse passengerResponse = passengerClient.getPassengerById(rideRequest.getPassengerId());
+        GetPassengerResponse passengerResponse = passengerClient.getPassengerByIdAndStatus(rideRequest.getPassengerId());
 
         if (rideRepository.existsByPassengerIdAndStatusIn(passengerResponse.getPassengerId(),
             Status.getActiveStatuses())) {
