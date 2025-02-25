@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "passenger-service", url = "http://localhost:8080/api/v1/passengers", configuration = FeignClientConfig.class)
+@FeignClient(name = "passenger-service", url = "${server.url.passenger}", configuration = FeignClientConfig.class)
 public interface PassengerClient {
     @GetMapping("/isFree/{id}")
     GetPassengerResponse getPassengerByIdAndStatus(@PathVariable Long id);
