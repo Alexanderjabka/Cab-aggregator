@@ -9,6 +9,7 @@ import static org.internship.task.driverservice.util.constantMessages.exceptionM
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.internship.task.driverservice.dto.cars.CarListResponse;
 import org.internship.task.driverservice.dto.cars.CarRequest;
 import org.internship.task.driverservice.dto.cars.CarResponse;
 import org.internship.task.driverservice.entities.Car;
@@ -21,6 +22,7 @@ import org.internship.task.driverservice.mappers.CarMapper;
 import org.internship.task.driverservice.repositories.CarRepository;
 import org.internship.task.driverservice.repositories.DriverRepository;
 import org.internship.task.driverservice.services.serviceInterfaces.CarService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,34 +33,45 @@ public class CarServiceImpl implements CarService {
     private final DriverRepository driverRepository;
     private final CarMapper carMapper;
 
-    public List<CarResponse> getAllCars() {
-        List<Car> cars = carRepository.findAll();
-        return carMapper.toDtoList(cars);
+    @Transactional(readOnly = true)
+    public ResponseEntity<CarListResponse> getAllCars() {
+        List<Car> cars = carRepository.findAllByOrderByIdAsc();
+        return cars.isEmpty()
+            ? ResponseEntity.noContent().build()
+            : ResponseEntity.ok(CarListResponse.builder()
+            .cars(carMapper.toDtoList(cars))
+            .build());
     }
 
-    public List<CarResponse> getAllCarsByStatus(boolean status) {
-        List<Car> cars = carRepository.findByIsDeleted(status);
-        return carMapper.toDtoList(cars);
+    @Transactional(readOnly = true)
+    public ResponseEntity<CarListResponse> getAllCarsByStatus(boolean status) {
+        List<Car> cars = carRepository.findByIsDeletedOrderByIdAsc(status);
+        return cars.isEmpty()
+            ? ResponseEntity.noContent().build()
+            : ResponseEntity.ok(CarListResponse.builder()
+            .cars(carMapper.toDtoList(cars))
+            .build());
     }
 
+    @Transactional(readOnly = true)
     public CarResponse getCarById(Long id) {
         Car car = carRepository.findById(id)
-                .orElseThrow(() -> new CarNotFoundException(CAR_NOT_FOUND_BY_ID + id));
+            .orElseThrow(() -> new CarNotFoundException(CAR_NOT_FOUND_BY_ID + id));
         return carMapper.toDto(car);
     }
 
     @Transactional
     public CarResponse createCar(CarRequest carRequest, String driverEmail) {
         carRepository.findByCarNumber(carRequest.getCarNumber())
-                .ifPresent(car -> {
-                    throw new InvalidCarOperationException(CAR_ALREADY_EXISTS + carRequest.getCarNumber());
-                });
+            .ifPresent(car -> {
+                throw new InvalidCarOperationException(CAR_ALREADY_EXISTS + carRequest.getCarNumber());
+            });
 
         Car car = carMapper.toEntity(carRequest);
         car.setIsDeleted(false);
 
         Driver driver = driverRepository.findByEmail(driverEmail)
-                .orElseThrow(() -> new DriverNotFoundException(DRIVER_NOT_FOUND_BY_EMAIL + driverEmail));
+            .orElseThrow(() -> new DriverNotFoundException(DRIVER_NOT_FOUND_BY_EMAIL + driverEmail));
         car.setDriver(driver);
 
         carRepository.save(car);
@@ -69,7 +82,7 @@ public class CarServiceImpl implements CarService {
     @Transactional
     public CarResponse updateCar(String carNumber, CarRequest carRequest) {
         Car car = carRepository.findByCarNumber(carNumber)
-                .orElseThrow(() -> new CarNotFoundException(CAR_NOT_FOUND_BY_CAR_NUMBER + carNumber));
+            .orElseThrow(() -> new CarNotFoundException(CAR_NOT_FOUND_BY_CAR_NUMBER + carNumber));
 
         if (car.getIsDeleted()) {
             throw new InvalidCarOperationException(CAR_IS_DELETED + carNumber);
@@ -77,11 +90,12 @@ public class CarServiceImpl implements CarService {
 
         carRepository.findByCarNumber(carRequest.getCarNumber()).ifPresent(existingCar -> {
             if (!existingCar.getId().equals(car.getId())) {
-                throw new InvalidDriverOperationException(CAR_ALREADY_EXISTS + carRequest.getCarNumber());
+                throw new InvalidCarOperationException(CAR_ALREADY_EXISTS + carRequest.getCarNumber());
             }
         });
 
-        carMapper.toEntity(carRequest);
+        carMapper.updateEntity(car, carRequest);
+
         car.setIsDeleted(false);
         carRepository.save(car);
 

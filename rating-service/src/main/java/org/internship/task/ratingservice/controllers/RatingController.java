@@ -1,7 +1,7 @@
 package org.internship.task.ratingservice.controllers;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.internship.task.ratingservice.dto.RatingListResponse;
 import org.internship.task.ratingservice.dto.RatingRequest;
 import org.internship.task.ratingservice.dto.RatingResponse;
 import org.internship.task.ratingservice.services.RatingServiceImpl;
@@ -22,7 +22,7 @@ public class RatingController {
     private final RatingServiceImpl ratingService;
 
     @GetMapping
-    public ResponseEntity<List<RatingResponse>> getAllRatings() {
+    public ResponseEntity<RatingListResponse> getAllRatings() {
         return ratingService.getAllRatings();
     }
 

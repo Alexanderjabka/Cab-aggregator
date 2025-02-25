@@ -1,8 +1,8 @@
 package org.internship.task.driverservice.controllers;
 
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.internship.task.driverservice.dto.cars.CarListResponse;
 import org.internship.task.driverservice.dto.cars.CarRequest;
 import org.internship.task.driverservice.dto.cars.CarResponse;
 import org.internship.task.driverservice.services.CarServiceImpl;
@@ -23,13 +23,13 @@ public class CarController {
     private final CarServiceImpl carService;
 
     @GetMapping
-    public ResponseEntity<List<CarResponse>> getAllCars() {
-        return ResponseEntity.ok(carService.getAllCars());
+    public ResponseEntity<CarListResponse> getAllCars() {
+        return carService.getAllCars();
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<CarResponse>> getAllCarsByStatus(@PathVariable boolean status) {
-        return ResponseEntity.ok(carService.getAllCarsByStatus(status));
+    public ResponseEntity<CarListResponse> getAllCarsByStatus(@PathVariable boolean status) {
+        return carService.getAllCarsByStatus(status);
     }
 
     @GetMapping("/{id}")

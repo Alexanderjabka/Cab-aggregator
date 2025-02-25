@@ -6,5 +6,6 @@ import lombok.Builder;
 
 @Builder
 public record RideListResponse(
-        List<RideResponse> rides
-){}
+    List<RideResponse> rides
+) {
+}

@@ -1,7 +1,6 @@
 package org.internship.task.driverservice.mappers;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.internship.task.driverservice.dto.drivers.DriverRequest;
 import org.internship.task.driverservice.dto.drivers.DriverResponse;
 import org.internship.task.driverservice.entities.Car;
@@ -13,6 +12,18 @@ import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface DriverMapper {
+
+    @Named("mapCarIds")
+    static List<Long> mapCarIds(List<Car> cars) {
+        if (cars == null) {
+            return List.of();
+        }
+
+        return cars.stream()
+            .filter(car -> !Boolean.TRUE.equals(car.getIsDeleted()))
+            .map(Car::getId)
+            .toList();
+    }
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "isDeleted", ignore = true)
@@ -28,15 +39,4 @@ public interface DriverMapper {
     @Mapping(target = "isDeleted", ignore = true)
     @Mapping(target = "cars", ignore = true)
     void updateEntity(@MappingTarget Driver driver, DriverRequest driverRequest);
-
-    @Named("mapCarIds")
-    static List<Long> mapCarIds(List<Car> cars) {
-        if (cars == null) {
-            return null;
-        }
-        return cars.stream()
-                .filter(car -> !Boolean.TRUE.equals(car.getIsDeleted()))
-                .map(Car::getId)
-                .collect(Collectors.toList());
-    }
 }

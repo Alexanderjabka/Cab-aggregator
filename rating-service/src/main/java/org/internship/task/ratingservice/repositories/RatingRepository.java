@@ -8,10 +8,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RatingRepository extends JpaRepository<Rating, Long> {
-    Optional<Rating> findByRideIdAndWhoRate(Long rideId, WhoRate whoRate);
+    Optional<Rating> findByRideIdAndWhoRateAndIsDeletedFalse(Long rideId, WhoRate whoRate);
 
-    List<Rating> findByPassengerIdAndWhoRateOrderByIdDesc(Long passengerId, WhoRate whoRate, Pageable pageable);
+    List<Rating> findAllByOrderByIdAsc();
 
-    List<Rating> findByDriverIdAndWhoRateOrderByIdDesc(Long driverId, WhoRate whoRate, Pageable pageable);
+    List<Rating> findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(Long passengerId, WhoRate whoRate,
+                                                                           Pageable pageable);
+
+    List<Rating> findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(Long driverId, WhoRate whoRate,
+                                                                        Pageable pageable);
 
 }

@@ -2,19 +2,19 @@ package org.internship.task.passengerservice.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.internship.task.passengerservice.dto.PassengerListResponse;
 import org.internship.task.passengerservice.dto.PassengerRequest;
 import org.internship.task.passengerservice.dto.PassengerResponse;
 import org.internship.task.passengerservice.services.PassengerServiceImpl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/passengers")
@@ -24,18 +24,23 @@ public class PassengerController {
     private final PassengerServiceImpl passengerService;
 
     @GetMapping
-    public ResponseEntity<List<PassengerResponse>> getAllPassengers() {
-        return ResponseEntity.ok(passengerService.getAllPassengers());
+    public ResponseEntity<PassengerListResponse> getAllPassengers() {
+        return passengerService.getAllPassengers();
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<PassengerResponse>> getAllPassengersByStatus(@PathVariable boolean status) {
-        return ResponseEntity.ok(passengerService.getAllPassengersByStatus(status));
+    public ResponseEntity<PassengerListResponse> getAllPassengersByStatus(@PathVariable boolean status) {
+        return passengerService.getAllPassengersByStatus(status);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PassengerResponse> getPassengerById(@PathVariable Long id) {
         return ResponseEntity.ok(passengerService.getPassengerById(id));
+    }
+
+    @GetMapping("/isFree/{id}")
+    public ResponseEntity<PassengerResponse> getPassengerByIdAndStatus(@PathVariable Long id) {
+        return ResponseEntity.ok(passengerService.getPassengerByIdAndStatus(id));
     }
 
     @PostMapping
@@ -45,8 +50,8 @@ public class PassengerController {
 
     @PutMapping("/{email}")
     public ResponseEntity<PassengerResponse> updatePassenger(
-            @Valid @PathVariable String email,
-            @Valid @RequestBody PassengerRequest passengerRequest) {
+        @Valid @PathVariable String email,
+        @Valid @RequestBody PassengerRequest passengerRequest) {
         return ResponseEntity.ok(passengerService.updatePassenger(email, passengerRequest));
     }
 

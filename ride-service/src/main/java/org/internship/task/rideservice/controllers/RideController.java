@@ -1,7 +1,6 @@
 package org.internship.task.rideservice.controllers;
 
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.internship.task.rideservice.dto.RideListResponse;
 import org.internship.task.rideservice.dto.RideRequest;
@@ -41,6 +40,11 @@ public class RideController {
         return ResponseEntity.ok(rideService.getRideById(id));
     }
 
+    @GetMapping("/canBeRate/{id}")
+    public ResponseEntity<RideResponse> getRideByIdAndAbilityToRate(@PathVariable Long id) {
+        return ResponseEntity.ok(rideService.getRideByIdAndAbilityToRate(id));
+    }
+
     @PostMapping()
     public ResponseEntity<RideResponse> createRide(@Valid @RequestBody RideRequest rideRequest) {
         return ResponseEntity.status(201).body(rideService.createRide(rideRequest));
@@ -56,5 +60,5 @@ public class RideController {
     public ResponseEntity<RideResponse> changeStatus(@PathVariable Long id, @Valid @RequestBody StatusRequest status) {
         return ResponseEntity.status(200).body(rideService.changeStatus(id, status));
     }
-    
+
 }

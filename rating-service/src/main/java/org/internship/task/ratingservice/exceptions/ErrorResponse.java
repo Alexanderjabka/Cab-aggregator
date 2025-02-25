@@ -1,16 +1,21 @@
 package org.internship.task.ratingservice.exceptions;
 
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
 
-@Getter
-@AllArgsConstructor
-public class ErrorResponse {
-
-    private final int status;
-    private final String error;
-    private final String message;
-    private final LocalDateTime timestamp = LocalDateTime.now();
-
+@Builder
+public record ErrorResponse(
+    int status,
+    String error,
+    String message,
+    LocalDateTime timestamp
+) {
+    public static ErrorResponse of(int status, String error, String message) {
+        return ErrorResponse.builder()
+            .status(status)
+            .error(error)
+            .message(message)
+            .timestamp(LocalDateTime.now())
+            .build();
+    }
 }

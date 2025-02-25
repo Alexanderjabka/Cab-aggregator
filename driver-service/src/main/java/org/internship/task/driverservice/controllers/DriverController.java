@@ -1,8 +1,8 @@
 package org.internship.task.driverservice.controllers;
 
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.internship.task.driverservice.dto.drivers.DriverListResponse;
 import org.internship.task.driverservice.dto.drivers.DriverRequest;
 import org.internship.task.driverservice.dto.drivers.DriverResponse;
 import org.internship.task.driverservice.services.DriverServiceImpl;
@@ -23,13 +23,13 @@ public class DriverController {
     private final DriverServiceImpl driverService;
 
     @GetMapping
-    public ResponseEntity<List<DriverResponse>> getAllDrivers() {
-        return ResponseEntity.ok(driverService.getAllDrivers());
+    public ResponseEntity<DriverListResponse> getAllDrivers() {
+        return driverService.getAllDrivers();
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<DriverResponse>> getAllDriversByStatus(@PathVariable boolean status) {
-        return ResponseEntity.ok(driverService.getAllDriversByStatus(status));
+    public ResponseEntity<DriverListResponse> getAllDriversByStatus(@PathVariable boolean status) {
+        return driverService.getAllDriversByStatus(status);
     }
 
     @GetMapping("/{id}")
@@ -46,6 +46,17 @@ public class DriverController {
     public ResponseEntity<DriverResponse> updateDriver(@Valid @PathVariable String email,
                                                        @Valid @RequestBody DriverRequest driverRequest) {
         return ResponseEntity.status(200).body(driverService.updateDriver(email, driverRequest));
+    }
+
+    @PutMapping("/assign")
+    public ResponseEntity<DriverResponse> assignDriver() {
+        return ResponseEntity.status(200).body(driverService.getFirstFreeDriverAndChangeStatus());
+    }
+
+    @PutMapping("/release/{driverId}")
+    public ResponseEntity<Void> releaseDriver(@PathVariable Long driverId) {
+        driverService.releaseDriver(driverId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
