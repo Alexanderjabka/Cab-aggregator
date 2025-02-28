@@ -65,20 +65,13 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     @Override
     public DriverResponse getFirstFreeDriverAndChangeStatus() {
-        List<Driver> freeDrivers = driverRepository.findByIsInRideFalseAndIsDeletedFalseOrderByIdAsc();
+        Driver driver = driverRepository.findFirstByIsInRideFalseAndIsDeletedFalseAndCarsIsDeletedFalseOrderByIdAsc()
+            .orElseThrow(() -> new DriverNotFoundException(THERE_ARE_NO_FREE_DRIVERS));
 
-        for (Driver driver : freeDrivers) {
-            boolean hasActiveCar = driver.getCars().stream()
-                .anyMatch(car -> !car.getIsDeleted());
+        driver.setIsInRide(true);
+        driverRepository.save(driver);
 
-            if (hasActiveCar) {
-                driver.setIsInRide(true);
-                driverRepository.save(driver);
-                return driverMapper.toDto(driver);
-            }
-        }
-
-        throw new DriverNotFoundException(THERE_ARE_NO_FREE_DRIVERS);
+        return driverMapper.toDto(driver);
     }
 
     @Transactional
