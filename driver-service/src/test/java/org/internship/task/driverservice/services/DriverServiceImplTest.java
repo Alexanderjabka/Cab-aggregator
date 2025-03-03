@@ -180,7 +180,8 @@ class DriverServiceImplTest {
 
     @Test
     void getFirstFreeDriverAndChangeStatus_ThrowsDriverNotFoundException() {
-        when(driverRepository.findFirstByIsInRideFalseAndIsDeletedFalseAndCarsIsDeletedFalseOrderByIdAsc()).thenReturn(Optional.empty());
+        when(driverRepository.findFirstByIsInRideFalseAndIsDeletedFalseAndCarsIsDeletedFalseOrderByIdAsc()).thenReturn(
+            Optional.empty());
 
         assertThrows(DriverNotFoundException.class, () -> driverService.getFirstFreeDriverAndChangeStatus());
     }

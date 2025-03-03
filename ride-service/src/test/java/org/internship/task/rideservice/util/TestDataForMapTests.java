@@ -13,8 +13,8 @@ public class TestDataForMapTests {
     private final double distanceBetweenStartAndFinish;
 
     private TestDataForMapTests() {
-        this.startCoordinates = new double[]{27.56667, 53.9};
-        this.finishCoordinates = new double[]{30.283083, 53.769428};
+        this.startCoordinates = new double[] {27.56667, 53.9};
+        this.finishCoordinates = new double[] {30.283083, 53.769428};
         this.startAddress = "Minsk";
         this.finishAddress = "Mogilev";
         this.distanceBetweenStartAndFinish = 178.82476685810292;

@@ -1,5 +1,12 @@
 package org.internship.task.ratingservice.controllers;
 
+import static org.internship.task.ratingservice.util.TestDataForRatingTests.createRatingRequest;
+import static org.internship.task.ratingservice.util.TestDataForRatingTests.createRatingResponse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.internship.task.ratingservice.dto.RatingListResponse;
 import org.internship.task.ratingservice.dto.RatingRequest;
 import org.internship.task.ratingservice.dto.RatingResponse;
@@ -12,11 +19,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import static org.internship.task.ratingservice.util.TestDataForRatingTests.createRatingRequest;
-import static org.internship.task.ratingservice.util.TestDataForRatingTests.createRatingResponse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RatingControllerTest {

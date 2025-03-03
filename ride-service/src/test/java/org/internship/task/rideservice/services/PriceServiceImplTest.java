@@ -21,6 +21,7 @@ public class PriceServiceImplTest {
 
         assertEquals(expectedPrice, actualPrice);
     }
+
     @Test
     void setPriceForTheRide_ShouldReturnZeroForZeroDistance() {
         double distanceInKm = 0.0;

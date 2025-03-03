@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.internship.task.passengerservice.dto.PassengerRequest;
 import org.internship.task.passengerservice.dto.PassengerResponse;
 import org.internship.task.passengerservice.entities.Passenger;
+
 @Getter
 public class TestDataForPassengersTest {
     private static final Long id = 1L;

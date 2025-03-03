@@ -30,6 +30,7 @@ public class TestDataForRidesTests {
     public static StatusRequest createStatusRequest() {
         return new StatusRequest(Status.CREATED);
     }
+
     public static Ride createRide() {
         return new Ride(id, passengerId, driverId, startAddress, finishAddress, status, orderDateTime, price);
     }
@@ -45,6 +46,7 @@ public class TestDataForRidesTests {
     public static GetPassengerResponse createPassengerResponse() {
         return new GetPassengerResponse(passengerId);
     }
+
     public static AssignDriverResponse createDriverResponse() {
         return new AssignDriverResponse(driverId);
     }

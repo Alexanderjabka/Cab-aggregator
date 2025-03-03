@@ -37,14 +37,14 @@ public class TestDataForCar {
     private static final Long driverId = createDriver().getId();
 
     public static Car createCar() {
-        return new Car(id,color,carBrand,carNumber,carYear,driver,isDeleted);
+        return new Car(id, color, carBrand, carNumber, carYear, driver, isDeleted);
     }
 
     public static CarResponse createCarResponse() {
-        return new CarResponse(id,color,carBrand,carNumber,carYear,driverId,isDeleted);
+        return new CarResponse(id, color, carBrand, carNumber, carYear, driverId, isDeleted);
     }
 
     public static CarRequest createCarRequest() {
-        return new CarRequest(color,carBrand,carNumber,carYear);
+        return new CarRequest(color, carBrand, carNumber, carYear);
     }
 }
