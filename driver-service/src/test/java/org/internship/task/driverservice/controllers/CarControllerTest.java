@@ -42,82 +42,64 @@ class CarControllerTest {
 
     @Test
     void getAllCars_ReturnsNonEmptyList() {
-        // Arrange
         CarListResponse listResponse = new CarListResponse(List.of(carResponse));
 
         when(carService.getAllCars()).thenReturn(ResponseEntity.ok(listResponse));
 
-        // Act
         ResponseEntity<CarListResponse> result = carController.getAllCars();
 
-        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(1, result.getBody().cars().size());
     }
 
     @Test
     void getAllCarsByStatus_ReturnsNonEmptyList() {
-        // Arrange
         CarListResponse listResponse = new CarListResponse(List.of(carResponse));
 
         when(carService.getAllCarsByStatus(false)).thenReturn(ResponseEntity.ok(listResponse));
 
-        // Act
         ResponseEntity<CarListResponse> result = carController.getAllCarsByStatus(false);
 
-        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(1, result.getBody().cars().size());
     }
 
     @Test
     void getCarById_ReturnsCarResponse() {
-        // Arrange
         when(carService.getCarById(1L)).thenReturn(carResponse);
 
-        // Act
         ResponseEntity<CarResponse> result = carController.getCarById(1L);
 
-        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals("1234AB6", result.getBody().getCarNumber());
     }
 
     @Test
     void createCar_ReturnsCreated() {
-        // Arrange
         when(carService.createCar(carRequest, "sasha@mail.com")).thenReturn(carResponse);
 
-        // Act
         ResponseEntity<CarResponse> result = carController.createCar(carRequest, "sasha@mail.com");
 
-        // Assert
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
         assertEquals("1234AB6", result.getBody().getCarNumber());
     }
 
     @Test
     void updateCar_ReturnsUpdatedCar() {
-        // Arrange
         when(carService.updateCar("1234AB6", carRequest)).thenReturn(carResponse);
 
-        // Act
         ResponseEntity<CarResponse> result = carController.updateCar("1234AB6", carRequest);
 
-        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals("1234AB6", result.getBody().getCarNumber());
     }
 
     @Test
     void deleteCar_ReturnsNoContent() {
-        // Arrange
         doNothing().when(carService).deleteCar(1L);
 
-        // Act
         ResponseEntity<Void> result = carController.deleteCar(1L);
 
-        // Assert
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
         verify(carService).deleteCar(1L);
     }

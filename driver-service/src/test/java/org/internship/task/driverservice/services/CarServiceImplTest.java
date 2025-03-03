@@ -61,141 +61,112 @@ class CarServiceImplTest {
 
     @Test
     void getAllCars_ReturnsNonEmptyList() {
-        // Arrange
         when(carRepository.findAllByOrderByIdAsc()).thenReturn(List.of(car));
         when(carMapper.toDtoList(List.of(car))).thenReturn(List.of(carResponse));
 
-        // Act
         ResponseEntity<CarListResponse> result = carService.getAllCars();
 
-        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(1, result.getBody().cars().size());
     }
 
     @Test
     void getAllCars_ReturnsNoContent() {
-        // Arrange
         when(carRepository.findAllByOrderByIdAsc()).thenReturn(Collections.emptyList());
 
-        // Act
         ResponseEntity<CarListResponse> result = carService.getAllCars();
 
-        // Assert
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
         assertNull(result.getBody());
     }
 
     @Test
     void getAllCarsByStatus_ReturnsNonEmptyList() {
-        // Arrange
         when(carRepository.findByIsDeletedOrderByIdAsc(false)).thenReturn(List.of(car));
         when(carMapper.toDtoList(List.of(car))).thenReturn(List.of(carResponse));
 
-        // Act
         ResponseEntity<CarListResponse> result = carService.getAllCarsByStatus(false);
 
-        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(1, result.getBody().cars().size());
     }
 
     @Test
     void getCarById_ReturnsCarResponse() {
-        // Arrange
         when(carRepository.findById(1L)).thenReturn(Optional.of(car));
         when(carMapper.toDto(car)).thenReturn(carResponse);
 
-        // Act
         CarResponse result = carService.getCarById(1L);
 
-        // Assert
         assertEquals("1234AB6", result.getCarNumber());
     }
 
     @Test
     void getCarById_ThrowsCarNotFoundException() {
-        // Arrange
         when(carRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(CarNotFoundException.class, () -> carService.getCarById(1L));
     }
 
     @Test
     void createCar_ReturnsCarResponse() {
-        // Arrange
         when(carRepository.findByCarNumber("1234AB6")).thenReturn(Optional.empty());
         when(driverRepository.findByEmail("sasha@mail.com")).thenReturn(Optional.of(driver));
         when(carMapper.toEntity(carRequest)).thenReturn(car);
         when(carMapper.toDto(car)).thenReturn(carResponse);
 
-        // Act
         CarResponse result = carService.createCar(carRequest, "sasha@mail.com");
 
-        // Assert
         assertEquals("1234AB6", result.getCarNumber());
         verify(carRepository).save(car);
     }
 
     @Test
     void createCar_ThrowsInvalidCarOperationException() {
-        // Arrange
         when(carRepository.findByCarNumber("1234AB6")).thenReturn(Optional.of(new Car()));
 
-        // Act & Assert
         assertThrows(InvalidCarOperationException.class,
             () -> carService.createCar(carRequest, "sasha@mail.com"));
     }
 
     @Test
     void createCar_ThrowsDriverNotFoundException() {
-        // Arrange
         when(carRepository.findByCarNumber("1234AB6")).thenReturn(Optional.empty());
         when(carMapper.toEntity(carRequest)).thenReturn(car);
         car.setIsDeleted(false);
         when(driverRepository.findByEmail("sasha@mail.com")).thenReturn(Optional.empty());
         car.setDriver(driver);
 
-        // Act & Assert
         assertThrows(DriverNotFoundException.class,
             () -> carService.createCar(carRequest, "sasha@mail.com"));
     }
 
     @Test
     void updateCar_ReturnsCarResponse() {
-        // Arrange
         when(carRepository.findByCarNumber("1234AB6")).thenReturn(Optional.of(car));
         when(carMapper.toDto(car)).thenReturn(carResponse);
 
-        // Act
         CarResponse result = carService.updateCar("1234AB6", carRequest);
 
-        // Assert
         assertEquals("1234AB6", result.getCarNumber());
     }
 
     @Test
     void updateCar_ThrowsCarNotFoundException() {
-        // Arrange
         when(carRepository.findByCarNumber("1234AB6")).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(CarNotFoundException.class,
             () -> carService.updateCar("1234AB6", carRequest));
     }
 
     @Test
     void deleteCar_Success() {
-        // Arrange
         when(carRepository.existsById(1L)).thenReturn(true);
         when(carRepository.findById(1L)).thenReturn(Optional.of(car));
         car.setIsDeleted(true);
 
-        // Act
         carService.deleteCar(1L);
 
-        // Assert
         assertTrue(car.getIsDeleted());
         verify(carRepository).save(car);
     }

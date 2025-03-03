@@ -43,14 +43,11 @@ class PassengerControllerTest {
 
     @Test
     void getAllPassengers_Success_Status200() {
-        // given
         PassengerListResponse response = new PassengerListResponse(List.of(passengerResponse));
         when(passengerServiceImpl.getAllPassengers()).thenReturn(ResponseEntity.ok(response));
 
-        // when
         ResponseEntity<PassengerListResponse> result = passengerController.getAllPassengers();
 
-        // then
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
         assertEquals(1, result.getBody().passengers().size());
@@ -59,14 +56,11 @@ class PassengerControllerTest {
 
     @Test
     void getAllPassengersByStatus_Success_Status200() {
-        // given
         PassengerListResponse response = new PassengerListResponse(List.of(passengerResponse));
         when(passengerServiceImpl.getAllPassengersByStatus(false)).thenReturn(ResponseEntity.ok(response));
 
-        // when
         ResponseEntity<PassengerListResponse> result = passengerController.getAllPassengersByStatus(false);
 
-        // then
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
         assertEquals(1, result.getBody().passengers().size());
@@ -75,13 +69,10 @@ class PassengerControllerTest {
 
     @Test
     void getPassengerById_Success_Status200() {
-        // given
         when(passengerServiceImpl.getPassengerById(1L)).thenReturn(passengerResponse);
 
-        // when
         ResponseEntity<PassengerResponse> result = passengerController.getPassengerById(1L);
 
-        // then
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
         verify(passengerServiceImpl, times(1)).getPassengerById(1L);
@@ -89,13 +80,10 @@ class PassengerControllerTest {
 
     @Test
     void getPassengerByIdAndStatus_Success_Status200() {
-        // given
         when(passengerServiceImpl.getPassengerByIdAndStatus(1L)).thenReturn(passengerResponse);
 
-        // when
         ResponseEntity<PassengerResponse> result = passengerController.getPassengerByIdAndStatus(1L);
 
-        // then
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
         verify(passengerServiceImpl, times(1)).getPassengerByIdAndStatus(1L);
@@ -103,13 +91,10 @@ class PassengerControllerTest {
 
     @Test
     void createPassenger_Success_Status201() {
-        // given
         when(passengerServiceImpl.createPassenger(passengerRequest)).thenReturn(passengerResponse);
 
-        // when
         ResponseEntity<PassengerResponse> result = passengerController.createPassenger(passengerRequest);
 
-        // then
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
         assertNotNull(result.getBody());
         verify(passengerServiceImpl, times(1)).createPassenger(passengerRequest);
@@ -117,14 +102,11 @@ class PassengerControllerTest {
 
     @Test
     void updatePassenger_Success_Status200() {
-        // given
         when(passengerServiceImpl.updatePassenger("zhaba@example.com", passengerRequest)).thenReturn(passengerResponse);
 
-        // when
         ResponseEntity<PassengerResponse> result =
             passengerController.updatePassenger("zhaba@example.com", passengerRequest);
 
-        // then
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
         verify(passengerServiceImpl, times(1)).updatePassenger("zhaba@example.com", passengerRequest);
@@ -132,13 +114,10 @@ class PassengerControllerTest {
 
     @Test
     void deletePassenger_Success_Status204() {
-        // given
         doNothing().when(passengerServiceImpl).deletePassenger(1L);
 
-        // when
         ResponseEntity<Void> result = passengerController.deletePassenger(1L);
 
-        // then
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
         verify(passengerServiceImpl, times(1)).deletePassenger(1L);
     }

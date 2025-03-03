@@ -42,108 +42,84 @@ class DriverControllerTest {
 
     @Test
     void getAllDrivers_ReturnsNonEmptyList() {
-        // Arrange
         DriverListResponse listResponse = new DriverListResponse(List.of(driverResponse));
         when(driverService.getAllDrivers()).thenReturn(ResponseEntity.ok(listResponse));
 
-        // Act
         ResponseEntity<DriverListResponse> result = driverController.getAllDrivers();
 
-        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(1, result.getBody().drivers().size());
     }
 
     @Test
     void getAllDriversByStatus_ReturnsNonEmptyList() {
-        // Arrange
         DriverListResponse listResponse = new DriverListResponse(List.of(driverResponse));
         when(driverService.getAllDriversByStatus(false)).thenReturn(ResponseEntity.ok(listResponse));
 
-        // Act
         ResponseEntity<DriverListResponse> result = driverController.getAllDriversByStatus(false);
 
-        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(1, result.getBody().drivers().size());
     }
 
     @Test
     void getDriverById_ReturnsDriverResponse() {
-        // Arrange
         when(driverService.getDriverById(1L)).thenReturn(driverResponse);
 
-        // Act
         ResponseEntity<DriverResponse> result = driverController.getDriverById(1L);
 
-        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals("sasha@mail.com", result.getBody().getEmail());
     }
 
     @Test
     void createDriver_ReturnsCreated() {
-        // Arrange
         when(driverService.createDriver(driverRequest)).thenReturn(driverResponse);
 
-        // Act
         ResponseEntity<DriverResponse> result = driverController.createDriver(driverRequest);
 
-        // Assert
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
         assertEquals("sasha@mail.com", result.getBody().getEmail());
     }
 
     @Test
     void updateDriver_ReturnsUpdatedDriver() {
-        // Arrange
         when(driverService.updateDriver("sasha@mail.com", driverRequest)).thenReturn(driverResponse);
 
-        // Act
         ResponseEntity<DriverResponse> result = driverController.updateDriver("sasha@mail.com", driverRequest);
 
-        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals("sasha@mail.com", result.getBody().getEmail());
     }
 
     @Test
     void assignDriver_ReturnsDriverInRide() {
-        // Arrange
         driverResponse.setIsInRide(true);
 
         when(driverService.getFirstFreeDriverAndChangeStatus()).thenReturn(driverResponse);
 
-        // Act
         ResponseEntity<DriverResponse> result = driverController.assignDriver();
 
-        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertTrue(result.getBody().getIsInRide());
     }
 
     @Test
     void releaseDriver_ReturnsNoContent() {
-        // Arrange
         doNothing().when(driverService).releaseDriver(1L);
 
-        // Act
         ResponseEntity<Void> result = driverController.releaseDriver(1L);
 
-        // Assert
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
         verify(driverService).releaseDriver(1L);
     }
 
     @Test
     void deleteDriver_ReturnsNoContent() {
-        // Arrange
         doNothing().when(driverService).deleteDriver(1L);
 
-        // Act
         ResponseEntity<Void> result = driverController.deleteDriver(1L);
 
-        // Assert
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
         verify(driverService).deleteDriver(1L);
     }
