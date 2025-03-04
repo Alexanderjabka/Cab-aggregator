@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -39,6 +38,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
@@ -87,8 +87,8 @@ class RideServiceImplTest {
 
         ResponseEntity<RideListResponse> response = rideService.getAllRides();
 
-        assertEquals(204, response.getStatusCodeValue());
-        verify(rideRepository, times(1)).findAllByOrderByIdAsc();
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(rideRepository).findAllByOrderByIdAsc();
     }
 
     @Test
@@ -98,10 +98,10 @@ class RideServiceImplTest {
 
         ResponseEntity<RideListResponse> response = rideService.getAllRides();
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().rides().size());
-        verify(rideRepository, times(1)).findAllByOrderByIdAsc();
+        verify(rideRepository).findAllByOrderByIdAsc();
     }
 
     @Test
@@ -110,8 +110,8 @@ class RideServiceImplTest {
 
         ResponseEntity<RideListResponse> response = rideService.getAllRidesByStatus(Status.CREATED);
 
-        assertEquals(204, response.getStatusCodeValue());
-        verify(rideRepository, times(1)).findAllByStatusOrderByIdAsc(Status.CREATED);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(rideRepository).findAllByStatusOrderByIdAsc(Status.CREATED);
     }
 
     @Test
@@ -121,10 +121,10 @@ class RideServiceImplTest {
 
         ResponseEntity<RideListResponse> response = rideService.getAllRidesByStatus(Status.CREATED);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().rides().size());
-        verify(rideRepository, times(1)).findAllByStatusOrderByIdAsc(Status.CREATED);
+        verify(rideRepository).findAllByStatusOrderByIdAsc(Status.CREATED);
     }
 
     @Test
@@ -136,7 +136,7 @@ class RideServiceImplTest {
 
         assertNotNull(response);
         assertEquals(rideResponse, response);
-        verify(rideRepository, times(1)).findById(1L);
+        verify(rideRepository).findById(1L);
     }
 
     @Test
@@ -144,7 +144,7 @@ class RideServiceImplTest {
         when(rideRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(RideNotFoundException.class, () -> rideService.getRideById(1L));
-        verify(rideRepository, times(1)).findById(1L);
+        verify(rideRepository).findById(1L);
     }
 
     @Test
@@ -157,7 +157,7 @@ class RideServiceImplTest {
 
         assertNotNull(response);
         assertEquals(rideResponse, response);
-        verify(rideRepository, times(1)).findById(1L);
+        verify(rideRepository).findById(1L);
     }
 
     @Test
@@ -166,7 +166,7 @@ class RideServiceImplTest {
         when(rideRepository.findById(1L)).thenReturn(Optional.of(ride));
 
         assertThrows(InvalidRideOperationException.class, () -> rideService.getRideByIdAndAbilityToRate(1L));
-        verify(rideRepository, times(1)).findById(1L);
+        verify(rideRepository).findById(1L);
     }
 
     @Test
@@ -182,7 +182,7 @@ class RideServiceImplTest {
 
         assertNotNull(response);
         assertEquals(rideResponse, response);
-        verify(rideRepository, times(1)).save(any(Ride.class));
+        verify(rideRepository).save(any(Ride.class));
     }
 
     @Test
@@ -203,7 +203,7 @@ class RideServiceImplTest {
 
         assertNotNull(response);
         assertEquals(rideResponse, response);
-        verify(rideRepository, times(1)).save(ride);
+        verify(rideRepository).save(ride);
     }
 
     @Test
@@ -226,8 +226,8 @@ class RideServiceImplTest {
 
         assertNotNull(response);
         assertEquals(rideResponse, response);
-        verify(rideRepository, times(1)).save(ride);
-        verify(driverClient, times(1)).releaseDriver(1L);
+        verify(rideRepository).save(ride);
+        verify(driverClient).releaseDriver(1L);
     }
 
     @Test

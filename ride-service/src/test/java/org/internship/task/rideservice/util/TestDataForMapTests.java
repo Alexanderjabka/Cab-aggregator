@@ -3,34 +3,16 @@ package org.internship.task.rideservice.util;
 import lombok.Getter;
 
 public class TestDataForMapTests {
-    private final double[] startCoordinates;
-    private final double[] finishCoordinates;
     @Getter
-    private final String startAddress;
+    private static final double[] START_COORDINATES = new double[] {27.56667, 53.9};
     @Getter
-    private final String finishAddress;
+    private static final double[] FINISH_COORDINATES = new double[] {30.283083, 53.769428};
     @Getter
-    private final double distanceBetweenStartAndFinish;
-
-    private TestDataForMapTests() {
-        this.startCoordinates = new double[] {27.56667, 53.9};
-        this.finishCoordinates = new double[] {30.283083, 53.769428};
-        this.startAddress = "Minsk";
-        this.finishAddress = "Mogilev";
-        this.distanceBetweenStartAndFinish = 178.82476685810292;
-    }
-
-    public static TestDataForMapTests create() {
-        return new TestDataForMapTests();
-    }
-
-    public double[] getStartCoordinates() {
-        return startCoordinates.clone();
-    }
-
-    public double[] getFinishCoordinates() {
-        return finishCoordinates.clone();
-    }
+    private static final String START_ADDRESS = "Minsk";
+    @Getter
+    private static final String FINISH_ADDRESS = "Mogilev";
+    @Getter
+    private static final double DISTANCE_BETWEEN_START_AND_FINISH = 178.82476685810292;
 
 }
 

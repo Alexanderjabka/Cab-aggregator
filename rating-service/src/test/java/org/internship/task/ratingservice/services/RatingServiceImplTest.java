@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -79,7 +78,7 @@ class RatingServiceImplTest {
         ResponseEntity<RatingListResponse> response = ratingService.getAllRatings();
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        verify(ratingRepository, times(1)).findAllByOrderByIdAsc();
+        verify(ratingRepository).findAllByOrderByIdAsc();
     }
 
     @Test
@@ -92,7 +91,7 @@ class RatingServiceImplTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().ratings().size());
-        verify(ratingRepository, times(1)).findAllByOrderByIdAsc();
+        verify(ratingRepository).findAllByOrderByIdAsc();
     }
 
     @Test
@@ -103,7 +102,7 @@ class RatingServiceImplTest {
         double averageRating = ratingService.getAveragePassengerRating(1L);
 
         assertEquals(5.0, averageRating);
-        verify(ratingRepository, times(1))
+        verify(ratingRepository)
             .findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.DRIVER, pageable);
     }
 
@@ -117,7 +116,7 @@ class RatingServiceImplTest {
         });
 
         assertEquals(THIS_PERSON_DOESNT_HAVE_RATING_YET, exception.getMessage());
-        verify(ratingRepository, times(1))
+        verify(ratingRepository)
             .findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.DRIVER, pageable);
     }
 
@@ -129,7 +128,7 @@ class RatingServiceImplTest {
         double averageRating = ratingService.getAverageDriverRating(1L);
 
         assertEquals(5.0, averageRating);
-        verify(ratingRepository, times(1))
+        verify(ratingRepository)
             .findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.PASSENGER, pageable);
     }
 
@@ -143,7 +142,7 @@ class RatingServiceImplTest {
         });
 
         assertEquals(THIS_PERSON_DOESNT_HAVE_RATING_YET, exception.getMessage());
-        verify(ratingRepository, times(1))
+        verify(ratingRepository)
             .findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.PASSENGER, pageable);
     }
 
@@ -155,7 +154,7 @@ class RatingServiceImplTest {
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
         assertTrue(rating.getIsDeleted());
-        verify(ratingRepository, times(1)).save(rating);
+        verify(ratingRepository).save(rating);
     }
 
     @Test
@@ -172,7 +171,7 @@ class RatingServiceImplTest {
 
         assertNotNull(response);
         assertEquals(ratingResponse, response);
-        verify(ratingRepository, times(1)).save(rating);
+        verify(ratingRepository).save(rating);
     }
 
     @Test

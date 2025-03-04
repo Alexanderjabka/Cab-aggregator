@@ -2,7 +2,6 @@ package org.internship.task.driverservice.util;
 
 import static org.internship.task.driverservice.util.TestDataForDriver.createDriver;
 
-import lombok.Getter;
 import org.internship.task.driverservice.dto.cars.CarRequest;
 import org.internship.task.driverservice.dto.cars.CarResponse;
 import org.internship.task.driverservice.entities.Car;
@@ -12,39 +11,31 @@ import org.internship.task.driverservice.enums.Color;
 
 public class TestDataForCar {
 
-    @Getter
-    private static final Long id = 1L;
+    private static final Long ID = 1L;
 
-    @Getter
-    private static final Color color = Color.RED;
+    private static final Color COLOR = Color.RED;
 
-    @Getter
-    private static final CarBrand carBrand = CarBrand.BMW;
+    private static final CarBrand CAR_BRAND = CarBrand.BMW;
 
-    @Getter
-    private static final String carNumber = "1234AB6";
+    private static final String CAR_NUMBER = "1234AB6";
 
-    @Getter
-    private static final short carYear = 2004;
+    private static final short CAR_YEAR = 2004;
 
-    @Getter
-    private static final Driver driver = createDriver();
+    private static final Driver DRIVER = createDriver();
 
-    @Getter
-    private static final Boolean isDeleted = false;
+    private static final Boolean IS_DELETED = false;
 
-    @Getter
-    private static final Long driverId = createDriver().getId();
+    private static final Long DRIVER_ID = createDriver().getId();
 
     public static Car createCar() {
-        return new Car(id, color, carBrand, carNumber, carYear, driver, isDeleted);
+        return new Car(ID, COLOR, CAR_BRAND, CAR_NUMBER, CAR_YEAR, DRIVER, IS_DELETED);
     }
 
     public static CarResponse createCarResponse() {
-        return new CarResponse(id, color, carBrand, carNumber, carYear, driverId, isDeleted);
+        return new CarResponse(ID, COLOR, CAR_BRAND, CAR_NUMBER, CAR_YEAR, DRIVER_ID, IS_DELETED);
     }
 
     public static CarRequest createCarRequest() {
-        return new CarRequest(color, carBrand, carNumber, carYear);
+        return new CarRequest(COLOR, CAR_BRAND, CAR_NUMBER, CAR_YEAR);
     }
 }

@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -66,7 +65,7 @@ class PassengerServiceImplTest {
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
         assertEquals(1, result.getBody().passengers().size());
-        verify(passengerRepository, times(1)).findAllByOrderByIdAsc();
+        verify(passengerRepository).findAllByOrderByIdAsc();
     }
 
     @Test
@@ -77,7 +76,7 @@ class PassengerServiceImplTest {
 
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
         assertNull(result.getBody());
-        verify(passengerRepository, times(1)).findAllByOrderByIdAsc();
+        verify(passengerRepository).findAllByOrderByIdAsc();
     }
 
     @Test
@@ -90,7 +89,7 @@ class PassengerServiceImplTest {
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
         assertEquals(1, result.getBody().passengers().size());
-        verify(passengerRepository, times(1)).findByIsDeletedOrderByIdAsc(false);
+        verify(passengerRepository).findByIsDeletedOrderByIdAsc(false);
     }
 
     @Test
@@ -103,7 +102,7 @@ class PassengerServiceImplTest {
         assertNotNull(result);
         assertEquals("sasha", result.getName());
         assertEquals("sasha@mail.com", result.getEmail());
-        verify(passengerRepository, times(1)).findById(1L);
+        verify(passengerRepository).findById(1L);
     }
 
     @Test
@@ -111,7 +110,7 @@ class PassengerServiceImplTest {
         when(passengerRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(PassengerNotFoundException.class, () -> passengerService.getPassengerById(1L));
-        verify(passengerRepository, times(1)).findById(1L);
+        verify(passengerRepository).findById(1L);
     }
 
     @Test
@@ -124,7 +123,7 @@ class PassengerServiceImplTest {
         assertNotNull(result);
         assertEquals("sasha", result.getName());
         assertEquals("sasha@mail.com", result.getEmail());
-        verify(passengerRepository, times(1)).findByIdAndIsDeletedFalse(1L);
+        verify(passengerRepository).findByIdAndIsDeletedFalse(1L);
     }
 
     @Test
@@ -132,7 +131,7 @@ class PassengerServiceImplTest {
         when(passengerRepository.findByIdAndIsDeletedFalse(1L)).thenReturn(Optional.empty());
 
         assertThrows(PassengerNotFoundException.class, () -> passengerService.getPassengerByIdAndStatus(1L));
-        verify(passengerRepository, times(1)).findByIdAndIsDeletedFalse(1L);
+        verify(passengerRepository).findByIdAndIsDeletedFalse(1L);
     }
 
     @Test
@@ -146,7 +145,7 @@ class PassengerServiceImplTest {
         assertNotNull(result);
         assertEquals("sasha", result.getName());
         assertEquals("sasha@mail.com", result.getEmail());
-        verify(passengerRepository, times(1)).save(passenger);
+        verify(passengerRepository).save(passenger);
     }
 
     @Test
@@ -155,7 +154,7 @@ class PassengerServiceImplTest {
 
         assertThrows(InvalidPassengerOperationException.class,
             () -> passengerService.createPassenger(passengerRequest));
-        verify(passengerRepository, times(1)).findByEmail("sasha@mail.com");
+        verify(passengerRepository).findByEmail("sasha@mail.com");
     }
 
     @Test
@@ -167,7 +166,7 @@ class PassengerServiceImplTest {
         passengerService.deletePassenger(1L);
 
         assertTrue(passenger.getIsDeleted());
-        verify(passengerRepository, times(1)).save(passenger);
+        verify(passengerRepository).save(passenger);
     }
 
     @Test
@@ -175,7 +174,7 @@ class PassengerServiceImplTest {
         when(passengerRepository.existsById(1L)).thenReturn(false);
 
         assertThrows(PassengerNotFoundException.class, () -> passengerService.deletePassenger(1L));
-        verify(passengerRepository, times(1)).existsById(1L);
+        verify(passengerRepository).existsById(1L);
     }
 
     @Test
@@ -188,7 +187,7 @@ class PassengerServiceImplTest {
         assertNotNull(result);
         assertEquals("sasha", result.getName());
         assertEquals("sasha@mail.com", result.getEmail());
-        verify(passengerRepository, times(1)).save(passenger);
+        verify(passengerRepository).save(passenger);
     }
 
     @Test
@@ -197,7 +196,7 @@ class PassengerServiceImplTest {
 
         assertThrows(PassengerNotFoundException.class,
             () -> passengerService.updatePassenger("sasha@mail.com", passengerRequest));
-        verify(passengerRepository, times(1)).findByEmail("sasha@mail.com");
+        verify(passengerRepository).findByEmail("sasha@mail.com");
     }
 
     @Test
@@ -211,7 +210,7 @@ class PassengerServiceImplTest {
             passengerService.updatePassenger("sasha@mail.com", passengerRequest)
         );
 
-        verify(passengerRepository, times(1)).findByEmail("sasha@mail.com");
-        verify(passengerRepository, times(1)).findByEmail("new@mail.com");
+        verify(passengerRepository).findByEmail("sasha@mail.com");
+        verify(passengerRepository).findByEmail("new@mail.com");
     }
 }

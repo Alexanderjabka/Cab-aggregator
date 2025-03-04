@@ -3,7 +3,6 @@ package org.internship.task.ratingservice.controllers;
 import static org.internship.task.ratingservice.util.TestDataForRatingTests.createRatingRequest;
 import static org.internship.task.ratingservice.util.TestDataForRatingTests.createRatingResponse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,7 +44,7 @@ class RatingControllerTest {
         ResponseEntity<RatingListResponse> response = ratingController.getAllRatings();
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        verify(ratingService, times(1)).getAllRatings();
+        verify(ratingService).getAllRatings();
     }
 
     @Test
@@ -56,7 +55,7 @@ class RatingControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(ratingResponse, response.getBody());
-        verify(ratingService, times(1)).createRating(ratingRequest);
+        verify(ratingService).createRating(ratingRequest);
     }
 
     @Test
@@ -67,7 +66,7 @@ class RatingControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(4.5, response.getBody());
-        verify(ratingService, times(1)).getAveragePassengerRating(1L);
+        verify(ratingService).getAveragePassengerRating(1L);
     }
 
     @Test
@@ -78,7 +77,7 @@ class RatingControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(4.8, response.getBody());
-        verify(ratingService, times(1)).getAverageDriverRating(1L);
+        verify(ratingService).getAverageDriverRating(1L);
     }
 
     @Test
@@ -88,6 +87,6 @@ class RatingControllerTest {
         ResponseEntity<String> response = ratingController.deleteRating(1L);
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        verify(ratingService, times(1)).deleteRating(1L);
+        verify(ratingService).deleteRating(1L);
     }
 }

@@ -50,6 +50,7 @@ class CarControllerTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(1, result.getBody().cars().size());
+        verify(carService).getAllCars();
     }
 
     @Test
@@ -62,6 +63,7 @@ class CarControllerTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(1, result.getBody().cars().size());
+        verify(carService).getAllCarsByStatus(false);
     }
 
     @Test
@@ -72,6 +74,7 @@ class CarControllerTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals("1234AB6", result.getBody().getCarNumber());
+        verify(carService).getCarById(1L);
     }
 
     @Test
@@ -82,6 +85,7 @@ class CarControllerTest {
 
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
         assertEquals("1234AB6", result.getBody().getCarNumber());
+        verify(carService).createCar(carRequest, "sasha@mail.com");
     }
 
     @Test
@@ -92,6 +96,7 @@ class CarControllerTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals("1234AB6", result.getBody().getCarNumber());
+        verify(carService).updateCar("1234AB6", carRequest);
     }
 
     @Test

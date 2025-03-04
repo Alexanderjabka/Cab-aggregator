@@ -3,7 +3,6 @@ package org.internship.task.driverservice.util;
 import static org.internship.task.driverservice.util.TestDataForCar.createCar;
 
 import java.util.List;
-import lombok.Getter;
 import org.internship.task.driverservice.dto.drivers.DriverRequest;
 import org.internship.task.driverservice.dto.drivers.DriverResponse;
 import org.internship.task.driverservice.entities.Car;
@@ -11,42 +10,33 @@ import org.internship.task.driverservice.entities.Driver;
 import org.internship.task.driverservice.enums.Gender;
 
 public class TestDataForDriver {
-    @Getter
-    private static final Long id = 1L;
+    private static final Long ID = 1L;
 
-    @Getter
-    private static final String name = "sasha";
+    private static final String NAME = "sasha";
 
-    @Getter
-    private static final String email = "sasha@mail.com";
+    private static final String EMAIL = "sasha@mail.com";
 
-    @Getter
-    private static final String phoneNumber = "+375294323756";
+    private static final String PHONE_NUMBER = "+375294323756";
 
-    @Getter
-    private static final Gender gender = Gender.MALE;
+    private static final Gender GENDER = Gender.MALE;
 
-    @Getter
-    private static final List<Car> cars = List.of(createCar());
+    private static final List<Car> CARS = List.of(createCar());
 
-    @Getter
-    private static final List<Long> carsId = List.of(createCar().getId());
+    private static final List<Long> CARS_ID = List.of(createCar().getId());
 
-    @Getter
-    private static final Boolean isDeleted = false;
+    private static final Boolean IS_DELETED = false;
 
-    @Getter
-    private static final Boolean isInRide = false;
+    private static final Boolean IS_IN_RIDE = false;
 
     public static Driver createDriver() {
-        return new Driver(id, name, email, phoneNumber, gender, cars, isDeleted, isInRide);
+        return new Driver(ID, NAME, EMAIL, PHONE_NUMBER, GENDER, CARS, IS_DELETED, IS_IN_RIDE);
     }
 
     public static DriverResponse createDriverResponse() {
-        return new DriverResponse(id, name, email, phoneNumber, gender, carsId, isDeleted, isInRide);
+        return new DriverResponse(ID, NAME, EMAIL, PHONE_NUMBER, GENDER, CARS_ID, IS_DELETED, IS_IN_RIDE);
     }
 
     public static DriverRequest createDriverRequest() {
-        return new DriverRequest(name, email, phoneNumber, gender);
+        return new DriverRequest(NAME, EMAIL, PHONE_NUMBER, GENDER);
     }
 }

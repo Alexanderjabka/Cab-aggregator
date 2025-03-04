@@ -49,6 +49,7 @@ class DriverControllerTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(1, result.getBody().drivers().size());
+        verify(driverService).getAllDrivers();
     }
 
     @Test
@@ -60,6 +61,7 @@ class DriverControllerTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(1, result.getBody().drivers().size());
+        verify(driverService).getAllDriversByStatus(false);
     }
 
     @Test
@@ -70,6 +72,7 @@ class DriverControllerTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals("sasha@mail.com", result.getBody().getEmail());
+        verify(driverService).getDriverById(1L);
     }
 
     @Test
@@ -80,6 +83,7 @@ class DriverControllerTest {
 
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
         assertEquals("sasha@mail.com", result.getBody().getEmail());
+        verify(driverService).createDriver(driverRequest);
     }
 
     @Test
@@ -90,6 +94,7 @@ class DriverControllerTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals("sasha@mail.com", result.getBody().getEmail());
+        verify(driverService).updateDriver("sasha@mail.com", driverRequest);
     }
 
     @Test
@@ -102,6 +107,7 @@ class DriverControllerTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertTrue(result.getBody().getIsInRide());
+        verify(driverService).getFirstFreeDriverAndChangeStatus();
     }
 
     @Test

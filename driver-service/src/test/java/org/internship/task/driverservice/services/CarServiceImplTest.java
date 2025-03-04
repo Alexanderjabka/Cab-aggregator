@@ -68,6 +68,7 @@ class CarServiceImplTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(1, result.getBody().cars().size());
+        verify(carRepository).findAllByOrderByIdAsc();
     }
 
     @Test
@@ -78,6 +79,7 @@ class CarServiceImplTest {
 
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
         assertNull(result.getBody());
+        verify(carRepository).findAllByOrderByIdAsc();
     }
 
     @Test
@@ -89,6 +91,7 @@ class CarServiceImplTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(1, result.getBody().cars().size());
+        verify(carRepository).findByIsDeletedOrderByIdAsc(false);
     }
 
     @Test
@@ -99,6 +102,7 @@ class CarServiceImplTest {
         CarResponse result = carService.getCarById(1L);
 
         assertEquals("1234AB6", result.getCarNumber());
+        verify(carRepository).findById(1L);
     }
 
     @Test
@@ -149,6 +153,7 @@ class CarServiceImplTest {
         CarResponse result = carService.updateCar("1234AB6", carRequest);
 
         assertEquals("1234AB6", result.getCarNumber());
+        verify(carRepository).save(car);
     }
 
     @Test
@@ -174,5 +179,6 @@ class CarServiceImplTest {
     @Test
     void deleteCar_ThrowsCarNotFoundException() {
         assertThrows(CarNotFoundException.class, () -> carService.deleteCar(1L));
+
     }
 }

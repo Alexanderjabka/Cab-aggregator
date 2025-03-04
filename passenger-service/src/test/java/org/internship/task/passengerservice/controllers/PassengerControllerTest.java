@@ -5,7 +5,6 @@ import static org.internship.task.passengerservice.util.TestDataForPassengersTes
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -51,7 +50,7 @@ class PassengerControllerTest {
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
         assertEquals(1, result.getBody().passengers().size());
-        verify(passengerServiceImpl, times(1)).getAllPassengers();
+        verify(passengerServiceImpl).getAllPassengers();
     }
 
     @Test
@@ -64,7 +63,7 @@ class PassengerControllerTest {
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
         assertEquals(1, result.getBody().passengers().size());
-        verify(passengerServiceImpl, times(1)).getAllPassengersByStatus(false);
+        verify(passengerServiceImpl).getAllPassengersByStatus(false);
     }
 
     @Test
@@ -75,7 +74,7 @@ class PassengerControllerTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
-        verify(passengerServiceImpl, times(1)).getPassengerById(1L);
+        verify(passengerServiceImpl).getPassengerById(1L);
     }
 
     @Test
@@ -86,7 +85,7 @@ class PassengerControllerTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
-        verify(passengerServiceImpl, times(1)).getPassengerByIdAndStatus(1L);
+        verify(passengerServiceImpl).getPassengerByIdAndStatus(1L);
     }
 
     @Test
@@ -97,7 +96,7 @@ class PassengerControllerTest {
 
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
         assertNotNull(result.getBody());
-        verify(passengerServiceImpl, times(1)).createPassenger(passengerRequest);
+        verify(passengerServiceImpl).createPassenger(passengerRequest);
     }
 
     @Test
@@ -109,7 +108,7 @@ class PassengerControllerTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
-        verify(passengerServiceImpl, times(1)).updatePassenger("zhaba@example.com", passengerRequest);
+        verify(passengerServiceImpl).updatePassenger("zhaba@example.com", passengerRequest);
     }
 
     @Test
@@ -119,6 +118,6 @@ class PassengerControllerTest {
         ResponseEntity<Void> result = passengerController.deletePassenger(1L);
 
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
-        verify(passengerServiceImpl, times(1)).deletePassenger(1L);
+        verify(passengerServiceImpl).deletePassenger(1L);
     }
 }

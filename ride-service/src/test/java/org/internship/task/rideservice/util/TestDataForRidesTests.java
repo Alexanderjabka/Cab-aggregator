@@ -11,44 +11,45 @@ import org.internship.task.rideservice.entities.Ride;
 import org.internship.task.rideservice.enums.Status;
 
 public class TestDataForRidesTests {
-    private static final Long id = 1L;
+    private static final Long ID = 1L;
 
-    private static final Long passengerId = 1L;
+    private static final Long PASSENGER_ID = 1L;
 
-    private static final Long driverId = 1L;
+    private static final Long DRIVER_ID = 1L;
 
-    private static final String startAddress = "Minsk";
+    private static final String START_ADDRESS = "Minsk";
 
-    private static final String finishAddress = "Mogilev";
+    private static final String FINISH_ADDRESS = "Mogilev";
 
-    private static final Status status = Status.CREATED;
+    private static final Status STATUS = Status.CREATED;
 
-    private static final LocalDateTime orderDateTime = LocalDateTime.now();
+    private static final LocalDateTime ORDER_DATE_TIME = LocalDateTime.now();
 
-    private static final BigDecimal price = null;
+    private static final BigDecimal PRICE = null;
 
     public static StatusRequest createStatusRequest() {
         return new StatusRequest(Status.CREATED);
     }
 
     public static Ride createRide() {
-        return new Ride(id, passengerId, driverId, startAddress, finishAddress, status, orderDateTime, price);
+        return new Ride(ID, PASSENGER_ID, DRIVER_ID, START_ADDRESS, FINISH_ADDRESS, STATUS, ORDER_DATE_TIME, PRICE);
     }
 
     public static RideResponse createRideResponse() {
-        return new RideResponse(id, passengerId, driverId, startAddress, finishAddress, status, orderDateTime, price);
+        return new RideResponse(ID, PASSENGER_ID, DRIVER_ID, START_ADDRESS, FINISH_ADDRESS, STATUS, ORDER_DATE_TIME,
+            PRICE);
     }
 
     public static RideRequest createRideRequest() {
-        return new RideRequest(passengerId, startAddress, finishAddress);
+        return new RideRequest(PASSENGER_ID, START_ADDRESS, FINISH_ADDRESS);
     }
 
     public static GetPassengerResponse createPassengerResponse() {
-        return new GetPassengerResponse(passengerId);
+        return new GetPassengerResponse(PASSENGER_ID);
     }
 
     public static AssignDriverResponse createDriverResponse() {
-        return new AssignDriverResponse(driverId);
+        return new AssignDriverResponse(DRIVER_ID);
     }
 }
 

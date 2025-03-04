@@ -1,6 +1,5 @@
 package org.internship.task.rideservice.controllers;
 
-import static org.internship.task.rideservice.util.TestDataForMapTests.create;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -8,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import org.internship.task.rideservice.services.mapServices.MapServiceImpl;
 import org.internship.task.rideservice.util.TestDataForMapTests;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,31 +21,27 @@ class MapControllerTest {
     @InjectMocks
     private MapController mapController;
 
-    private TestDataForMapTests testData;
-
-    @BeforeEach
-    void setUp() {
-        testData = create();
-    }
 
     @Test
     void getCoordinates_ShouldReturnCoordinates_WhenAddressIsValid() {
-        when(mapService.getCoordinates(testData.getStartAddress())).thenReturn(testData.getStartCoordinates());
+        when(mapService.getCoordinates(TestDataForMapTests.getSTART_ADDRESS())).thenReturn(
+            TestDataForMapTests.getSTART_COORDINATES());
 
-        double[] actualCoordinates = mapController.getCoordinates(testData.getStartAddress());
+        double[] actualCoordinates = mapController.getCoordinates(TestDataForMapTests.getSTART_ADDRESS());
 
         assertNotNull(actualCoordinates);
-        assertEquals(testData.getStartCoordinates().length, actualCoordinates.length);
-        assertArrayEquals(testData.getStartCoordinates(), actualCoordinates);
+        assertEquals(TestDataForMapTests.getSTART_COORDINATES().length, actualCoordinates.length);
+        assertArrayEquals(TestDataForMapTests.getSTART_COORDINATES(), actualCoordinates);
     }
 
     @Test
     void getDistance_ShouldReturnDistance_WhenStartAndFinishAreValid() {
-        when(mapService.getDistance(testData.getStartAddress(), testData.getFinishAddress()))
-            .thenReturn(testData.getDistanceBetweenStartAndFinish());
+        when(mapService.getDistance(TestDataForMapTests.getSTART_ADDRESS(), TestDataForMapTests.getFINISH_ADDRESS()))
+            .thenReturn(TestDataForMapTests.getDISTANCE_BETWEEN_START_AND_FINISH());
 
-        double actualDistance = mapController.getDistance(testData.getStartAddress(), testData.getFinishAddress());
+        double actualDistance =
+            mapController.getDistance(TestDataForMapTests.getSTART_ADDRESS(), TestDataForMapTests.getFINISH_ADDRESS());
 
-        assertEquals(testData.getDistanceBetweenStartAndFinish(), actualDistance);
+        assertEquals(TestDataForMapTests.getDISTANCE_BETWEEN_START_AND_FINISH(), actualDistance);
     }
 }
