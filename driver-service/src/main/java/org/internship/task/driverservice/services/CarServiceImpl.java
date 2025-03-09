@@ -17,7 +17,6 @@ import org.internship.task.driverservice.entities.Driver;
 import org.internship.task.driverservice.exceptions.carExceptions.CarNotFoundException;
 import org.internship.task.driverservice.exceptions.carExceptions.InvalidCarOperationException;
 import org.internship.task.driverservice.exceptions.driverException.DriverNotFoundException;
-import org.internship.task.driverservice.exceptions.driverException.InvalidDriverOperationException;
 import org.internship.task.driverservice.mappers.CarMapper;
 import org.internship.task.driverservice.repositories.CarRepository;
 import org.internship.task.driverservice.repositories.DriverRepository;

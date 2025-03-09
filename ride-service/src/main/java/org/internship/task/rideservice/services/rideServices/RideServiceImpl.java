@@ -83,7 +83,8 @@ public class RideServiceImpl implements RideService {
     @Transactional
     @Override
     public RideResponse createRide(RideRequest rideRequest) {
-        GetPassengerResponse passengerResponse = passengerClient.getPassengerByIdAndStatus(rideRequest.getPassengerId());
+        GetPassengerResponse passengerResponse =
+            passengerClient.getPassengerByIdAndStatus(rideRequest.getPassengerId());
 
         if (rideRepository.existsByPassengerIdAndStatusIn(passengerResponse.getPassengerId(),
             Status.getActiveStatuses())) {
