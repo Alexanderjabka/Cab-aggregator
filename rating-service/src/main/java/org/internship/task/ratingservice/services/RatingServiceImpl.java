@@ -6,6 +6,7 @@ import static org.internship.task.ratingservice.util.constantMessages.exceptionR
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.internship.task.ratingservice.clients.RideClient;
 import org.internship.task.ratingservice.dto.RatingListResponse;
 import org.internship.task.ratingservice.dto.RatingRequest;
@@ -33,6 +34,7 @@ public class RatingServiceImpl implements RatingService {
     private final RideClient rideClient;
 
 
+    @Setter
     @Value("${rating.recent-limit}")
     private int recentLimit;
 
