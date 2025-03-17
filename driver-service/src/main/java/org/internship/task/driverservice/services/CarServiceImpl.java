@@ -32,7 +32,7 @@ public class CarServiceImpl implements CarService {
     private final DriverRepository driverRepository;
     private final CarMapper carMapper;
 
-    @Transactional(readOnly = true)
+    @Transactiona(readOnly = true)
     public ResponseEntity<CarListResponse> getAllCars() {
         List<Car> cars = carRepository.findAllByOrderByIdAsc();
         return cars.isEmpty()
