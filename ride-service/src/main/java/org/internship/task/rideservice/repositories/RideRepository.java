@@ -1,9 +1,10 @@
 package org.internship.task.rideservice.repositories;
 
-import java.util.List;
 import org.internship.task.rideservice.entities.Ride;
 import org.internship.task.rideservice.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 public interface RideRepository extends JpaRepository<Ride, Long> {
 

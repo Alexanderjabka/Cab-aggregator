@@ -1,10 +1,5 @@
 package org.internship.task.ratingservice.services;
 
-import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.IS_ALREADY_RATE_THIS_RIDE;
-import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.RATING_IS_NOT_FOUND_BY_ID;
-import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.THIS_PERSON_DOESNT_HAVE_RATING_YET;
-
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.internship.task.ratingservice.clients.RideClient;
@@ -26,6 +21,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.*;
+
 @Service
 @RequiredArgsConstructor
 public class RatingServiceImpl implements RatingService {
@@ -44,10 +43,10 @@ public class RatingServiceImpl implements RatingService {
         List<Rating> ratings = ratingRepository.findAllByOrderByIdAsc();
 
         return ratings.isEmpty()
-            ? ResponseEntity.noContent().build()
-            : ResponseEntity.ok(RatingListResponse.builder()
-            .ratings(ratingMapper.toDtoList(ratings))
-            .build());
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(RatingListResponse.builder()
+                .ratings(ratingMapper.toDtoList(ratings))
+                .build());
     }
 
     @Transactional(readOnly = true)
@@ -56,7 +55,7 @@ public class RatingServiceImpl implements RatingService {
         Pageable pageable = PageRequest.of(0, recentLimit, Sort.by(Sort.Direction.DESC, "id"));
 
         List<Rating> ratings = ratingRepository
-            .findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(passengerId, WhoRate.DRIVER, pageable);
+                .findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(passengerId, WhoRate.DRIVER, pageable);
 
         return calculateAverage(ratings);
     }
@@ -66,7 +65,7 @@ public class RatingServiceImpl implements RatingService {
     public double getAverageDriverRating(Long driverId) {
         Pageable pageable = PageRequest.of(0, recentLimit, Sort.by(Sort.Direction.DESC, "id"));
         List<Rating> ratings = ratingRepository
-            .findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(driverId, WhoRate.PASSENGER, pageable);
+                .findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(driverId, WhoRate.PASSENGER, pageable);
 
         return calculateAverage(ratings);
     }
@@ -75,7 +74,7 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public ResponseEntity<String> deleteRating(Long ratingId) {
         Rating rating = ratingRepository.findById(ratingId)
-            .orElseThrow(() -> new RatingNotFoundException(RATING_IS_NOT_FOUND_BY_ID + ratingId));
+                .orElseThrow(() -> new RatingNotFoundException(RATING_IS_NOT_FOUND_BY_ID + ratingId));
 
         rating.setIsDeleted(true);
 
@@ -90,7 +89,7 @@ public class RatingServiceImpl implements RatingService {
         GetRideResponse rideResponse = rideClient.getRideByIdAndAbilityToRate(ratingRequest.getRideId());
 
         if (ratingRepository.findByRideIdAndWhoRateAndIsDeletedFalse(ratingRequest.getRideId(),
-            ratingRequest.getWhoRate()).isPresent()) {
+                ratingRequest.getWhoRate()).isPresent()) {
             throw new InvalidRatingOperationException(ratingRequest.getWhoRate() + IS_ALREADY_RATE_THIS_RIDE);
         }
 

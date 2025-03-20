@@ -1,22 +1,5 @@
 package org.internship.task.driverservice.services;
 
-import static org.internship.task.driverservice.util.TestDataForDriver.createDriver;
-import static org.internship.task.driverservice.util.TestDataForDriver.createDriverRequest;
-import static org.internship.task.driverservice.util.TestDataForDriver.createDriverResponse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import org.internship.task.driverservice.dto.drivers.DriverListResponse;
 import org.internship.task.driverservice.dto.drivers.DriverRequest;
 import org.internship.task.driverservice.dto.drivers.DriverResponse;
@@ -34,6 +17,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static org.internship.task.driverservice.util.TestDataForDriver.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DriverServiceImplTest {
@@ -162,7 +154,7 @@ class DriverServiceImplTest {
     @Test
     void getFirstFreeDriverAndChangeStatus_ReturnsDriverResponse() {
         when(driverRepository.findFirstByIsInRideFalseAndIsDeletedFalseAndCarsIsDeletedFalseOrderByIdAsc())
-            .thenReturn(Optional.of(driver));
+                .thenReturn(Optional.of(driver));
 
         driver.setIsInRide(true);
         when(driverRepository.save(driver)).thenReturn(driver);
@@ -181,7 +173,7 @@ class DriverServiceImplTest {
     @Test
     void getFirstFreeDriverAndChangeStatus_ThrowsDriverNotFoundException() {
         when(driverRepository.findFirstByIsInRideFalseAndIsDeletedFalseAndCarsIsDeletedFalseOrderByIdAsc()).thenReturn(
-            Optional.empty());
+                Optional.empty());
 
         assertThrows(DriverNotFoundException.class, () -> driverService.getFirstFreeDriverAndChangeStatus());
     }

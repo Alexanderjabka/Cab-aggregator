@@ -1,10 +1,11 @@
 package org.internship.task.driverservice.dto.cars;
 
-import java.util.List;
 import lombok.Builder;
+
+import java.util.List;
 
 @Builder
 public record CarListResponse(
-    List<CarResponse> cars
+        List<CarResponse> cars
 ) {
 }

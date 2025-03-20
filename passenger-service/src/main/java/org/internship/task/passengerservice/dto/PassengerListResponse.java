@@ -1,10 +1,11 @@
 package org.internship.task.passengerservice.dto;
 
-import java.util.List;
 import lombok.Builder;
+
+import java.util.List;
 
 @Builder
 public record PassengerListResponse(
-    List<PassengerResponse> passengers
+        List<PassengerResponse> passengers
 ) {
 }

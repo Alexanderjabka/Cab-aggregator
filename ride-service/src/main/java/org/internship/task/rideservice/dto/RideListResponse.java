@@ -1,11 +1,12 @@
 package org.internship.task.rideservice.dto;
 
-import java.util.List;
 import lombok.Builder;
+
+import java.util.List;
 
 
 @Builder
 public record RideListResponse(
-    List<RideResponse> rides
+        List<RideResponse> rides
 ) {
 }

@@ -1,9 +1,5 @@
 package org.internship.task.passengerservice.controllersIT;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.internship.task.passengerservice.dto.PassengerRequest;
@@ -11,12 +7,7 @@ import org.internship.task.passengerservice.entities.Passenger;
 import org.internship.task.passengerservice.repositories.PassengerRepository;
 import org.internship.task.passengerservice.testContainerConfig.PostgresTestContainer;
 import org.internship.task.passengerservice.testDataIT.DataForIT;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -26,6 +17,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -68,10 +63,10 @@ class PassengerControllerIT {
         passengerRepository.deleteAll();
 
         given()
-            .when()
-            .get("/api/v1/passengers")
-            .then()
-            .statusCode(HttpStatus.NO_CONTENT.value());
+                .when()
+                .get("/api/v1/passengers")
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -80,14 +75,14 @@ class PassengerControllerIT {
         PassengerRequest request = DataForIT.CREATE_REQUEST;
 
         given()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .when()
-            .post("/api/v1/passengers")
-            .then()
-            .statusCode(HttpStatus.CREATED.value())
-            .body("name", equalTo(request.getName()))
-            .body("email", equalTo(request.getEmail()));
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .post("/api/v1/passengers")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("name", equalTo(request.getName()))
+                .body("email", equalTo(request.getEmail()));
     }
 
     @Test
@@ -97,12 +92,12 @@ class PassengerControllerIT {
         passengerRepository.save(DataForIT.PASSENGER);
 
         given()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .when()
-            .post("/api/v1/passengers")
-            .then()
-            .statusCode(HttpStatus.BAD_REQUEST.value());
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .post("/api/v1/passengers")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -111,12 +106,12 @@ class PassengerControllerIT {
         PassengerRequest invalidRequest = DataForIT.INVALID_CREATE_REQUEST;
 
         given()
-            .contentType(ContentType.JSON)
-            .body(invalidRequest)
-            .when()
-            .post("/api/v1/passengers")
-            .then()
-            .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                .contentType(ContentType.JSON)
+                .body(invalidRequest)
+                .when()
+                .post("/api/v1/passengers")
+                .then()
+                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @Test
@@ -125,12 +120,12 @@ class PassengerControllerIT {
         passengerRepository.save(DataForIT.PASSENGER);
 
         given()
-            .when()
-            .get("/api/v1/passengers")
-            .then()
-            .statusCode(HttpStatus.OK.value())
-            .body("passengers.size()", equalTo(1))
-            .body("passengers[0].name", equalTo(DataForIT.PASSENGER.getName()));
+                .when()
+                .get("/api/v1/passengers")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("passengers.size()", equalTo(1))
+                .body("passengers[0].name", equalTo(DataForIT.PASSENGER.getName()));
     }
 
     @Test
@@ -139,10 +134,10 @@ class PassengerControllerIT {
         passengerRepository.deleteAll();
 
         given()
-            .when()
-            .get("/api/v1/passengers/status/{status}", false)
-            .then()
-            .statusCode(HttpStatus.NO_CONTENT.value());
+                .when()
+                .get("/api/v1/passengers/status/{status}", false)
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -151,12 +146,12 @@ class PassengerControllerIT {
         passengerRepository.save(DataForIT.PASSENGER);
 
         given()
-            .when()
-            .get("/api/v1/passengers/status/{status}", false)
-            .then()
-            .statusCode(HttpStatus.OK.value())
-            .body("passengers.size()", equalTo(1))
-            .body("passengers[0].name", equalTo(DataForIT.PASSENGER.getName()));
+                .when()
+                .get("/api/v1/passengers/status/{status}", false)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("passengers.size()", equalTo(1))
+                .body("passengers[0].name", equalTo(DataForIT.PASSENGER.getName()));
     }
 
     @Test
@@ -165,22 +160,22 @@ class PassengerControllerIT {
         Passenger savedPassenger = passengerRepository.save(DataForIT.PASSENGER);
 
         given()
-            .when()
-            .get("/api/v1/passengers/isFree/{id}", savedPassenger.getId())
-            .then()
-            .statusCode(HttpStatus.OK.value())
-            .body("name", equalTo(savedPassenger.getName()))
-            .body("email", equalTo(savedPassenger.getEmail()));
+                .when()
+                .get("/api/v1/passengers/isFree/{id}", savedPassenger.getId())
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("name", equalTo(savedPassenger.getName()))
+                .body("email", equalTo(savedPassenger.getEmail()));
     }
 
     @Test
     @Order(9)
     void getPassengerByIdAndStatus_ShouldThrowNotFoundException() {
         given()
-            .when()
-            .get("/api/v1/passengers/isFree/{id}", DataForIT.INVALID_ID)
-            .then()
-            .statusCode(HttpStatus.NOT_FOUND.value());
+                .when()
+                .get("/api/v1/passengers/isFree/{id}", DataForIT.INVALID_ID)
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -189,10 +184,10 @@ class PassengerControllerIT {
         Passenger savedPassenger = passengerRepository.save(DataForIT.PASSENGER);
 
         given()
-            .when()
-            .delete("/api/v1/passengers/{id}", savedPassenger.getId())
-            .then()
-            .statusCode(HttpStatus.NO_CONTENT.value());
+                .when()
+                .delete("/api/v1/passengers/{id}", savedPassenger.getId())
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
 
         Passenger deletedPassenger = passengerRepository.findById(savedPassenger.getId()).orElseThrow();
         assertEquals(true, deletedPassenger.getIsDeleted());
@@ -202,10 +197,10 @@ class PassengerControllerIT {
     @Order(11)
     void deletePassenger_ShouldThrowNotFoundException() {
         given()
-            .when()
-            .delete("/api/v1/passengers/{id}", DataForIT.INVALID_ID)
-            .then()
-            .statusCode(HttpStatus.NOT_FOUND.value());
+                .when()
+                .delete("/api/v1/passengers/{id}", DataForIT.INVALID_ID)
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -215,14 +210,14 @@ class PassengerControllerIT {
         PassengerRequest updateRequest = DataForIT.UPDATE_REQUEST;
 
         given()
-            .contentType(ContentType.JSON)
-            .body(updateRequest)
-            .when()
-            .put("/api/v1/passengers/{email}", savedPassenger.getEmail())
-            .then()
-            .statusCode(HttpStatus.OK.value())
-            .body("name", equalTo(updateRequest.getName()))
-            .body("email", equalTo(updateRequest.getEmail()));
+                .contentType(ContentType.JSON)
+                .body(updateRequest)
+                .when()
+                .put("/api/v1/passengers/{email}", savedPassenger.getEmail())
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("name", equalTo(updateRequest.getName()))
+                .body("email", equalTo(updateRequest.getEmail()));
     }
 
     @Test
@@ -231,12 +226,12 @@ class PassengerControllerIT {
         PassengerRequest request = DataForIT.UPDATE_REQUEST;
 
         given()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .when()
-            .put("/api/v1/passengers/{email}", "nonexistent@example.com")
-            .then()
-            .statusCode(HttpStatus.NOT_FOUND.value());
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .put("/api/v1/passengers/{email}", "nonexistent@example.com")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -246,12 +241,12 @@ class PassengerControllerIT {
         PassengerRequest request = DataForIT.INVALID_CREATE_REQUEST;
 
         given()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .when()
-            .put("/api/v1/passengers/{email}", savedPassenger.getEmail())
-            .then()
-            .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .put("/api/v1/passengers/{email}", savedPassenger.getEmail())
+                .then()
+                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @Test
@@ -264,12 +259,12 @@ class PassengerControllerIT {
         PassengerRequest request = DataForIT.UPDATE_REQUEST;
 
         given()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .when()
-            .put("/api/v1/passengers/{email}", savedPassenger.getEmail())
-            .then()
-            .statusCode(HttpStatus.BAD_REQUEST.value());
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .put("/api/v1/passengers/{email}", savedPassenger.getEmail())
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -278,22 +273,22 @@ class PassengerControllerIT {
         Passenger savedPassenger = passengerRepository.save(DataForIT.PASSENGER);
 
         given()
-            .when()
-            .get("/api/v1/passengers/{id}", savedPassenger.getId())
-            .then()
-            .statusCode(HttpStatus.OK.value())
-            .body("name", equalTo(savedPassenger.getName()))
-            .body("email", equalTo(savedPassenger.getEmail()));
+                .when()
+                .get("/api/v1/passengers/{id}", savedPassenger.getId())
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("name", equalTo(savedPassenger.getName()))
+                .body("email", equalTo(savedPassenger.getEmail()));
     }
 
     @Test
     @Order(17)
     void getPassenger_ShouldThrowNotFoundException() {
         given()
-            .when()
-            .get("/api/v1/passengers/{id}", DataForIT.INVALID_ID)
-            .then()
-            .statusCode(HttpStatus.NOT_FOUND.value());
+                .when()
+                .get("/api/v1/passengers/{id}", DataForIT.INVALID_ID)
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -302,10 +297,10 @@ class PassengerControllerIT {
         passengerRepository.save(DataForIT.PASSENGER);
 
         given()
-            .when()
-            .get("/api/v1/passengers")
-            .then()
-            .statusCode(HttpStatus.OK.value())
-            .body("passengers[0].name", equalTo("sasha"));
+                .when()
+                .get("/api/v1/passengers")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("passengers[0].name", equalTo("sasha"));
     }
 }

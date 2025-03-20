@@ -1,14 +1,15 @@
 package org.internship.task.rideservice.services.mapServices;
 
-import static org.internship.task.rideservice.util.constantMessages.exceptionMessages.MapExceptions.ERROR_GET_COORDINATES;
-import static org.internship.task.rideservice.util.constants.RideConstants.EARTH_RADIUS;
-
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.internship.task.rideservice.clients.MapClient;
 import org.internship.task.rideservice.dto.clientsdDto.GeocodeResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static org.internship.task.rideservice.util.constantMessages.exceptionMessages.MapExceptions.ERROR_GET_COORDINATES;
+import static org.internship.task.rideservice.util.constants.RideConstants.EARTH_RADIUS;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class MapServiceImpl implements MapService {
             }
 
             List<Double> coordinates = response.getFeatures().get(0).getGeometry().getCoordinates();
-            return new double[] {coordinates.get(0), coordinates.get(1)};
+            return new double[]{coordinates.get(0), coordinates.get(1)};
         } catch (Exception e) {
             throw new RuntimeException(ERROR_GET_COORDINATES + e.getMessage());
         }
@@ -46,8 +47,8 @@ public class MapServiceImpl implements MapService {
         double deltaLon = Math.toRadians(finishLon - startLon);
 
         double a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-            Math.cos(Math.toRadians(startLat)) * Math.cos(Math.toRadians(finishLat))
-                * Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+                Math.cos(Math.toRadians(startLat)) * Math.cos(Math.toRadians(finishLat))
+                        * Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 

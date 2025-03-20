@@ -1,13 +1,14 @@
 package org.internship.task.driverservice.util;
 
-import static org.internship.task.driverservice.util.TestDataForCar.createCar;
-
-import java.util.List;
 import org.internship.task.driverservice.dto.drivers.DriverRequest;
 import org.internship.task.driverservice.dto.drivers.DriverResponse;
 import org.internship.task.driverservice.entities.Car;
 import org.internship.task.driverservice.entities.Driver;
 import org.internship.task.driverservice.enums.Gender;
+
+import java.util.List;
+
+import static org.internship.task.driverservice.util.TestDataForCar.createCar;
 
 public class TestDataForDriver {
     private static final Long ID = 1L;

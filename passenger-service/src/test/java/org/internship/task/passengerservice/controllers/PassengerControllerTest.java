@@ -1,14 +1,5 @@
 package org.internship.task.passengerservice.controllers;
 
-import static org.internship.task.passengerservice.util.TestDataForPassengersTest.createPassengerRequest;
-import static org.internship.task.passengerservice.util.TestDataForPassengersTest.createPassengerResponse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
 import org.internship.task.passengerservice.dto.PassengerListResponse;
 import org.internship.task.passengerservice.dto.PassengerRequest;
 import org.internship.task.passengerservice.dto.PassengerResponse;
@@ -21,6 +12,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
+
+import static org.internship.task.passengerservice.util.TestDataForPassengersTest.createPassengerRequest;
+import static org.internship.task.passengerservice.util.TestDataForPassengersTest.createPassengerResponse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PassengerControllerTest {
@@ -104,7 +103,7 @@ class PassengerControllerTest {
         when(passengerServiceImpl.updatePassenger("zhaba@example.com", passengerRequest)).thenReturn(passengerResponse);
 
         ResponseEntity<PassengerResponse> result =
-            passengerController.updatePassenger("zhaba@example.com", passengerRequest);
+                passengerController.updatePassenger("zhaba@example.com", passengerRequest);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());

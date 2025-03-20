@@ -1,7 +1,5 @@
 package org.internship.task.rideservice.util;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import org.internship.task.rideservice.dto.RideRequest;
 import org.internship.task.rideservice.dto.RideResponse;
 import org.internship.task.rideservice.dto.StatusRequest;
@@ -9,6 +7,9 @@ import org.internship.task.rideservice.dto.clientsdDto.AssignDriverResponse;
 import org.internship.task.rideservice.dto.clientsdDto.GetPassengerResponse;
 import org.internship.task.rideservice.entities.Ride;
 import org.internship.task.rideservice.enums.Status;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class TestDataForRidesTests {
     private static final Long ID = 1L;
@@ -37,7 +38,7 @@ public class TestDataForRidesTests {
 
     public static RideResponse createRideResponse() {
         return new RideResponse(ID, PASSENGER_ID, DRIVER_ID, START_ADDRESS, FINISH_ADDRESS, STATUS, ORDER_DATE_TIME,
-            PRICE);
+                PRICE);
     }
 
     public static RideRequest createRideRequest() {

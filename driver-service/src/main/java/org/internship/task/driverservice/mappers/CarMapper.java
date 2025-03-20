@@ -1,12 +1,13 @@
 package org.internship.task.driverservice.mappers;
 
-import java.util.List;
 import org.internship.task.driverservice.dto.cars.CarRequest;
 import org.internship.task.driverservice.dto.cars.CarResponse;
 import org.internship.task.driverservice.entities.Car;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CarMapper {

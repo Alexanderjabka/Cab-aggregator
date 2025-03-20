@@ -1,10 +1,11 @@
 package org.internship.task.rideservice.enums;
 
-import java.util.Arrays;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.util.Arrays;
+import java.util.List;
 
 @AllArgsConstructor
 @ToString
