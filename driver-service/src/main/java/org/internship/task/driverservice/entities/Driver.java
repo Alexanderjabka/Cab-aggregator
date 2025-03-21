@@ -1,20 +1,13 @@
 package org.internship.task.driverservice.entities;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.internship.task.driverservice.enums.Gender;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "driver")

@@ -1,9 +1,10 @@
 package org.internship.task.rideservice.testDataIT;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import org.internship.task.rideservice.entities.Ride;
 import org.internship.task.rideservice.enums.Status;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class DataForIT {
 
@@ -23,12 +24,12 @@ public class DataForIT {
     public static final String PASSENGER_HAS_ACTIVE_RIDE_MESSAGE = "this passenger is already has an active ride";
     public static final String RIDE_NOT_FOUND_MESSAGE = "Ride not found with ID: ";
     public static final String RIDE_STATUS_INCORRECT_MESSAGE =
-        "Ride status is incorrect cause of this status cannot be updated: ";
+            "Ride status is incorrect cause of this status cannot be updated: ";
 
     public static final String CREATE_RIDE_JSON =
-        "{\"passengerId\": 1, \"startAddress\": \"Minsk\", \"finishAddress\": \"Mogilev\"}";
+            "{\"passengerId\": 1, \"startAddress\": \"Minsk\", \"finishAddress\": \"Mogilev\"}";
     public static final String UPDATE_RIDE_JSON =
-        "{\"passengerId\": 1, \"startAddress\": \"Grodno\", \"finishAddress\": \"Gomel\"}";
+            "{\"passengerId\": 1, \"startAddress\": \"Grodno\", \"finishAddress\": \"Gomel\"}";
     public static final String CHANGE_STATUS_JSON = "{\"status\": \"EN_ROUTE_TO_PASSENGER\"}";
 
     public static final String STATUS_CREATED = "CREATED";
@@ -37,14 +38,14 @@ public class DataForIT {
 
     // Предопределенная поездка
     public static final Ride CREATE_RIDE = new Ride(
-        ID,
-        PASSENGER_ID,
-        DRIVER_ID,
-        START_ADDRESS,
-        FINISH_ADDRESS,
-        Status.CREATED,
-        ORDER_DATE_TIME,
-        PRICE
+            ID,
+            PASSENGER_ID,
+            DRIVER_ID,
+            START_ADDRESS,
+            FINISH_ADDRESS,
+            Status.CREATED,
+            ORDER_DATE_TIME,
+            PRICE
     );
 
     public static final String WIREMOCK_API_KEY = "test-api-key";

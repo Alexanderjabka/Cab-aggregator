@@ -4,14 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import feign.Response;
 import feign.codec.ErrorDecoder;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 import org.internship.task.ratingservice.exceptions.ErrorResponse;
 import org.internship.task.ratingservice.exceptions.feignExceptions.FeignClientException;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class FeignErrorDecoder implements ErrorDecoder {
     @Override
@@ -34,7 +35,7 @@ public class FeignErrorDecoder implements ErrorDecoder {
     private String readResponseBody(Response response) {
         if (Objects.nonNull(response.body())) {
             @Cleanup InputStreamReader inputStreamReader = new InputStreamReader(response.body()
-                .asInputStream(), StandardCharsets.UTF_8);
+                    .asInputStream(), StandardCharsets.UTF_8);
             StringBuilder builder = new StringBuilder();
             BufferedReader reader = new BufferedReader(inputStreamReader);
             String line;

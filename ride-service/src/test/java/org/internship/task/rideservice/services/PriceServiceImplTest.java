@@ -1,13 +1,14 @@
 package org.internship.task.rideservice.services;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.math.BigDecimal;
 import org.internship.task.rideservice.services.priceServices.PriceServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.math.BigDecimal;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class PriceServiceImplTest {

@@ -1,0 +1,190 @@
+version: '3.8'
+
+services:
+  # Eureka Server
+  eureka-server:
+    build:
+      context: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - "8081:8081"  # Маппинг порта 8081 на хост
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8082:8082"  # Маппинг порта 8082 на хост
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # Passenger Service
+  passenger-service:
+    build:
+      context: ./passenger-service
+    container_name: passenger-service
+    ports:
+      - "8083:8083"  # Маппинг порта 8083 на хост
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://passenger-db:5432/passenger_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      passenger-db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # Passenger Database
+  passenger-db:
+    image: postgres:15
+    container_name: passenger-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: passenger_db
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Driver Service
+  driver-service:
+    build:
+      context: ./driver-service
+    container_name: driver-service
+    ports:
+      - "8084:8084"  # Маппинг порта 8084 на хост
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://driver-db:5432/driver_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      driver-db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # Driver Database
+  driver-db:
+    image: postgres:15
+    container_name: driver-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: driver_db
+    ports:
+      - "5433:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Ride Service
+  ride-service:
+    build:
+      context: ./ride-service
+    container_name: ride-service
+    ports:
+      - "8085:8085"  # Маппинг порта 8085 на хост
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://ride-db:5432/ride_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      ride-db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # Ride Database
+  ride-db:
+    image: postgres:15
+    container_name: ride-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ride_db
+    ports:
+      - "5434:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Rating Service
+  rating-service:
+    build:
+      context: ./rating-service
+    container_name: rating-service
+    ports:
+      - "8086:8086"  # Маппинг порта 8086 на хост
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://rating-db:5432/rating_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      rating-db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # Rating Database
+  rating-db:
+    image: postgres:15
+    container_name: rating-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rating_db
+    ports:
+      - "5435:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  app-network:
+    driver: bridge

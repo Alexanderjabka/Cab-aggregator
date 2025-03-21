@@ -1,10 +1,11 @@
 package org.internship.task.ratingservice.dto;
 
-import java.util.List;
 import lombok.Builder;
+
+import java.util.List;
 
 @Builder
 public record RatingListResponse(
-    List<RatingResponse> ratings
+        List<RatingResponse> ratings
 ) {
 }

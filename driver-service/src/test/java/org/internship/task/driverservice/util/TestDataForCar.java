@@ -1,13 +1,13 @@
 package org.internship.task.driverservice.util;
 
-import static org.internship.task.driverservice.util.TestDataForDriver.createDriver;
-
 import org.internship.task.driverservice.dto.cars.CarRequest;
 import org.internship.task.driverservice.dto.cars.CarResponse;
 import org.internship.task.driverservice.entities.Car;
 import org.internship.task.driverservice.entities.Driver;
 import org.internship.task.driverservice.enums.CarBrand;
 import org.internship.task.driverservice.enums.Color;
+
+import static org.internship.task.driverservice.util.TestDataForDriver.createDriver;
 
 public class TestDataForCar {
 
