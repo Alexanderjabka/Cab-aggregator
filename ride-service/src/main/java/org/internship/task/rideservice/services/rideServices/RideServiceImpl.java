@@ -1,5 +1,7 @@
 package org.internship.task.rideservice.services.rideServices;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import org.internship.task.rideservice.clients.DriverClient;
 import org.internship.task.rideservice.clients.PassengerClient;
@@ -11,6 +13,7 @@ import org.internship.task.rideservice.dto.clientsdDto.AssignDriverResponse;
 import org.internship.task.rideservice.dto.clientsdDto.GetPassengerResponse;
 import org.internship.task.rideservice.entities.Ride;
 import org.internship.task.rideservice.enums.Status;
+import org.internship.task.rideservice.exceptions.feignExceptions.FeignClientException;
 import org.internship.task.rideservice.exceptions.rideExceptions.InvalidRideOperationException;
 import org.internship.task.rideservice.exceptions.rideExceptions.RideNotFoundException;
 import org.internship.task.rideservice.mappers.RideMapper;
@@ -28,6 +31,7 @@ import static org.internship.task.rideservice.util.constantMessages.exceptionMes
 @Service
 @RequiredArgsConstructor
 public class RideServiceImpl implements RideService {
+
 
     private final RideRepository rideRepository;
     private final MapService mapService;
@@ -80,6 +84,8 @@ public class RideServiceImpl implements RideService {
 
     @Transactional
     @Override
+    @Retry(name = "rideService", fallbackMethod = "createRideFallback")
+    @CircuitBreaker(name = "rideService", fallbackMethod = "createRideFallback")
     public RideResponse createRide(RideRequest rideRequest) {
         GetPassengerResponse passengerResponse =
                 passengerClient.getPassengerByIdAndStatus(rideRequest.getPassengerId());
@@ -102,8 +108,19 @@ public class RideServiceImpl implements RideService {
         return rideMapper.toDto(ride);
     }
 
+    public RideResponse createRideFallback(RideRequest rideRequest, Exception ex) {
+        // Если это бизнес-исключение, пробрасываем его дальше
+        if (ex instanceof InvalidRideOperationException || ex instanceof RideNotFoundException || ex instanceof FeignClientException) {
+            throw (RuntimeException) ex;
+        }
+        // Если это технический сбой, пробрасываем исключение с сообщением о недоступности сервиса
+        throw new RuntimeException(ex.getMessage());
+    }
+
     @Transactional
     @Override
+    @Retry(name = "rideService", fallbackMethod = "updateRideFallback")
+    @CircuitBreaker(name = "rideService", fallbackMethod = "updateRideFallback")
     public RideResponse updateRide(Long id, RideRequest rideRequest) {
         Ride ride = rideRepository.findById(id)
                 .orElseThrow(() -> new RideNotFoundException(RIDE_NOT_FOUND_BY_RIDE_ID + id));
@@ -129,8 +146,19 @@ public class RideServiceImpl implements RideService {
         return rideMapper.toDto(ride);
     }
 
+    public RideResponse updateRideFallback(Long id, RideRequest rideRequest, Exception ex) {
+        // Если это бизнес-исключение, пробрасываем его дальше
+        if (ex instanceof InvalidRideOperationException || ex instanceof RideNotFoundException || ex instanceof FeignClientException) {
+            throw (RuntimeException) ex;
+        }
+        // Если это технический сбой, пробрасываем исключение с сообщением о недоступности сервиса
+        throw new RuntimeException(ex.getMessage());
+    }
+
     @Transactional
     @Override
+    @Retry(name = "rideService", fallbackMethod = "changeStatusFallback")
+    @CircuitBreaker(name = "rideService", fallbackMethod = "changeStatusFallback")
     public RideResponse changeStatus(Long id, StatusRequest status) {
         Ride ride = rideRepository.findById(id)
                 .orElseThrow(() -> new RideNotFoundException(RIDE_NOT_FOUND_BY_RIDE_ID + id));
@@ -147,5 +175,14 @@ public class RideServiceImpl implements RideService {
         }
 
         return rideMapper.toDto(ride);
+    }
+
+    public RideResponse changeStatusFallback(Long id, StatusRequest status, Exception ex) {
+        // Если это бизнес-исключение, пробрасываем его дальше
+        if (ex instanceof InvalidRideOperationException || ex instanceof RideNotFoundException || ex instanceof FeignClientException) {
+            throw (RuntimeException) ex;
+        }
+        // Если это технический сбой, пробрасываем исключение с сообщением о недоступности сервиса
+        throw new RuntimeException(ex.getMessage());
     }
 }

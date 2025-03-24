@@ -1,5 +1,7 @@
 package org.internship.task.ratingservice.services;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.internship.task.ratingservice.clients.RideClient;
@@ -9,6 +11,7 @@ import org.internship.task.ratingservice.dto.RatingResponse;
 import org.internship.task.ratingservice.dto.clientsDto.GetRideResponse;
 import org.internship.task.ratingservice.entities.Rating;
 import org.internship.task.ratingservice.enums.WhoRate;
+import org.internship.task.ratingservice.exceptions.feignExceptions.FeignClientException;
 import org.internship.task.ratingservice.exceptions.ratingExceptions.InvalidRatingOperationException;
 import org.internship.task.ratingservice.exceptions.ratingExceptions.RatingNotFoundException;
 import org.internship.task.ratingservice.mappers.RatingMapper;
@@ -28,10 +31,10 @@ import static org.internship.task.ratingservice.util.constantMessages.exceptionR
 @Service
 @RequiredArgsConstructor
 public class RatingServiceImpl implements RatingService {
+
     private final RatingRepository ratingRepository;
     private final RatingMapper ratingMapper;
     private final RideClient rideClient;
-
 
     @Setter
     @Value("${rating.recent-limit}")
@@ -42,11 +45,7 @@ public class RatingServiceImpl implements RatingService {
     public ResponseEntity<RatingListResponse> getAllRatings() {
         List<Rating> ratings = ratingRepository.findAllByOrderByIdAsc();
 
-        return ratings.isEmpty()
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(RatingListResponse.builder()
-                .ratings(ratingMapper.toDtoList(ratings))
-                .build());
+        return ratings.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(RatingListResponse.builder().ratings(ratingMapper.toDtoList(ratings)).build());
     }
 
     @Transactional(readOnly = true)
@@ -54,8 +53,7 @@ public class RatingServiceImpl implements RatingService {
     public double getAveragePassengerRating(Long passengerId) {
         Pageable pageable = PageRequest.of(0, recentLimit, Sort.by(Sort.Direction.DESC, "id"));
 
-        List<Rating> ratings = ratingRepository
-                .findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(passengerId, WhoRate.DRIVER, pageable);
+        List<Rating> ratings = ratingRepository.findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(passengerId, WhoRate.DRIVER, pageable);
 
         return calculateAverage(ratings);
     }
@@ -64,8 +62,7 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public double getAverageDriverRating(Long driverId) {
         Pageable pageable = PageRequest.of(0, recentLimit, Sort.by(Sort.Direction.DESC, "id"));
-        List<Rating> ratings = ratingRepository
-                .findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(driverId, WhoRate.PASSENGER, pageable);
+        List<Rating> ratings = ratingRepository.findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(driverId, WhoRate.PASSENGER, pageable);
 
         return calculateAverage(ratings);
     }
@@ -73,8 +70,7 @@ public class RatingServiceImpl implements RatingService {
     @Transactional
     @Override
     public ResponseEntity<String> deleteRating(Long ratingId) {
-        Rating rating = ratingRepository.findById(ratingId)
-                .orElseThrow(() -> new RatingNotFoundException(RATING_IS_NOT_FOUND_BY_ID + ratingId));
+        Rating rating = ratingRepository.findById(ratingId).orElseThrow(() -> new RatingNotFoundException(RATING_IS_NOT_FOUND_BY_ID + ratingId));
 
         rating.setIsDeleted(true);
 
@@ -85,11 +81,12 @@ public class RatingServiceImpl implements RatingService {
 
     @Transactional
     @Override
+    @Retry(name = "ratingService", fallbackMethod = "createRatingFallback")
+    @CircuitBreaker(name = "ratingService", fallbackMethod = "createRatingFallback")
     public RatingResponse createRating(RatingRequest ratingRequest) {
         GetRideResponse rideResponse = rideClient.getRideByIdAndAbilityToRate(ratingRequest.getRideId());
 
-        if (ratingRepository.findByRideIdAndWhoRateAndIsDeletedFalse(ratingRequest.getRideId(),
-                ratingRequest.getWhoRate()).isPresent()) {
+        if (ratingRepository.findByRideIdAndWhoRateAndIsDeletedFalse(ratingRequest.getRideId(), ratingRequest.getWhoRate()).isPresent()) {
             throw new InvalidRatingOperationException(ratingRequest.getWhoRate() + IS_ALREADY_RATE_THIS_RIDE);
         }
 
@@ -104,6 +101,12 @@ public class RatingServiceImpl implements RatingService {
         return ratingMapper.ratingToRatingResponse(savedRating);
     }
 
+    public RatingResponse createRatingFallback(RatingRequest ratingRequest, Exception ex) {
+        if (ex instanceof InvalidRatingOperationException || ex instanceof RatingNotFoundException || ex instanceof FeignClientException) {
+            throw (RuntimeException) ex;
+        }
+        throw new RuntimeException(ex.getMessage());
+    }
 
     private double calculateAverage(List<Rating> ratings) {
         if (ratings.isEmpty()) {
@@ -111,5 +114,4 @@ public class RatingServiceImpl implements RatingService {
         }
         return ratings.stream().mapToInt(Rating::getScore).average().orElse(0.0);
     }
-
 }

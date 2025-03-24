@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
-@FeignClient(name = "driver-service", url = "${server.url.driver}", configuration = FeignClientConfig.class)
+@FeignClient(name = "driver-service", path = "/api/v1/drivers", configuration = FeignClientConfig.class)
 public interface DriverClient {
 
     @PutMapping("/assign")
