@@ -1,5 +1,14 @@
 package org.internship.task.driverservice.controllers;
 
+import static org.internship.task.driverservice.util.TestDataForDriver.createDriverRequest;
+import static org.internship.task.driverservice.util.TestDataForDriver.createDriverResponse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
 import org.internship.task.driverservice.dto.drivers.DriverListResponse;
 import org.internship.task.driverservice.dto.drivers.DriverRequest;
 import org.internship.task.driverservice.dto.drivers.DriverResponse;
@@ -12,14 +21,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
-
-import static org.internship.task.driverservice.util.TestDataForDriver.createDriverRequest;
-import static org.internship.task.driverservice.util.TestDataForDriver.createDriverResponse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DriverControllerTest {

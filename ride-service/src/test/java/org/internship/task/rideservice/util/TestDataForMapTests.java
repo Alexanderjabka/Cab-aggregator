@@ -4,9 +4,9 @@ import lombok.Getter;
 
 public class TestDataForMapTests {
     @Getter
-    private static final double[] START_COORDINATES = new double[]{27.56667, 53.9};
+    private static final double[] START_COORDINATES = new double[] {27.56667, 53.9};
     @Getter
-    private static final double[] FINISH_COORDINATES = new double[]{30.283083, 53.769428};
+    private static final double[] FINISH_COORDINATES = new double[] {30.283083, 53.769428};
     @Getter
     private static final String START_ADDRESS = "Minsk";
     @Getter

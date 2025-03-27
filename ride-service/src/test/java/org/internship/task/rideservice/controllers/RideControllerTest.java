@@ -1,5 +1,13 @@
 package org.internship.task.rideservice.controllers;
 
+import static org.internship.task.rideservice.util.TestDataForRidesTests.createRideRequest;
+import static org.internship.task.rideservice.util.TestDataForRidesTests.createRideResponse;
+import static org.internship.task.rideservice.util.TestDataForRidesTests.createStatusRequest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
 import org.internship.task.rideservice.dto.RideListResponse;
 import org.internship.task.rideservice.dto.RideRequest;
 import org.internship.task.rideservice.dto.RideResponse;
@@ -14,13 +22,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
-
-import static org.internship.task.rideservice.util.TestDataForRidesTests.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RideControllerTest {

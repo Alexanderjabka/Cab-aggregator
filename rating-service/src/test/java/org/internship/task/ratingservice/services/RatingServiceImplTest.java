@@ -1,5 +1,16 @@
 package org.internship.task.ratingservice.services;
 
+import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.THIS_PERSON_DOESNT_HAVE_RATING_YET;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.internship.task.ratingservice.clients.RideClient;
 import org.internship.task.ratingservice.dto.RatingListResponse;
 import org.internship.task.ratingservice.dto.RatingRequest;
@@ -23,15 +34,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.THIS_PERSON_DOESNT_HAVE_RATING_YET;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RatingServiceImplTest {
@@ -95,19 +97,19 @@ class RatingServiceImplTest {
     @Test
     void getAveragePassengerRating_ShouldReturnAverageRating() {
         when(ratingRepository.findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.DRIVER, pageable))
-                .thenReturn(List.of(rating));
+            .thenReturn(List.of(rating));
 
         double averageRating = ratingService.getAveragePassengerRating(1L);
 
         assertEquals(5.0, averageRating);
         verify(ratingRepository)
-                .findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.DRIVER, pageable);
+            .findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.DRIVER, pageable);
     }
 
     @Test
     void getAveragePassengerRating_ShouldThrowExceptionWhenNoRatingsExist() {
         when(ratingRepository.findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.DRIVER, pageable))
-                .thenReturn(Collections.emptyList());
+            .thenReturn(Collections.emptyList());
 
         RatingNotFoundException exception = assertThrows(RatingNotFoundException.class, () -> {
             ratingService.getAveragePassengerRating(1L);
@@ -115,25 +117,25 @@ class RatingServiceImplTest {
 
         assertEquals(THIS_PERSON_DOESNT_HAVE_RATING_YET, exception.getMessage());
         verify(ratingRepository)
-                .findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.DRIVER, pageable);
+            .findByPassengerIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.DRIVER, pageable);
     }
 
     @Test
     void getAverageDriverRating_ShouldReturnAverageRating() {
         when(ratingRepository.findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.PASSENGER, pageable))
-                .thenReturn(List.of(rating));
+            .thenReturn(List.of(rating));
 
         double averageRating = ratingService.getAverageDriverRating(1L);
 
         assertEquals(5.0, averageRating);
         verify(ratingRepository)
-                .findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.PASSENGER, pageable);
+            .findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.PASSENGER, pageable);
     }
 
     @Test
     void getAverageDriverRating_ShouldThrowExceptionWhenNoRatingsExist() {
         when(ratingRepository.findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.PASSENGER, pageable))
-                .thenReturn(Collections.emptyList());
+            .thenReturn(Collections.emptyList());
 
         RatingNotFoundException exception = assertThrows(RatingNotFoundException.class, () -> {
             ratingService.getAverageDriverRating(1L);
@@ -141,7 +143,7 @@ class RatingServiceImplTest {
 
         assertEquals(THIS_PERSON_DOESNT_HAVE_RATING_YET, exception.getMessage());
         verify(ratingRepository)
-                .findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.PASSENGER, pageable);
+            .findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(1L, WhoRate.PASSENGER, pageable);
     }
 
     @Test
@@ -176,7 +178,7 @@ class RatingServiceImplTest {
     void createRating_ShouldThrowExceptionWhenRideIsAlreadyRated() {
         when(rideClient.getRideByIdAndAbilityToRate(1L)).thenReturn(rideResponse);
         when(ratingRepository.findByRideIdAndWhoRateAndIsDeletedFalse(1L, WhoRate.DRIVER))
-                .thenReturn(Optional.of(rating));
+            .thenReturn(Optional.of(rating));
 
         assertThrows(InvalidRatingOperationException.class, () -> ratingService.createRating(ratingRequest));
     }

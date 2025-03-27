@@ -1,5 +1,21 @@
 package org.internship.task.rideservice.services;
 
+import static org.internship.task.rideservice.util.TestDataForRidesTests.createDriverResponse;
+import static org.internship.task.rideservice.util.TestDataForRidesTests.createPassengerResponse;
+import static org.internship.task.rideservice.util.TestDataForRidesTests.createRide;
+import static org.internship.task.rideservice.util.TestDataForRidesTests.createRideRequest;
+import static org.internship.task.rideservice.util.TestDataForRidesTests.createRideResponse;
+import static org.internship.task.rideservice.util.TestDataForRidesTests.createStatusRequest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.internship.task.rideservice.clients.DriverClient;
 import org.internship.task.rideservice.clients.PassengerClient;
 import org.internship.task.rideservice.dto.RideListResponse;
@@ -24,14 +40,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.internship.task.rideservice.util.TestDataForRidesTests.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RideServiceImplTest {

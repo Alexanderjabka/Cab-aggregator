@@ -1,5 +1,14 @@
 package org.internship.task.driverservice.services;
 
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.DriverExceptionMessages.DRIVER_ALREADY_EXISTS;
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.DriverExceptionMessages.DRIVER_IS_DELETED;
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.DriverExceptionMessages.DRIVER_NOT_FOUND_BY_EMAIL;
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.DriverExceptionMessages.DRIVER_NOT_FOUND_BY_ID;
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.DriverExceptionMessages.DRIVER_WITH_THIS_ID_IS_ALREADY_FREE;
+import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.DriverExceptionMessages.THERE_ARE_NO_FREE_DRIVERS;
+
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.internship.task.driverservice.dto.drivers.DriverListResponse;
 import org.internship.task.driverservice.dto.drivers.DriverRequest;
@@ -15,11 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.internship.task.driverservice.util.constantMessages.exceptionMessages.DriverExceptionMessages.*;
-
 @Service
 @RequiredArgsConstructor
 public class DriverServiceImpl implements DriverService {
@@ -32,10 +36,10 @@ public class DriverServiceImpl implements DriverService {
     public ResponseEntity<DriverListResponse> getAllDrivers() {
         List<Driver> drivers = driverRepository.findAllByOrderByIdAsc();
         return drivers.isEmpty()
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(DriverListResponse.builder()
-                .drivers(driverMapper.toDtoList(drivers))
-                .build());
+            ? ResponseEntity.noContent().build()
+            : ResponseEntity.ok(DriverListResponse.builder()
+            .drivers(driverMapper.toDtoList(drivers))
+            .build());
     }
 
     @Transactional(readOnly = true)
@@ -43,17 +47,17 @@ public class DriverServiceImpl implements DriverService {
     public ResponseEntity<DriverListResponse> getAllDriversByStatus(boolean status) {
         List<Driver> drivers = driverRepository.findByIsDeletedOrderByIdAsc(status);
         return drivers.isEmpty()
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(DriverListResponse.builder()
-                .drivers(driverMapper.toDtoList(drivers))
-                .build());
+            ? ResponseEntity.noContent().build()
+            : ResponseEntity.ok(DriverListResponse.builder()
+            .drivers(driverMapper.toDtoList(drivers))
+            .build());
     }
 
     @Transactional(readOnly = true)
     @Override
     public DriverResponse getDriverById(Long id) {
         Driver driver = driverRepository.findById(id)
-                .orElseThrow(() -> new DriverNotFoundException(DRIVER_NOT_FOUND_BY_ID + id));
+            .orElseThrow(() -> new DriverNotFoundException(DRIVER_NOT_FOUND_BY_ID + id));
 
         return driverMapper.toDto(driver);
     }
@@ -62,7 +66,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverResponse getFirstFreeDriverAndChangeStatus() {
         Driver driver = driverRepository.findFirstByIsInRideFalseAndIsDeletedFalseAndCarsIsDeletedFalseOrderByIdAsc()
-                .orElseThrow(() -> new DriverNotFoundException(THERE_ARE_NO_FREE_DRIVERS));
+            .orElseThrow(() -> new DriverNotFoundException(THERE_ARE_NO_FREE_DRIVERS));
 
         driver.setIsInRide(true);
         driverRepository.save(driver);
@@ -74,7 +78,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public void releaseDriver(Long driverId) {
         Driver driver = driverRepository.findById(driverId)
-                .orElseThrow(() -> new DriverNotFoundException(DRIVER_NOT_FOUND_BY_ID + driverId));
+            .orElseThrow(() -> new DriverNotFoundException(DRIVER_NOT_FOUND_BY_ID + driverId));
 
         if (!driver.getIsInRide()) {
             throw new HandleDriverHasNoCarException(DRIVER_WITH_THIS_ID_IS_ALREADY_FREE + driverId);
@@ -89,9 +93,9 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverResponse createDriver(DriverRequest driverRequest) {
         driverRepository.findByEmail(driverRequest.getEmail())
-                .ifPresent(driver -> {
-                    throw new InvalidDriverOperationException(DRIVER_ALREADY_EXISTS + driverRequest.getEmail());
-                });
+            .ifPresent(driver -> {
+                throw new InvalidDriverOperationException(DRIVER_ALREADY_EXISTS + driverRequest.getEmail());
+            });
 
         Driver driver = driverMapper.toEntity(driverRequest);
         driver.setIsDeleted(false);
@@ -104,7 +108,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverResponse updateDriver(String email, DriverRequest driverRequest) {
         Driver driver = driverRepository.findByEmail(email)
-                .orElseThrow(() -> new DriverNotFoundException(DRIVER_NOT_FOUND_BY_EMAIL + email));
+            .orElseThrow(() -> new DriverNotFoundException(DRIVER_NOT_FOUND_BY_EMAIL + email));
 
         if (driver.getIsDeleted()) {
             throw new InvalidDriverOperationException(DRIVER_IS_DELETED + email);

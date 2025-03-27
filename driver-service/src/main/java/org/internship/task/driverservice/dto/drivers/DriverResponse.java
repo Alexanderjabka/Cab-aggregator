@@ -1,12 +1,11 @@
 package org.internship.task.driverservice.dto.drivers;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.internship.task.driverservice.enums.Gender;
-
-import java.util.List;
 
 @Getter
 @Setter

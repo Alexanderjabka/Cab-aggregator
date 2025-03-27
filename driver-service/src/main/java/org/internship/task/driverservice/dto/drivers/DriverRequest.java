@@ -1,14 +1,25 @@
 package org.internship.task.driverservice.dto.drivers;
 
-import jakarta.validation.constraints.*;
+import static org.internship.task.driverservice.util.constantMessages.validationMessages.DriverValidationMessages.EMAIL_INVALID;
+import static org.internship.task.driverservice.util.constantMessages.validationMessages.DriverValidationMessages.EMAIL_NOT_EMPTY;
+import static org.internship.task.driverservice.util.constantMessages.validationMessages.DriverValidationMessages.GENDER_NOT_EMPTY;
+import static org.internship.task.driverservice.util.constantMessages.validationMessages.DriverValidationMessages.NAME_NOT_EMPTY;
+import static org.internship.task.driverservice.util.constantMessages.validationMessages.DriverValidationMessages.NAME_SIZE;
+import static org.internship.task.driverservice.util.constantMessages.validationMessages.DriverValidationMessages.PHONE_NUMBER_INVALID;
+import static org.internship.task.driverservice.util.constantMessages.validationMessages.DriverValidationMessages.PHONE_NUMBER_NOT_EMPTY;
+import static org.internship.task.driverservice.util.constantMessages.validationMessages.DriverValidationMessages.PHONE_NUMBER_SIZE;
+import static org.internship.task.driverservice.util.regEx.DriverRegEx.PHONE_NUMBER;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.internship.task.driverservice.enums.Gender;
-
-import static org.internship.task.driverservice.util.constantMessages.validationMessages.DriverValidationMessages.*;
-import static org.internship.task.driverservice.util.regEx.DriverRegEx.PHONE_NUMBER;
 
 @Getter
 @Setter

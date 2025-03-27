@@ -1,5 +1,19 @@
 package org.internship.task.driverservice.services;
 
+import static org.internship.task.driverservice.util.TestDataForCar.createCar;
+import static org.internship.task.driverservice.util.TestDataForCar.createCarRequest;
+import static org.internship.task.driverservice.util.TestDataForCar.createCarResponse;
+import static org.internship.task.driverservice.util.TestDataForDriver.createDriver;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.internship.task.driverservice.dto.cars.CarListResponse;
 import org.internship.task.driverservice.dto.cars.CarRequest;
 import org.internship.task.driverservice.dto.cars.CarResponse;
@@ -19,16 +33,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.internship.task.driverservice.util.TestDataForCar.*;
-import static org.internship.task.driverservice.util.TestDataForDriver.createDriver;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CarServiceImplTest {
@@ -126,7 +130,7 @@ class CarServiceImplTest {
         when(carRepository.findByCarNumber("1234AB6")).thenReturn(Optional.of(new Car()));
 
         assertThrows(InvalidCarOperationException.class,
-                () -> carService.createCar(carRequest, "sasha@mail.com"));
+            () -> carService.createCar(carRequest, "sasha@mail.com"));
     }
 
     @Test
@@ -138,7 +142,7 @@ class CarServiceImplTest {
         car.setDriver(driver);
 
         assertThrows(DriverNotFoundException.class,
-                () -> carService.createCar(carRequest, "sasha@mail.com"));
+            () -> carService.createCar(carRequest, "sasha@mail.com"));
     }
 
     @Test
@@ -157,7 +161,7 @@ class CarServiceImplTest {
         when(carRepository.findByCarNumber("1234AB6")).thenReturn(Optional.empty());
 
         assertThrows(CarNotFoundException.class,
-                () -> carService.updateCar("1234AB6", carRequest));
+            () -> carService.updateCar("1234AB6", carRequest));
     }
 
     @Test

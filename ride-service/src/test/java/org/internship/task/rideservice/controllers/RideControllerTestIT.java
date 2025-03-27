@@ -1,5 +1,34 @@
 package org.internship.task.rideservice.controllers;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.internship.task.rideservice.testDataIT.DataForIT.CHANGE_STATUS_JSON;
+import static org.internship.task.rideservice.testDataIT.DataForIT.CREATE_RIDE;
+import static org.internship.task.rideservice.testDataIT.DataForIT.CREATE_RIDE_JSON;
+import static org.internship.task.rideservice.testDataIT.DataForIT.DRIVER_ID;
+import static org.internship.task.rideservice.testDataIT.DataForIT.FINISH_ADDRESS;
+import static org.internship.task.rideservice.testDataIT.DataForIT.FINISH_LATITUDE;
+import static org.internship.task.rideservice.testDataIT.DataForIT.FINISH_LONGITUDE;
+import static org.internship.task.rideservice.testDataIT.DataForIT.ID;
+import static org.internship.task.rideservice.testDataIT.DataForIT.INVALID_ID;
+import static org.internship.task.rideservice.testDataIT.DataForIT.NEW_FINISH_ADDRESS;
+import static org.internship.task.rideservice.testDataIT.DataForIT.NEW_START_ADDRESS;
+import static org.internship.task.rideservice.testDataIT.DataForIT.ORDER_DATE_TIME;
+import static org.internship.task.rideservice.testDataIT.DataForIT.PASSENGER_HAS_ACTIVE_RIDE_MESSAGE;
+import static org.internship.task.rideservice.testDataIT.DataForIT.PASSENGER_ID;
+import static org.internship.task.rideservice.testDataIT.DataForIT.PRICE;
+import static org.internship.task.rideservice.testDataIT.DataForIT.RIDE_NOT_FOUND_MESSAGE;
+import static org.internship.task.rideservice.testDataIT.DataForIT.RIDE_STATUS_INCORRECT_MESSAGE;
+import static org.internship.task.rideservice.testDataIT.DataForIT.START_ADDRESS;
+import static org.internship.task.rideservice.testDataIT.DataForIT.START_LATITUDE;
+import static org.internship.task.rideservice.testDataIT.DataForIT.START_LONGITUDE;
+import static org.internship.task.rideservice.testDataIT.DataForIT.STATUS_CREATED;
+import static org.internship.task.rideservice.testDataIT.DataForIT.STATUS_EN_ROUTE_TO_PASSENGER;
+import static org.internship.task.rideservice.testDataIT.DataForIT.UPDATE_RIDE_JSON;
+import static org.internship.task.rideservice.testDataIT.DataForIT.WIREMOCK_API_KEY;
+
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.restassured.RestAssured;
@@ -28,12 +57,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.internship.task.rideservice.testDataIT.DataForIT.*;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @Import(PostgresTestContainer.class)
@@ -44,8 +67,8 @@ import static org.internship.task.rideservice.testDataIT.DataForIT.*;
 class RideControllerTestIT {
     @RegisterExtension
     static WireMockExtension wireMockExtension = WireMockExtension.newInstance()
-            .options(wireMockConfig().dynamicPort())
-            .build();
+        .options(wireMockConfig().dynamicPort())
+        .build();
 
     @Autowired
     private RideRepository rideRepository;
@@ -80,20 +103,20 @@ class RideControllerTestIT {
         WireMockStubs.getPassengerByIdAndStatusResponse(wireMockExtension, PASSENGER_ID);
         WireMockStubs.getAssignDriverResponse(wireMockExtension, DRIVER_ID);
         WireMockStubs.getCoordinatesResponse(wireMockExtension, WIREMOCK_API_KEY, START_ADDRESS, START_LATITUDE,
-                START_LONGITUDE);
+            START_LONGITUDE);
         WireMockStubs.getCoordinatesResponse(wireMockExtension, WIREMOCK_API_KEY, FINISH_ADDRESS, FINISH_LATITUDE,
-                FINISH_LONGITUDE);
+            FINISH_LONGITUDE);
 
         given()
-                .contentType(ContentType.JSON)
-                .body(CREATE_RIDE_JSON)
-                .when()
-                .post("/api/v1/rides")
-                .then()
-                .statusCode(201)
-                .body("passengerId", equalTo(1))
-                .body("driverId", equalTo(1))
-                .body("status", equalTo(STATUS_CREATED));
+            .contentType(ContentType.JSON)
+            .body(CREATE_RIDE_JSON)
+            .when()
+            .post("/api/v1/rides")
+            .then()
+            .statusCode(201)
+            .body("passengerId", equalTo(1))
+            .body("driverId", equalTo(1))
+            .body("status", equalTo(STATUS_CREATED));
     }
 
     @Test
@@ -106,35 +129,35 @@ class RideControllerTestIT {
         WireMockStubs.getPassengerByIdAndStatusResponse(wireMockExtension, PASSENGER_ID);
         WireMockStubs.getAssignDriverResponse(wireMockExtension, DRIVER_ID);
         WireMockStubs.getCoordinatesResponse(wireMockExtension, WIREMOCK_API_KEY, START_ADDRESS, START_LATITUDE,
-                START_LONGITUDE);
+            START_LONGITUDE);
         WireMockStubs.getCoordinatesResponse(wireMockExtension, WIREMOCK_API_KEY, FINISH_ADDRESS, FINISH_LATITUDE,
-                FINISH_LONGITUDE);
+            FINISH_LONGITUDE);
 
         given()
-                .contentType(ContentType.JSON)
-                .body(CREATE_RIDE_JSON)
-                .when()
-                .post("/api/v1/rides")
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("message", equalTo(PASSENGER_HAS_ACTIVE_RIDE_MESSAGE));
+            .contentType(ContentType.JSON)
+            .body(CREATE_RIDE_JSON)
+            .when()
+            .post("/api/v1/rides")
+            .then()
+            .statusCode(HttpStatus.BAD_REQUEST.value())
+            .body("message", equalTo(PASSENGER_HAS_ACTIVE_RIDE_MESSAGE));
     }
 
     @Test
     @Order(3)
     void getAllRides_ReturnsListOfRides() {
         Ride ride =
-                new Ride(ID, PASSENGER_ID, DRIVER_ID, START_ADDRESS, FINISH_ADDRESS, Status.CREATED, ORDER_DATE_TIME,
-                        PRICE);
+            new Ride(ID, PASSENGER_ID, DRIVER_ID, START_ADDRESS, FINISH_ADDRESS, Status.CREATED, ORDER_DATE_TIME,
+                PRICE);
         rideRepository.save(ride);
 
         Response response = given()
-                .when()
-                .get("/api/v1/rides")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .response();
+            .when()
+            .get("/api/v1/rides")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .response();
 
         RideListResponse rideListResponse = response.as(RideListResponse.class);
         assertThat(rideListResponse.rides()).hasSize(1);
@@ -145,28 +168,28 @@ class RideControllerTestIT {
     @Order(4)
     void getAllRides_ReturnsNoContentWhenNoRides() {
         given()
-                .when()
-                .get("/api/v1/rides")
-                .then()
-                .statusCode(HttpStatus.NO_CONTENT.value());
+            .when()
+            .get("/api/v1/rides")
+            .then()
+            .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
     @Order(5)
     void getAllRidesByStatus_ReturnsListOfRides() {
         Ride ride =
-                new Ride(ID, PASSENGER_ID, DRIVER_ID, START_ADDRESS, FINISH_ADDRESS, Status.CREATED, ORDER_DATE_TIME,
-                        PRICE);
+            new Ride(ID, PASSENGER_ID, DRIVER_ID, START_ADDRESS, FINISH_ADDRESS, Status.CREATED, ORDER_DATE_TIME,
+                PRICE);
         rideRepository.save(ride);
 
         Response response = given()
-                .queryParam("status", STATUS_CREATED)
-                .when()
-                .get("/api/v1/rides/status")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .response();
+            .queryParam("status", STATUS_CREATED)
+            .when()
+            .get("/api/v1/rides/status")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .response();
 
         RideListResponse rideListResponse = response.as(RideListResponse.class);
         assertThat(rideListResponse.rides()).hasSize(1);
@@ -177,29 +200,29 @@ class RideControllerTestIT {
     @Order(6)
     void getAllRidesByStatus_ReturnsNoContentWhenNoRidesWithStatus() {
         given()
-                .queryParam("status", STATUS_CREATED)
-                .when()
-                .get("/api/v1/rides/status")
-                .then()
-                .statusCode(HttpStatus.NO_CONTENT.value());
+            .queryParam("status", STATUS_CREATED)
+            .when()
+            .get("/api/v1/rides/status")
+            .then()
+            .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
     @Order(7)
     void getRideById_ReturnsRide() {
         Ride ride =
-                new Ride(null, PASSENGER_ID, DRIVER_ID, START_ADDRESS, FINISH_ADDRESS, Status.CREATED, ORDER_DATE_TIME,
-                        PRICE);
+            new Ride(null, PASSENGER_ID, DRIVER_ID, START_ADDRESS, FINISH_ADDRESS, Status.CREATED, ORDER_DATE_TIME,
+                PRICE);
         ride = rideRepository.save(ride);
         Long rideId = ride.getId();
 
         Response response = given()
-                .when()
-                .get("/api/v1/rides/{id}", rideId)
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .response();
+            .when()
+            .get("/api/v1/rides/{id}", rideId)
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .response();
 
         RideResponse rideResponse = response.as(RideResponse.class);
         assertThat(rideResponse.getId()).isEqualTo(rideId);
@@ -210,28 +233,28 @@ class RideControllerTestIT {
     @Order(8)
     void getRideById_ReturnsNotFoundWhenRideDoesNotExist() {
         given()
-                .when()
-                .get("/api/v1/rides/{id}", INVALID_ID)
-                .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+            .when()
+            .get("/api/v1/rides/{id}", INVALID_ID)
+            .then()
+            .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
     @Order(9)
     void getRideByIdAndAbilityToRate_ReturnsRideWhenStatusAllowsRating() {
         Ride ride =
-                new Ride(null, PASSENGER_ID, DRIVER_ID, START_ADDRESS, FINISH_ADDRESS, Status.COMPLETED, ORDER_DATE_TIME,
-                        PRICE);
+            new Ride(null, PASSENGER_ID, DRIVER_ID, START_ADDRESS, FINISH_ADDRESS, Status.COMPLETED, ORDER_DATE_TIME,
+                PRICE);
         ride = rideRepository.save(ride);
         Long rideId = ride.getId();
 
         Response response = given()
-                .when()
-                .get("/api/v1/rides/canBeRate/{id}", rideId)
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .response();
+            .when()
+            .get("/api/v1/rides/canBeRate/{id}", rideId)
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .response();
 
         RideResponse rideResponse = response.as(RideResponse.class);
         assertThat(rideResponse.getId()).isEqualTo(rideId);
@@ -242,25 +265,25 @@ class RideControllerTestIT {
     @Order(10)
     void getRideByIdAndAbilityToRate_ThrowsExceptionWhenStatusDoesNotAllowRating() {
         Ride ride =
-                new Ride(ID, PASSENGER_ID, DRIVER_ID, START_ADDRESS, FINISH_ADDRESS, Status.CREATED, ORDER_DATE_TIME,
-                        PRICE);
+            new Ride(ID, PASSENGER_ID, DRIVER_ID, START_ADDRESS, FINISH_ADDRESS, Status.CREATED, ORDER_DATE_TIME,
+                PRICE);
         rideRepository.save(ride);
 
         given()
-                .when()
-                .get("/api/v1/rides/canBeRate/{id}", ID)
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+            .when()
+            .get("/api/v1/rides/canBeRate/{id}", ID)
+            .then()
+            .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     @Order(11)
     void getRideByIdAndAbilityToRate_ReturnsNotFoundWhenRideDoesNotExist() {
         given()
-                .when()
-                .get("/api/v1/rides/canBeRate/{id}", INVALID_ID)
-                .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+            .when()
+            .get("/api/v1/rides/canBeRate/{id}", INVALID_ID)
+            .then()
+            .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -271,22 +294,22 @@ class RideControllerTestIT {
         ride = rideRepository.save(ride);
 
         WireMockStubs.getCoordinatesResponse(wireMockExtension, WIREMOCK_API_KEY, NEW_START_ADDRESS, START_LATITUDE,
-                START_LONGITUDE);
+            START_LONGITUDE);
         WireMockStubs.getCoordinatesResponse(wireMockExtension, WIREMOCK_API_KEY, NEW_FINISH_ADDRESS, FINISH_LATITUDE,
-                FINISH_LONGITUDE);
+            FINISH_LONGITUDE);
 
         given()
-                .contentType(ContentType.JSON)
-                .body(UPDATE_RIDE_JSON)
-                .when()
-                .put("/api/v1/rides/{id}", ride.getId())
-                .then()
-                .statusCode(200)
-                .body("passengerId", equalTo(1))
-                .body("driverId", equalTo(1))
-                .body("status", equalTo(STATUS_CREATED))
-                .body("startAddress", equalTo(NEW_START_ADDRESS))
-                .body("finishAddress", equalTo(NEW_FINISH_ADDRESS));
+            .contentType(ContentType.JSON)
+            .body(UPDATE_RIDE_JSON)
+            .when()
+            .put("/api/v1/rides/{id}", ride.getId())
+            .then()
+            .statusCode(200)
+            .body("passengerId", equalTo(1))
+            .body("driverId", equalTo(1))
+            .body("status", equalTo(STATUS_CREATED))
+            .body("startAddress", equalTo(NEW_START_ADDRESS))
+            .body("finishAddress", equalTo(NEW_FINISH_ADDRESS));
 
         Ride updatedRide = rideRepository.findById(ride.getId()).orElseThrow();
         assertThat(updatedRide.getStartAddress()).isEqualTo(NEW_START_ADDRESS);
@@ -297,13 +320,13 @@ class RideControllerTestIT {
     @Order(13)
     public void testUpdateRide_RideNotFound() {
         given()
-                .contentType(ContentType.JSON)
-                .body(UPDATE_RIDE_JSON)
-                .when()
-                .put("/api/v1/rides/{id}", INVALID_ID)
-                .then()
-                .statusCode(404)
-                .body("message", equalTo(RIDE_NOT_FOUND_MESSAGE + INVALID_ID));
+            .contentType(ContentType.JSON)
+            .body(UPDATE_RIDE_JSON)
+            .when()
+            .put("/api/v1/rides/{id}", INVALID_ID)
+            .then()
+            .statusCode(404)
+            .body("message", equalTo(RIDE_NOT_FOUND_MESSAGE + INVALID_ID));
     }
 
     @Test
@@ -314,13 +337,13 @@ class RideControllerTestIT {
         rideRepository.save(ride);
 
         given()
-                .contentType(ContentType.JSON)
-                .body(UPDATE_RIDE_JSON)
-                .when()
-                .put("/api/v1/rides/{id}", 1)
-                .then()
-                .statusCode(400)
-                .body("message", equalTo(RIDE_STATUS_INCORRECT_MESSAGE + Status.COMPLETED));
+            .contentType(ContentType.JSON)
+            .body(UPDATE_RIDE_JSON)
+            .when()
+            .put("/api/v1/rides/{id}", 1)
+            .then()
+            .statusCode(400)
+            .body("message", equalTo(RIDE_STATUS_INCORRECT_MESSAGE + Status.COMPLETED));
     }
 
     @Test
@@ -332,13 +355,13 @@ class RideControllerTestIT {
         WireMockStubs.getReleaseDriverResponse(wireMockExtension, DRIVER_ID);
 
         given()
-                .contentType(ContentType.JSON)
-                .body(CHANGE_STATUS_JSON)
-                .when()
-                .put("/api/v1/rides/change-status/{id}", ride.getId())
-                .then()
-                .statusCode(200)
-                .body("status", equalTo(STATUS_EN_ROUTE_TO_PASSENGER));
+            .contentType(ContentType.JSON)
+            .body(CHANGE_STATUS_JSON)
+            .when()
+            .put("/api/v1/rides/change-status/{id}", ride.getId())
+            .then()
+            .statusCode(200)
+            .body("status", equalTo(STATUS_EN_ROUTE_TO_PASSENGER));
 
         Ride updatedRide = rideRepository.findById(ride.getId()).orElseThrow();
         assertThat(updatedRide.getStatus()).isEqualTo(Status.EN_ROUTE_TO_PASSENGER);
@@ -348,13 +371,13 @@ class RideControllerTestIT {
     @Order(16)
     public void testChangeStatus_RideNotFound() {
         given()
-                .contentType(ContentType.JSON)
-                .body(CHANGE_STATUS_JSON)
-                .when()
-                .put("/api/v1/rides/change-status/{id}", INVALID_ID)
-                .then()
-                .statusCode(404)
-                .body("message", equalTo(RIDE_NOT_FOUND_MESSAGE + INVALID_ID));
+            .contentType(ContentType.JSON)
+            .body(CHANGE_STATUS_JSON)
+            .when()
+            .put("/api/v1/rides/change-status/{id}", INVALID_ID)
+            .then()
+            .statusCode(404)
+            .body("message", equalTo(RIDE_NOT_FOUND_MESSAGE + INVALID_ID));
     }
 
     @Test
@@ -365,12 +388,12 @@ class RideControllerTestIT {
         rideRepository.save(ride);
 
         given()
-                .contentType(ContentType.JSON)
-                .body(CHANGE_STATUS_JSON)
-                .when()
-                .put("/api/v1/rides/change-status/{id}", ride.getId())
-                .then()
-                .statusCode(400)
-                .body("message", equalTo(RIDE_STATUS_INCORRECT_MESSAGE + Status.COMPLETED));
+            .contentType(ContentType.JSON)
+            .body(CHANGE_STATUS_JSON)
+            .when()
+            .put("/api/v1/rides/change-status/{id}", ride.getId())
+            .then()
+            .statusCode(400)
+            .body("message", equalTo(RIDE_STATUS_INCORRECT_MESSAGE + Status.COMPLETED));
     }
 }

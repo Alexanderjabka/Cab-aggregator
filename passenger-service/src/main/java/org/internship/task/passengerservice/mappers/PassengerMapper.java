@@ -1,12 +1,11 @@
 package org.internship.task.passengerservice.mappers;
 
+import java.util.List;
 import org.internship.task.passengerservice.dto.PassengerRequest;
 import org.internship.task.passengerservice.dto.PassengerResponse;
 import org.internship.task.passengerservice.entities.Passenger;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface PassengerMapper {

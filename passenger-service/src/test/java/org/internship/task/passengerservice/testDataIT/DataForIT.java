@@ -18,28 +18,28 @@ public class DataForIT {
     public static final String VALID_PHONE_NUMBER_UPDATE = "+375297878777";
 
     public static final PassengerRequest CREATE_REQUEST = new PassengerRequest(
-            VALID_NAME,
-            VALID_EMAIL,
-            VALID_PHONE_NUMBER
+        VALID_NAME,
+        VALID_EMAIL,
+        VALID_PHONE_NUMBER
     );
 
     public static final PassengerRequest INVALID_CREATE_REQUEST = new PassengerRequest(
-            INVALID_NAME,
-            INVALID_EMAIL,
-            INVALID_PHONE_NUMBER
+        INVALID_NAME,
+        INVALID_EMAIL,
+        INVALID_PHONE_NUMBER
     );
 
     public static final PassengerRequest UPDATE_REQUEST = new PassengerRequest(
-            VALID_NAME_UPDATE,
-            VALID_EMAIL_UPDATE,
-            VALID_PHONE_NUMBER_UPDATE
+        VALID_NAME_UPDATE,
+        VALID_EMAIL_UPDATE,
+        VALID_PHONE_NUMBER_UPDATE
     );
 
     public static final Passenger PASSENGER = new Passenger(
-            1L,
-            VALID_NAME,
-            VALID_EMAIL,
-            VALID_PHONE_NUMBER,
-            false
+        1L,
+        VALID_NAME,
+        VALID_EMAIL,
+        VALID_PHONE_NUMBER,
+        false
     );
 }

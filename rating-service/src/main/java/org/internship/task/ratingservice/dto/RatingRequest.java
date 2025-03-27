@@ -1,5 +1,11 @@
 package org.internship.task.ratingservice.dto;
 
+import static org.internship.task.ratingservice.util.constantMessages.validationRatingMessages.RatingValidationMessages.COMMENT_MUST_BE_BETWEEN_3_AND_255;
+import static org.internship.task.ratingservice.util.constantMessages.validationRatingMessages.RatingValidationMessages.FIELD_WHO_RATE_CANNOT_BE_NULL;
+import static org.internship.task.ratingservice.util.constantMessages.validationRatingMessages.RatingValidationMessages.MAXIMUM_SCORE_IS_5;
+import static org.internship.task.ratingservice.util.constantMessages.validationRatingMessages.RatingValidationMessages.MINIMAL_SCORE_IS_0;
+import static org.internship.task.ratingservice.util.constantMessages.validationRatingMessages.RatingValidationMessages.RIDE_ID_CANNOT_BE_NULL;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -9,8 +15,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.internship.task.ratingservice.enums.WhoRate;
-
-import static org.internship.task.ratingservice.util.constantMessages.validationRatingMessages.RatingValidationMessages.*;
 
 @Getter
 @Setter

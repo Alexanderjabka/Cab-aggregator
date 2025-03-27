@@ -1,10 +1,13 @@
 package org.internship.task.rideservice.dto;
 
-import lombok.*;
-import org.internship.task.rideservice.enums.Status;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.internship.task.rideservice.enums.Status;
 
 @Getter
 @Setter

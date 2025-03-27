@@ -1,5 +1,6 @@
 package org.internship.task.driverservice.mappers;
 
+import java.util.List;
 import org.internship.task.driverservice.dto.drivers.DriverRequest;
 import org.internship.task.driverservice.dto.drivers.DriverResponse;
 import org.internship.task.driverservice.entities.Car;
@@ -8,8 +9,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface DriverMapper {
@@ -21,9 +20,9 @@ public interface DriverMapper {
         }
 
         return cars.stream()
-                .filter(car -> !Boolean.TRUE.equals(car.getIsDeleted()))
-                .map(Car::getId)
-                .toList();
+            .filter(car -> !Boolean.TRUE.equals(car.getIsDeleted()))
+            .map(Car::getId)
+            .toList();
     }
 
     @Mapping(target = "id", ignore = true)

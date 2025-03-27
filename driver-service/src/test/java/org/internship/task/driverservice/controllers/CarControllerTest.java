@@ -1,5 +1,13 @@
 package org.internship.task.driverservice.controllers;
 
+import static org.internship.task.driverservice.util.TestDataForCar.createCarRequest;
+import static org.internship.task.driverservice.util.TestDataForCar.createCarResponse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
 import org.internship.task.driverservice.dto.cars.CarListResponse;
 import org.internship.task.driverservice.dto.cars.CarRequest;
 import org.internship.task.driverservice.dto.cars.CarResponse;
@@ -12,13 +20,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
-
-import static org.internship.task.driverservice.util.TestDataForCar.createCarRequest;
-import static org.internship.task.driverservice.util.TestDataForCar.createCarResponse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CarControllerTest {
