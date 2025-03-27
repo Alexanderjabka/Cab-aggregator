@@ -1,14 +1,13 @@
-package org.internship.task.passengerservice;
+package com.example.apigateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-
 @SpringBootApplication
-public class PassengerServiceApplication {
+public class ApiGatewayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PassengerServiceApplication.class, args);
+        SpringApplication.run(ApiGatewayApplication.class, args);
     }
 
 }
