@@ -183,6 +183,46 @@ services:
       timeout: 5s
       retries: 5
 
+  # Monitoring services
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana:/var/lib/grafana
+    networks:
+      - app-network
+
+  loki:
+    image: grafana/loki:2.9.1
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./monitoring/loki:/etc/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - app-network
+
+  tempo:
+    image: grafana/tempo:2.3.1
+    ports:
+      - "3200:3200"
+      - "9411:9411"
+    volumes:
+      - ./monitoring/tempo:/etc/tempo
+    command: -config.file=/etc/tempo/tempo.yaml
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
