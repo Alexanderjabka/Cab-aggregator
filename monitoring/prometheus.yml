@@ -6,6 +6,7 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets:
+          - 'eureka-server:8081'
           - 'api-gateway:8082'
           - 'passenger-service:8083'
           - 'driver-service:8084'

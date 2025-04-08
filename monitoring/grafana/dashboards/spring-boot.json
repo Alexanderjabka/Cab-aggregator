@@ -1,0 +1,15 @@
+{
+  "title": "Spring Boot Monitoring",
+  "panels": [
+    {
+      "title": "JVM Memory",
+      "type": "graph",
+      "targets": [
+        {
+          "expr": "jvm_memory_used_bytes{area=\"heap\"}",
+          "legendFormat": "Heap used"
+        }
+      ]
+    }
+  ]
+}

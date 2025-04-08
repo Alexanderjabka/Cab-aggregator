@@ -1,11 +1,13 @@
 services:
-  # Eureka Server
+  # Service Discovery
   eureka-server:
     build:
       context: ./eureka-server
     container_name: eureka-server
     ports:
       - "8081:8081"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
     networks:
       - app-network
     healthcheck:
@@ -23,9 +25,73 @@ services:
       - "8082:8082"
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+      SPRING_SLEUTH_SAMPLER_PROBABILITY: "1.0"
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
       eureka-server:
         condition: service_healthy
+    networks:
+      - app-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - app-network
+    depends_on:
+      - eureka-server
+      - api-gateway
+      - passenger-service
+      - driver-service
+      - ride-service
+      - rating-service
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "http://localhost:9090/-/healthy" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Tracing System
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9411/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Log Aggregation
+  loki:
+    image: grafana/loki:2.9.1
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./monitoring/loki-config.yaml:/etc/loki/local-config.yaml
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - app-network
+
+  # Visualization
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./monitoring/grafana/datasource/datasource.yml:/etc/grafana/provisioning/datasource/datasource.yaml
+    depends_on:
+      - loki
     networks:
       - app-network
 
@@ -37,10 +103,12 @@ services:
     ports:
       - "8083:8083"
     environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+      SPRING_SLEUTH_SAMPLER_PROBABILITY: "1.0"
       SPRING_DATASOURCE_URL: jdbc:postgresql://passenger-db:5432/passenger_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
       eureka-server:
         condition: service_healthy
@@ -49,7 +117,6 @@ services:
     networks:
       - app-network
 
-  # Passenger Database
   passenger-db:
     image: postgres:15
     container_name: passenger-db
@@ -57,8 +124,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: passenger_db
-    ports:
-      - "5432:5432"
+    volumes:
+      - passenger-data:/var/lib/postgresql/data
     networks:
       - app-network
     healthcheck:
@@ -75,10 +142,12 @@ services:
     ports:
       - "8084:8084"
     environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+      SPRING_SLEUTH_SAMPLER_PROBABILITY: "1.0"
       SPRING_DATASOURCE_URL: jdbc:postgresql://driver-db:5432/driver_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
       eureka-server:
         condition: service_healthy
@@ -87,7 +156,6 @@ services:
     networks:
       - app-network
 
-  # Driver Database
   driver-db:
     image: postgres:15
     container_name: driver-db
@@ -95,6 +163,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: driver_db
+    volumes:
+      - driver-data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     networks:
@@ -115,10 +185,12 @@ services:
     env_file:
       - .env
     environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+      SPRING_SLEUTH_SAMPLER_PROBABILITY: "1.0"
       SPRING_DATASOURCE_URL: jdbc:postgresql://ride-db:5432/ride_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
       eureka-server:
         condition: service_healthy
@@ -127,7 +199,6 @@ services:
     networks:
       - app-network
 
-  # Ride Database
   ride-db:
     image: postgres:15
     container_name: ride-db
@@ -135,6 +206,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: ride_db
+    volumes:
+      - ride-data:/var/lib/postgresql/data
     ports:
       - "5434:5432"
     networks:
@@ -153,10 +226,12 @@ services:
     ports:
       - "8086:8086"
     environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+      SPRING_SLEUTH_SAMPLER_PROBABILITY: "1.0"
       SPRING_DATASOURCE_URL: jdbc:postgresql://rating-db:5432/rating_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
       eureka-server:
         condition: service_healthy
@@ -165,7 +240,6 @@ services:
     networks:
       - app-network
 
-  # Rating Database
   rating-db:
     image: postgres:15
     container_name: rating-db
@@ -173,6 +247,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: rating_db
+    volumes:
+      - rating-data:/var/lib/postgresql/data
     ports:
       - "5435:5432"
     networks:
@@ -183,45 +259,12 @@ services:
       timeout: 5s
       retries: 5
 
-  # Monitoring services
-  prometheus:
-    image: prom/prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - app-network
-
-  grafana:
-    image: grafana/grafana
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./monitoring/grafana:/var/lib/grafana
-    networks:
-      - app-network
-
-  loki:
-    image: grafana/loki:2.9.1
-    ports:
-      - "3100:3100"
-    volumes:
-      - ./monitoring/loki:/etc/loki
-    command: -config.file=/etc/loki/local-config.yaml
-    networks:
-      - app-network
-
-  tempo:
-    image: grafana/tempo:2.3.1
-    ports:
-      - "3200:3200"
-      - "9411:9411"
-    volumes:
-      - ./monitoring/tempo:/etc/tempo
-    command: -config.file=/etc/tempo/tempo.yaml
-    networks:
-      - app-network
+volumes:
+  grafana-storage:
+  passenger-data:
+  driver-data:
+  ride-data:
+  rating-data:
 
 networks:
   app-network:
