@@ -1,5 +1,6 @@
+version: '3.9'
+
 services:
-  # Service Discovery
   eureka-server:
     build:
       context: ./eureka-server
@@ -8,15 +9,11 @@ services:
       - "8081:8081"
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+      SPRING_PROFILES_ACTIVE: production
     networks:
       - app-network
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    restart: unless-stopped
 
-  # API Gateway
   api-gateway:
     build:
       context: ./api-gateway
@@ -27,9 +24,6 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
       SPRING_SLEUTH_SAMPLER_PROBABILITY: "1.0"
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
-    depends_on:
-      eureka-server:
-        condition: service_healthy
     networks:
       - app-network
 
@@ -42,20 +36,7 @@ services:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - app-network
-    depends_on:
-      - eureka-server
-      - api-gateway
-      - passenger-service
-      - driver-service
-      - ride-service
-      - rating-service
-    healthcheck:
-      test: [ "CMD", "wget", "--spider", "http://localhost:9090/-/healthy" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
-  # Tracing System
   zipkin:
     image: openzipkin/zipkin:latest
     container_name: zipkin
@@ -63,13 +44,7 @@ services:
       - "9411:9411"
     networks:
       - app-network
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9411/actuator/health" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
-  # Log Aggregation
   loki:
     image: grafana/loki:2.9.1
     container_name: loki
@@ -81,7 +56,6 @@ services:
     networks:
       - app-network
 
-  # Visualization
   grafana:
     image: grafana/grafana
     container_name: grafana
@@ -90,12 +64,9 @@ services:
     volumes:
       - grafana-storage:/var/lib/grafana
       - ./monitoring/grafana/datasource/datasource.yml:/etc/grafana/provisioning/datasource/datasource.yaml
-    depends_on:
-      - loki
     networks:
       - app-network
 
-  # Passenger Service
   passenger-service:
     build:
       context: ./passenger-service
@@ -109,11 +80,6 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
-    depends_on:
-      eureka-server:
-        condition: service_healthy
-      passenger-db:
-        condition: service_healthy
     networks:
       - app-network
 
@@ -128,13 +94,7 @@ services:
       - passenger-data:/var/lib/postgresql/data
     networks:
       - app-network
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
-  # Driver Service
   driver-service:
     build:
       context: ./driver-service
@@ -148,11 +108,6 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
-    depends_on:
-      eureka-server:
-        condition: service_healthy
-      driver-db:
-        condition: service_healthy
     networks:
       - app-network
 
@@ -169,13 +124,7 @@ services:
       - "5433:5432"
     networks:
       - app-network
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
-  # Ride Service
   ride-service:
     build:
       context: ./ride-service
@@ -191,11 +140,6 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
-    depends_on:
-      eureka-server:
-        condition: service_healthy
-      ride-db:
-        condition: service_healthy
     networks:
       - app-network
 
@@ -212,13 +156,7 @@ services:
       - "5434:5432"
     networks:
       - app-network
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
-  # Rating Service
   rating-service:
     build:
       context: ./rating-service
@@ -232,11 +170,6 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
-    depends_on:
-      eureka-server:
-        condition: service_healthy
-      rating-db:
-        condition: service_healthy
     networks:
       - app-network
 
@@ -253,11 +186,6 @@ services:
       - "5435:5432"
     networks:
       - app-network
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
 volumes:
   grafana-storage:

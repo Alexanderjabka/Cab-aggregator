@@ -14,19 +14,19 @@ public class WireMockStubs {
 
     public static void getPassengerByIdAndStatusResponse(WireMockExtension wireMockExtension, Long passengerId) {
         wireMockExtension.stubFor(
-            WireMock.get(urlPathEqualTo("/isFree/" + passengerId))
+            WireMock.get(urlPathEqualTo("/api/v1/passengers/isFree/" + passengerId))
                 .willReturn(aResponse()
-                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .withBody("{\"id\": " + passengerId + "}")
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"free\": true, \"id\": " + passengerId + "}")
                     .withStatus(200)));
     }
 
     public static void getAssignDriverResponse(WireMockExtension wireMockExtension, Long driverId) {
         wireMockExtension.stubFor(
-            WireMock.put(urlPathEqualTo("/assign"))
+            WireMock.post(urlPathEqualTo("/api/v1/drivers/assign"))  // Вероятно POST, а не PUT
                 .willReturn(aResponse()
                     .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .withBody("{\"id\": " + driverId + "}")
+                    .withBody("{\"driverId\": " + driverId + "}")  // Соответствует ожидаемой структуре
                     .withStatus(200)));
     }
 

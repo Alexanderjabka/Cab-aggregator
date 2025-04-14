@@ -1,5 +1,8 @@
 package org.internship.task.rideservice.controllers;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.any;
+import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +34,7 @@ import static org.internship.task.rideservice.testDataIT.DataForIT.WIREMOCK_API_
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -74,6 +78,8 @@ class RideControllerTestIT {
     private RideRepository rideRepository;
     @LocalServerPort
     private int port;
+    @Autowired
+    private CircuitBreakerRegistry circuitBreakerRegistry;
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -95,6 +101,11 @@ class RideControllerTestIT {
     void setup() {
         RestAssured.port = this.port;
         rideRepository.deleteAll();
+        wireMockExtension.resetAll();
+
+        if (circuitBreakerRegistry != null) {
+            circuitBreakerRegistry.circuitBreaker("rideService").reset();
+        }
     }
 
     @Test
@@ -113,6 +124,7 @@ class RideControllerTestIT {
             .when()
             .post("/api/v1/rides")
             .then()
+            .log().all()
             .statusCode(201)
             .body("passengerId", equalTo(1))
             .body("driverId", equalTo(1))
@@ -139,6 +151,7 @@ class RideControllerTestIT {
             .when()
             .post("/api/v1/rides")
             .then()
+            .log().all()
             .statusCode(HttpStatus.BAD_REQUEST.value())
             .body("message", equalTo(PASSENGER_HAS_ACTIVE_RIDE_MESSAGE));
     }
@@ -304,6 +317,7 @@ class RideControllerTestIT {
             .when()
             .put("/api/v1/rides/{id}", ride.getId())
             .then()
+            .log().all()
             .statusCode(200)
             .body("passengerId", equalTo(1))
             .body("driverId", equalTo(1))
@@ -393,6 +407,7 @@ class RideControllerTestIT {
             .when()
             .put("/api/v1/rides/change-status/{id}", ride.getId())
             .then()
+            .log().all()
             .statusCode(400)
             .body("message", equalTo(RIDE_STATUS_INCORRECT_MESSAGE + Status.COMPLETED));
     }

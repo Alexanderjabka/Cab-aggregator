@@ -1,12 +1,36 @@
 FROM maven:3.9.6-eclipse-temurin-21 AS build
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN --mount=type=cache,target=/root/.m2 \
-    mvn clean install -DskipTests
+ENV RELEASE=17
 
-FROM eclipse-temurin:21-jre-jammy
-WORKDIR /app
-COPY --from=build /app/target/driver-service-*.jar ./app.jar
+WORKDIR /opt/build
+COPY ./target/driver-service-0.0.1-SNAPSHOT.jar ./application.jar
+
+RUN java -Djarmode=layertools -jar application.jar extract
+
+RUN $JAVA_HOME/bin/jlink \
+         --add-modules $(jdeps --ignore-missing-deps -q -recursive --multi-release ${RELEASE} --print-module-deps -cp 'dependencies/BOOT-INF/lib/*' application.jar) \
+         --strip-debug \
+         --no-man-pages \
+         --no-header-files \
+         --compress=2 \
+         --output jdk
+
+FROM debian:buster-slim
+
+ARG BUILD_PATH=/opt/build
+ENV JAVA_HOME=/opt/jdk
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
+RUN groupadd --gid 1000 spring-app \
+  && useradd --uid 1000 --gid spring-app --shell /bin/bash --create-home spring-app
+
+USER spring-app:spring-app
+WORKDIR /opt/workspace
+
+COPY --from=build $BUILD_PATH/jdk $JAVA_HOME
+COPY --from=build $BUILD_PATH/spring-boot-loader/ ./
+COPY --from=build $BUILD_PATH/dependencies/ ./
+COPY --from=build $BUILD_PATH/snapshot-dependencies/ ./
+COPY --from=build $BUILD_PATH/application/ ./
 EXPOSE 8084
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
