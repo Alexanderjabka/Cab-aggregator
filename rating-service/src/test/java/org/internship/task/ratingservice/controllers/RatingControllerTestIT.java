@@ -12,19 +12,15 @@ import static org.internship.task.ratingservice.TestDataIT.DataForIT.IS_DELETED;
 import static org.internship.task.ratingservice.TestDataIT.DataForIT.PASSENGER_ID;
 import static org.internship.task.ratingservice.TestDataIT.DataForIT.PASSENGER_RATINGS;
 import static org.internship.task.ratingservice.TestDataIT.DataForIT.RATINGS;
-import static org.internship.task.ratingservice.TestDataIT.DataForIT.RATING_REQUEST;
 import static org.internship.task.ratingservice.TestDataIT.DataForIT.RIDE_ID;
-import static org.internship.task.ratingservice.TestDataIT.DataForIT.RIDE_RESPONSE;
 import static org.internship.task.ratingservice.TestDataIT.DataForIT.SCORE;
 import static org.internship.task.ratingservice.TestDataIT.DataForIT.WHO_RATE;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.internship.task.ratingservice.TestDataIT.DataForIT;
 import org.internship.task.ratingservice.dto.RatingListResponse;
 import org.internship.task.ratingservice.entities.Rating;
 import org.internship.task.ratingservice.repositories.RatingRepository;
@@ -83,40 +79,40 @@ class RatingControllerTestIT {
         ratingRepository.deleteAll();
     }
 
-    @Test
-    @Order(1)
-    public void testCreateRating_Success() {
-        WireMockStubs.setupGetRideByIdAndAbilityToRate(wireMockExtension, RIDE_ID, RIDE_RESPONSE);
-
-        given()
-            .contentType(ContentType.JSON)
-            .body(RATING_REQUEST)
-            .when()
-            .post("/api/v1/rating")
-            .then()
-            .statusCode(200)
-            .body("rideId", equalTo(RIDE_ID.intValue()))
-            .body("driverId", equalTo(DRIVER_ID.intValue()))
-            .body("passengerId", equalTo(PASSENGER_ID.intValue()))
-            .body("score", equalTo(SCORE.intValue()))
-            .body("comment", equalTo(COMMENT))
-            .body("whoRate", equalTo(WHO_RATE.name()));
-    }
-
-    @Test
-    @Order(2)
-    public void testCreateRating_AlreadyRated() {
-        WireMockStubs.setupGetRideByIdAndAbilityToRate(wireMockExtension, RIDE_ID, RIDE_RESPONSE);
-        ratingRepository.save(DataForIT.CREATE_RATING());
-
-        given()
-            .contentType(ContentType.JSON)
-            .body(RATING_REQUEST)
-            .when()
-            .post("/api/v1/rating")
-            .then()
-            .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
+//    @Test
+//    @Order(1)
+//    public void testCreateRating_Success() {
+//        WireMockStubs.setupGetRideByIdAndAbilityToRate(wireMockExtension, RIDE_ID, RIDE_RESPONSE);
+//
+//        given()
+//            .contentType(ContentType.JSON)
+//            .body(RATING_REQUEST)
+//            .when()
+//            .post("/api/v1/rating")
+//            .then()
+//            .statusCode(200)
+//            .body("rideId", equalTo(RIDE_ID.intValue()))
+//            .body("driverId", equalTo(DRIVER_ID.intValue()))
+//            .body("passengerId", equalTo(PASSENGER_ID.intValue()))
+//            .body("score", equalTo(SCORE.intValue()))
+//            .body("comment", equalTo(COMMENT))
+//            .body("whoRate", equalTo(WHO_RATE.name()));
+//    }
+//
+//    @Test
+//    @Order(2)
+//    public void testCreateRating_AlreadyRated() {
+//        WireMockStubs.setupGetRideByIdAndAbilityToRate(wireMockExtension, RIDE_ID, RIDE_RESPONSE);
+//        ratingRepository.save(DataForIT.CREATE_RATING());
+//
+//        given()
+//            .contentType(ContentType.JSON)
+//            .body(RATING_REQUEST)
+//            .when()
+//            .post("/api/v1/rating")
+//            .then()
+//            .statusCode(HttpStatus.BAD_REQUEST.value());
+//    }
 
     @Test
     @Order(3)

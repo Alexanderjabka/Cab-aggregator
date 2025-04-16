@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.List;
 import org.internship.task.rideservice.dto.RideListResponse;
 import org.internship.task.rideservice.dto.RideRequest;
@@ -82,17 +83,6 @@ class RideControllerTest {
     }
 
     @Test
-    void getRideByIdAndAbilityToRate_ShouldReturnRide_WhenRideCanBeRated() {
-        when(rideServiceImpl.getRideByIdAndAbilityToRate(1L)).thenReturn(rideResponse);
-
-        ResponseEntity<RideResponse> actualResponse = rideController.getRideByIdAndAbilityToRate(1L);
-
-        assertNotNull(actualResponse.getBody());
-        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
-        assertEquals(rideResponse, actualResponse.getBody());
-    }
-
-    @Test
     void createRide_ShouldReturnCreatedRide_WhenRequestIsValid() {
         when(rideServiceImpl.createRide(rideRequest)).thenReturn(rideResponse);
 
@@ -115,7 +105,7 @@ class RideControllerTest {
     }
 
     @Test
-    void changeStatus_ShouldReturnUpdatedRide_WhenStatusChangesSuccessfully() {
+    void changeStatus_ShouldReturnUpdatedRide_WhenStatusChangesSuccessfully() throws JsonProcessingException {
         when(rideServiceImpl.changeStatus(1L, statusRequest)).thenReturn(rideResponse);
 
         ResponseEntity<RideResponse> actualResponse = rideController.changeStatus(1L, statusRequest);

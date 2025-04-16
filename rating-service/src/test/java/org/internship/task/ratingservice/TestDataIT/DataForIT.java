@@ -3,7 +3,6 @@ package org.internship.task.ratingservice.TestDataIT;
 import java.util.List;
 import org.internship.task.ratingservice.dto.RatingRequest;
 import org.internship.task.ratingservice.dto.RatingResponse;
-import org.internship.task.ratingservice.dto.clientsDto.GetRideResponse;
 import org.internship.task.ratingservice.entities.Rating;
 import org.internship.task.ratingservice.enums.WhoRate;
 
@@ -20,10 +19,6 @@ public class DataForIT {
     public static final WhoRate WHO_RATE = WhoRate.PASSENGER;
 
     public static final Boolean IS_DELETED = false;
-
-    public static final GetRideResponse RIDE_RESPONSE = new GetRideResponse(RIDE_ID, DRIVER_ID, PASSENGER_ID);
-    public static final GetRideResponse INVALID_RIDE_RESPONSE =
-        new GetRideResponse(INVALID_ID, DRIVER_ID, PASSENGER_ID);
 
     public static final RatingRequest RATING_REQUEST = new RatingRequest(RIDE_ID, SCORE, COMMENT, WHO_RATE);
     public static final RatingResponse RATING_RESPONSE =

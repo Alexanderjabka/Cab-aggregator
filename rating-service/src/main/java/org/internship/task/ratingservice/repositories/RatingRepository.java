@@ -18,4 +18,8 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
     List<Rating> findByDriverIdAndWhoRateAndIsDeletedFalseOrderByIdDesc(Long driverId, WhoRate whoRate,
                                                                         Pageable pageable);
 
+    boolean existsByRideId(Long rideId);
+
+
+    List<Rating> findAllByRideIdAndIsDeletedFalse(Long rideId);
 }

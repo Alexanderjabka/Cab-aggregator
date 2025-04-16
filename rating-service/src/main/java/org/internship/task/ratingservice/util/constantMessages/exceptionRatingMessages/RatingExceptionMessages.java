@@ -4,9 +4,9 @@ public class RatingExceptionMessages {
     public static final String THIS_PERSON_DOESNT_HAVE_RATING_YET = "This person doesnt have any rating yet";
 
     public static final String IS_ALREADY_RATE_THIS_RIDE = " is already rate this ride";
+    public static final String ALL_MEMBERS_ARE_ALREADY_RATE_THIS_RIDE = " all members are already rate this ride";
+
 
     public static final String RATING_IS_NOT_FOUND_BY_ID = "Rating is not found by id ";
-
-    public static final String RIDE_WITH_THIS_ID_WAS_NOT_FOUND = "Ride with this ID was not found ";
 
 }
