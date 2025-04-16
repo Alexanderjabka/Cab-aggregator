@@ -1,20 +1,17 @@
 services:
-  # Eureka Server
   eureka-server:
     build:
       context: ./eureka-server
     container_name: eureka-server
     ports:
       - "8081:8081"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+      SPRING_PROFILES_ACTIVE: production
     networks:
       - app-network
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    restart: unless-stopped
 
-  # API Gateway
   api-gateway:
     build:
       context: ./api-gateway
@@ -23,13 +20,52 @@ services:
       - "8082:8082"
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
-    depends_on:
-      eureka-server:
-        condition: service_healthy
+      SPRING_SLEUTH_SAMPLER_PROBABILITY: "1.0"
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     networks:
       - app-network
 
-  # Passenger Service
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - app-network
+
+  zipkin:
+    image: openzipkin/zipkin:2.24.0
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - app-network
+
+  loki:
+    image: grafana/loki:2.9.1
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./monitoring/loki-config.yaml:/etc/loki/local-config.yaml
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana-storage:/var/lib/grafana
+    networks:
+      - app-network
+
   passenger-service:
     build:
       context: ./passenger-service
@@ -37,37 +73,27 @@ services:
     ports:
       - "8083:8083"
     environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+      SPRING_SLEUTH_SAMPLER_PROBABILITY: "1.0"
       SPRING_DATASOURCE_URL: jdbc:postgresql://passenger-db:5432/passenger_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
-    depends_on:
-      eureka-server:
-        condition: service_healthy
-      passenger-db:
-        condition: service_healthy
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     networks:
       - app-network
 
-  # Passenger Database
   passenger-db:
-    image: postgres:15
+    image: postgres:15.4
     container_name: passenger-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: passenger_db
-    ports:
-      - "5432:5432"
+    volumes:
+      - passenger-data:/var/lib/postgresql/data
     networks:
       - app-network
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
-  # Driver Service
   driver-service:
     build:
       context: ./driver-service
@@ -75,37 +101,29 @@ services:
     ports:
       - "8084:8084"
     environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+      SPRING_SLEUTH_SAMPLER_PROBABILITY: "1.0"
       SPRING_DATASOURCE_URL: jdbc:postgresql://driver-db:5432/driver_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
-    depends_on:
-      eureka-server:
-        condition: service_healthy
-      driver-db:
-        condition: service_healthy
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     networks:
       - app-network
 
-  # Driver Database
   driver-db:
-    image: postgres:15
+    image: postgres:15.4
     container_name: driver-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: driver_db
+    volumes:
+      - driver-data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     networks:
       - app-network
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
-  # Ride Service
   ride-service:
     build:
       context: ./ride-service
@@ -115,37 +133,29 @@ services:
     env_file:
       - .env
     environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+      SPRING_SLEUTH_SAMPLER_PROBABILITY: "1.0"
       SPRING_DATASOURCE_URL: jdbc:postgresql://ride-db:5432/ride_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
-    depends_on:
-      eureka-server:
-        condition: service_healthy
-      ride-db:
-        condition: service_healthy
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     networks:
       - app-network
 
-  # Ride Database
   ride-db:
-    image: postgres:15
+    image: postgres:15.4
     container_name: ride-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: ride_db
+    volumes:
+      - ride-data:/var/lib/postgresql/data
     ports:
       - "5434:5432"
     networks:
       - app-network
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
-  # Rating Service
   rating-service:
     build:
       context: ./rating-service
@@ -153,35 +163,35 @@ services:
     ports:
       - "8086:8086"
     environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
+      SPRING_SLEUTH_SAMPLER_PROBABILITY: "1.0"
       SPRING_DATASOURCE_URL: jdbc:postgresql://rating-db:5432/rating_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8081/eureka/
-    depends_on:
-      eureka-server:
-        condition: service_healthy
-      rating-db:
-        condition: service_healthy
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     networks:
       - app-network
 
-  # Rating Database
   rating-db:
-    image: postgres:15
+    image: postgres:15.4
     container_name: rating-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: rating_db
+    volumes:
+      - rating-data:/var/lib/postgresql/data
     ports:
       - "5435:5432"
     networks:
       - app-network
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+
+volumes:
+  grafana-storage:
+  passenger-data:
+  driver-data:
+  ride-data:
+  rating-data:
 
 networks:
   app-network:

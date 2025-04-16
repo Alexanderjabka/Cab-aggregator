@@ -97,13 +97,15 @@ public class RideServiceImpl implements RideService {
             throw new InvalidRideOperationException(THIS_PASSENGER_ALREADY_HAS_RIDE);
         }
 
-        AssignDriverResponse assignDriverResponse = driverClient.assignDriver();
 
         Ride ride = rideMapper.toEntity(rideRequest);
-        ride.setPassengerId(passengerResponse.getPassengerId());
-        ride.setDriverId(assignDriverResponse.getDriverId());
         ride.setPrice(PriceServiceImpl.setPriceForTheRide(
             mapService.getDistance(rideRequest.getStartAddress(), rideRequest.getFinishAddress())));
+        AssignDriverResponse assignDriverResponse = driverClient.assignDriver();
+
+        ride.setPassengerId(passengerResponse.getPassengerId());
+        ride.setDriverId(assignDriverResponse.getDriverId());
+
         ride.setStatus(Status.CREATED);
 
         rideRepository.save(ride);

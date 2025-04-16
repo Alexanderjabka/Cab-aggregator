@@ -14,12 +14,12 @@ public class MapController {
 
     private final MapServiceImpl mapService;
 
-    @GetMapping("/coordinates")
+    @GetMapping("/get-coordinates")
     public double[] getCoordinates(@RequestParam String address) {
         return mapService.getCoordinates(address);
     }
 
-    @GetMapping("/distance")
+    @GetMapping("/calculate-distance")
     public double getDistance(@RequestParam String start, @RequestParam String finish) {
         return mapService.getDistance(start, finish);
     }
