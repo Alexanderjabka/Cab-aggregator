@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   eureka-server:
     build:
@@ -28,7 +26,7 @@ services:
       - app-network
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v2.47.0
     container_name: prometheus
     ports:
       - "9090:9090"
@@ -38,7 +36,7 @@ services:
       - app-network
 
   zipkin:
-    image: openzipkin/zipkin:latest
+    image: openzipkin/zipkin:2.24.0
     container_name: zipkin
     ports:
       - "9411:9411"
@@ -57,13 +55,14 @@ services:
       - app-network
 
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:10.2.0
     container_name: grafana
     ports:
       - "3000:3000"
     volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
       - grafana-storage:/var/lib/grafana
-      - ./monitoring/grafana/datasource/datasource.yml:/etc/grafana/provisioning/datasource/datasource.yaml
     networks:
       - app-network
 
@@ -84,7 +83,7 @@ services:
       - app-network
 
   passenger-db:
-    image: postgres:15
+    image: postgres:15.4
     container_name: passenger-db
     environment:
       POSTGRES_USER: postgres
@@ -112,7 +111,7 @@ services:
       - app-network
 
   driver-db:
-    image: postgres:15
+    image: postgres:15.4
     container_name: driver-db
     environment:
       POSTGRES_USER: postgres
@@ -144,7 +143,7 @@ services:
       - app-network
 
   ride-db:
-    image: postgres:15
+    image: postgres:15.4
     container_name: ride-db
     environment:
       POSTGRES_USER: postgres
@@ -174,7 +173,7 @@ services:
       - app-network
 
   rating-db:
-    image: postgres:15
+    image: postgres:15.4
     container_name: rating-db
     environment:
       POSTGRES_USER: postgres

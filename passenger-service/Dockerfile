@@ -1,36 +1,44 @@
 FROM maven:3.9.6-eclipse-temurin-21 AS build
-ENV RELEASE=17
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn clean install -DskipTests
 
+FROM eclipse-temurin:21-jdk-jammy AS jre-builder
 WORKDIR /opt/build
-COPY ./target/passenger-service-0.0.1-SNAPSHOT.jar ./application.jar
+COPY --from=build /app/target/passenger-service-*.jar ./application.jar
 
 RUN java -Djarmode=layertools -jar application.jar extract
 
 RUN $JAVA_HOME/bin/jlink \
-         --add-modules $(jdeps --ignore-missing-deps -q -recursive --multi-release ${RELEASE} --print-module-deps -cp 'dependencies/BOOT-INF/lib/*' application.jar) \
-         --strip-debug \
-         --no-man-pages \
-         --no-header-files \
-         --compress=2 \
-         --output jdk
+    --add-modules $(jdeps --ignore-missing-deps -q --recursive --multi-release 21 --print-module-deps -cp 'dependencies/BOOT-INF/lib/*' application.jar),jdk.crypto.ec,java.security.jgss,jdk.httpserver \
+    --strip-debug \
+    --no-man-pages \
+    --no-header-files \
+    --compress=2 \
+    --output /opt/jdk
 
 FROM debian:buster-slim
 
-ARG BUILD_PATH=/opt/build
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
 ENV JAVA_HOME=/opt/jdk
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-RUN groupadd --gid 1000 spring-app \
-  && useradd --uid 1000 --gid spring-app --shell /bin/bash --create-home spring-app
-
+RUN groupadd --gid 1000 spring-app && \
+    useradd --uid 1000 --gid spring-app --shell /bin/bash --create-home spring-app
 USER spring-app:spring-app
-WORKDIR /opt/workspace
 
-COPY --from=build $BUILD_PATH/jdk $JAVA_HOME
-COPY --from=build $BUILD_PATH/spring-boot-loader/ ./
-COPY --from=build $BUILD_PATH/dependencies/ ./
-COPY --from=build $BUILD_PATH/snapshot-dependencies/ ./
-COPY --from=build $BUILD_PATH/application/ ./
+WORKDIR /app
+
+COPY --from=jre-builder /opt/jdk $JAVA_HOME
+COPY --from=jre-builder /opt/build/spring-boot-loader/ ./
+COPY --from=jre-builder /opt/build/dependencies/ ./
+COPY --from=jre-builder /opt/build/snapshot-dependencies/ ./
+COPY --from=jre-builder /opt/build/application/ ./
+
 EXPOSE 8083
-
 ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]

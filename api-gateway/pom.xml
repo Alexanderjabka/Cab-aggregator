@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.4.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>com.example</groupId>
     <artifactId>api-gateway</artifactId>
@@ -30,6 +30,7 @@
         <java.version>17</java.version>
         <spring-cloud.version>2024.0.0</spring-cloud.version>
         <dotenv.version>4.0.0</dotenv.version>
+        <loki.version>1.4.0</loki.version>
     </properties>
     <dependencies>
         <dependency>
@@ -45,7 +46,6 @@
             <artifactId>micrometer-observation</artifactId>
         </dependency>
 
-        <!-- Actuator + Prometheus -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -68,11 +68,10 @@
             <artifactId>zipkin-sender-urlconnection</artifactId>
         </dependency>
 
-        <!-- Loki (логи) -->
         <dependency>
             <groupId>com.github.loki4j</groupId>
             <artifactId>loki-logback-appender</artifactId>
-            <version>1.4.0</version>
+            <version>${loki.version}</version>
         </dependency>
 
         <dependency>

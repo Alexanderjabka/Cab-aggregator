@@ -4,11 +4,11 @@ global:
 scrape_configs:
   - job_name: 'microservices'
     metrics_path: '/actuator/prometheus'
-    static_configs:
-      - targets:
-          - 'eureka-server:8081'
-          - 'api-gateway:8082'
-          - 'passenger-service:8083'
-          - 'driver-service:8084'
-          - 'ride-service:8085'
-          - 'rating-service:8086'
+    eureka_sd_configs:
+      - server: 'http://eureka-server:8081/eureka'
+        refresh_interval: 30s
+    relabel_configs:
+      - source_labels: [ __meta_eureka_app ]
+        target_label: job
+      - source_labels: [ __meta_eureka_instance ]
+        target_label: instance
