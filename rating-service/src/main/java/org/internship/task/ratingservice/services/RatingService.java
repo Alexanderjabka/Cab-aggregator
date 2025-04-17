@@ -16,4 +16,5 @@ public interface RatingService {
     double getAverageDriverRating(Long driverId);
 
     double getAveragePassengerRating(Long passengerId);
+
 }

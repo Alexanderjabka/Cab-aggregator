@@ -148,28 +148,6 @@ class RideServiceImplTest {
     }
 
     @Test
-    void getRideByIdAndAbilityToRate_ShouldReturnRideWhenStatusIsCompletedOrCancelled() {
-        ride.setStatus(Status.COMPLETED);
-        when(rideRepository.findById(1L)).thenReturn(Optional.of(ride));
-        when(rideMapper.toDto(ride)).thenReturn(rideResponse);
-
-        RideResponse response = rideService.getRideByIdAndAbilityToRate(1L);
-
-        assertNotNull(response);
-        assertEquals(rideResponse, response);
-        verify(rideRepository).findById(1L);
-    }
-
-    @Test
-    void getRideByIdAndAbilityToRate_ShouldThrowExceptionWhenStatusIsNotCompletedOrCancelled() {
-        ride.setStatus(Status.CREATED);
-        when(rideRepository.findById(1L)).thenReturn(Optional.of(ride));
-
-        assertThrows(InvalidRideOperationException.class, () -> rideService.getRideByIdAndAbilityToRate(1L));
-        verify(rideRepository).findById(1L);
-    }
-
-    @Test
     void createRide_ShouldCreateRideWhenPassengerDoesNotHaveActiveRides() {
         when(passengerClient.getPassengerByIdAndStatus(1L)).thenReturn(passengerResponse);
         when(rideRepository.existsByPassengerIdAndStatusIn(1L, Status.getActiveStatuses())).thenReturn(false);

@@ -40,11 +40,6 @@ public class RideController {
         return ResponseEntity.ok(rideService.getRideById(id));
     }
 
-    @GetMapping("/canBeRate/{id}")
-    public ResponseEntity<RideResponse> getRideByIdAndAbilityToRate(@PathVariable Long id) {
-        return ResponseEntity.ok(rideService.getRideByIdAndAbilityToRate(id));
-    }
-
     @PostMapping()
     public ResponseEntity<RideResponse> createRide(@Valid @RequestBody RideRequest rideRequest) {
         return ResponseEntity.status(201).body(rideService.createRide(rideRequest));

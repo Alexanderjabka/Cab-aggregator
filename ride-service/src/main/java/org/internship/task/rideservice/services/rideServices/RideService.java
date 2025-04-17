@@ -21,6 +21,4 @@ public interface RideService {
 
     RideResponse changeStatus(Long id, StatusRequest status);
 
-    RideResponse getRideByIdAndAbilityToRate(Long id);
-
 }

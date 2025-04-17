@@ -2,7 +2,6 @@ package org.internship.task.ratingservice.util;
 
 import org.internship.task.ratingservice.dto.RatingRequest;
 import org.internship.task.ratingservice.dto.RatingResponse;
-import org.internship.task.ratingservice.dto.clientsDto.GetRideResponse;
 import org.internship.task.ratingservice.entities.Rating;
 import org.internship.task.ratingservice.enums.WhoRate;
 
@@ -35,7 +34,4 @@ public class TestDataForRatingTests {
         return new RatingRequest(RIDE_ID, SCORE, COMMENT, WHO_RATE);
     }
 
-    public static GetRideResponse createRideResponse() {
-        return new GetRideResponse(RIDE_ID, DRIVER_ID, PASSENGER_ID);
-    }
 }

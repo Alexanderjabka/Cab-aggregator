@@ -2,9 +2,9 @@ package org.internship.task.rideservice.services.rideServices;
 
 import static org.internship.task.rideservice.util.constantMessages.exceptionMessages.RideExceptionMessages.RIDE_NOT_FOUND_BY_RIDE_ID;
 import static org.internship.task.rideservice.util.constantMessages.exceptionMessages.RideExceptionMessages.RIDE_STATUS_IS_INCORRECT;
-import static org.internship.task.rideservice.util.constantMessages.exceptionMessages.RideExceptionMessages.RIDE_STATUS_IS_INCORRECT_TO_RATE;
 import static org.internship.task.rideservice.util.constantMessages.exceptionMessages.RideExceptionMessages.THIS_PASSENGER_ALREADY_HAS_RIDE;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import java.util.List;
@@ -22,6 +22,8 @@ import org.internship.task.rideservice.enums.Status;
 import org.internship.task.rideservice.exceptions.feignExceptions.FeignClientException;
 import org.internship.task.rideservice.exceptions.rideExceptions.InvalidRideOperationException;
 import org.internship.task.rideservice.exceptions.rideExceptions.RideNotFoundException;
+import org.internship.task.rideservice.kafka.KafkaProducerService;
+import org.internship.task.rideservice.kafka.RideCompletedEvent;
 import org.internship.task.rideservice.mappers.RideMapper;
 import org.internship.task.rideservice.repositories.RideRepository;
 import org.internship.task.rideservice.services.mapServices.MapService;
@@ -40,6 +42,7 @@ public class RideServiceImpl implements RideService {
     private final RideMapper rideMapper;
     private final DriverClient driverClient;
     private final PassengerClient passengerClient;
+    private final KafkaProducerService kafkaProducerService;
 
     @Transactional(readOnly = true)
     @Override
@@ -73,17 +76,6 @@ public class RideServiceImpl implements RideService {
         return rideMapper.toDto(ride);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public RideResponse getRideByIdAndAbilityToRate(Long id) {
-        Ride ride = rideRepository.findById(id)
-            .orElseThrow(() -> new RideNotFoundException(RIDE_NOT_FOUND_BY_RIDE_ID + id));
-        if (ride.getStatus().equals(Status.CANCELLED) || ride.getStatus().equals(Status.COMPLETED)) {
-            return rideMapper.toDto(ride);
-        }
-        throw new InvalidRideOperationException(RIDE_STATUS_IS_INCORRECT_TO_RATE + ride.getStatus());
-    }
-
     @Transactional
     @Override
     @Retry(name = "rideService", fallbackMethod = "createRideFallback")
@@ -113,12 +105,10 @@ public class RideServiceImpl implements RideService {
     }
 
     public RideResponse createRideFallback(RideRequest rideRequest, Exception ex) {
-        // Если это бизнес-исключение, пробрасываем его дальше
         if (ex instanceof InvalidRideOperationException || ex instanceof RideNotFoundException ||
             ex instanceof FeignClientException) {
             throw (RuntimeException) ex;
         }
-        // Если это технический сбой, пробрасываем исключение с сообщением о недоступности сервиса
         throw new RuntimeException(ex.getMessage());
     }
 
@@ -152,12 +142,10 @@ public class RideServiceImpl implements RideService {
     }
 
     public RideResponse updateRideFallback(Long id, RideRequest rideRequest, Exception ex) {
-        // Если это бизнес-исключение, пробрасываем его дальше
         if (ex instanceof InvalidRideOperationException || ex instanceof RideNotFoundException ||
             ex instanceof FeignClientException) {
             throw (RuntimeException) ex;
         }
-        // Если это технический сбой, пробрасываем исключение с сообщением о недоступности сервиса
         throw new RuntimeException(ex.getMessage());
     }
 
@@ -178,18 +166,17 @@ public class RideServiceImpl implements RideService {
 
         if (status.getStatus() == Status.CANCELLED || status.getStatus() == Status.COMPLETED) {
             driverClient.releaseDriver(ride.getDriverId());
+            try {
+                RideCompletedEvent event = new RideCompletedEvent(
+                    ride.getId(),
+                    ride.getPassengerId(),
+                    ride.getDriverId());
+                kafkaProducerService.sendRideCompletedEvent(event);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         }
-
         return rideMapper.toDto(ride);
-    }
 
-    public RideResponse changeStatusFallback(Long id, StatusRequest status, Exception ex) {
-        // Если это бизнес-исключение, пробрасываем его дальше
-        if (ex instanceof InvalidRideOperationException || ex instanceof RideNotFoundException ||
-            ex instanceof FeignClientException) {
-            throw (RuntimeException) ex;
-        }
-        // Если это технический сбой, пробрасываем исключение с сообщением о недоступности сервиса
-        throw new RuntimeException(ex.getMessage());
     }
 }

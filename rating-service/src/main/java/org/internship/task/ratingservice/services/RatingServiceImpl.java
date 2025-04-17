@@ -1,22 +1,18 @@
 package org.internship.task.ratingservice.services;
 
+import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.ALL_MEMBERS_ARE_ALREADY_RATE_THIS_RIDE;
 import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.IS_ALREADY_RATE_THIS_RIDE;
 import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.RATING_IS_NOT_FOUND_BY_ID;
 import static org.internship.task.ratingservice.util.constantMessages.exceptionRatingMessages.RatingExceptionMessages.THIS_PERSON_DOESNT_HAVE_RATING_YET;
 
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.internship.task.ratingservice.clients.RideClient;
 import org.internship.task.ratingservice.dto.RatingListResponse;
 import org.internship.task.ratingservice.dto.RatingRequest;
 import org.internship.task.ratingservice.dto.RatingResponse;
-import org.internship.task.ratingservice.dto.clientsDto.GetRideResponse;
 import org.internship.task.ratingservice.entities.Rating;
 import org.internship.task.ratingservice.enums.WhoRate;
-import org.internship.task.ratingservice.exceptions.feignExceptions.FeignClientException;
 import org.internship.task.ratingservice.exceptions.ratingExceptions.InvalidRatingOperationException;
 import org.internship.task.ratingservice.exceptions.ratingExceptions.RatingNotFoundException;
 import org.internship.task.ratingservice.mappers.RatingMapper;
@@ -35,7 +31,6 @@ public class RatingServiceImpl implements RatingService {
 
     private final RatingRepository ratingRepository;
     private final RatingMapper ratingMapper;
-    private final RideClient rideClient;
 
     @Setter
     @Value("${rating.recent-limit}")
@@ -88,33 +83,40 @@ public class RatingServiceImpl implements RatingService {
 
     @Transactional
     @Override
-    @Retry(name = "ratingService", fallbackMethod = "createRatingFallback")
-    @CircuitBreaker(name = "ratingService", fallbackMethod = "createRatingFallback")
     public RatingResponse createRating(RatingRequest ratingRequest) {
-        GetRideResponse rideResponse = rideClient.getRideByIdAndAbilityToRate(ratingRequest.getRideId());
-
+        List<Rating> rideRatings = ratingRepository.findAllByRideIdAndIsDeletedFalse(ratingRequest.getRideId());
+        if (rideRatings.isEmpty()) {
+            throw new RatingNotFoundException(RATING_IS_NOT_FOUND_BY_ID + ratingRequest.getRideId());
+        }
+        if(rideRatings.size() == 2) {
+            throw new InvalidRatingOperationException(ALL_MEMBERS_ARE_ALREADY_RATE_THIS_RIDE);
+        }
         if (ratingRepository.findByRideIdAndWhoRateAndIsDeletedFalse(ratingRequest.getRideId(),
             ratingRequest.getWhoRate()).isPresent()) {
             throw new InvalidRatingOperationException(ratingRequest.getWhoRate() + IS_ALREADY_RATE_THIS_RIDE);
         }
 
-        Rating rating = ratingMapper.ratingRequestToRating(ratingRequest);
+        Rating existingRating = rideRatings.get(0);
+        if (existingRating.getScore() == null) {
+            existingRating.setScore(ratingRequest.getScore());
+            existingRating.setComment(ratingRequest.getComment());
+            existingRating.setWhoRate(ratingRequest.getWhoRate());
+        } else {
+            Rating newRating = new Rating();
+            newRating.setRideId(ratingRequest.getRideId());
+            newRating.setPassengerId(existingRating.getPassengerId());
+            newRating.setDriverId(existingRating.getDriverId());
+            newRating.setScore(ratingRequest.getScore());
+            newRating.setComment(ratingRequest.getComment());
+            newRating.setWhoRate(ratingRequest.getWhoRate());
+            newRating.setIsDeleted(false);
 
-        rating.setPassengerId(rideResponse.getPassengerId());
-        rating.setDriverId(rideResponse.getDriverId());
-        rating.setIsDeleted(false);
-
-        Rating savedRating = ratingRepository.save(rating);
-
-        return ratingMapper.ratingToRatingResponse(savedRating);
-    }
-
-    public RatingResponse createRatingFallback(RatingRequest ratingRequest, Exception ex) {
-        if (ex instanceof InvalidRatingOperationException || ex instanceof RatingNotFoundException ||
-            ex instanceof FeignClientException) {
-            throw (RuntimeException) ex;
+            Rating savedRating = ratingRepository.save(newRating);
+            return ratingMapper.ratingToRatingResponse(savedRating);
         }
-        throw new RuntimeException(ex.getMessage());
+
+        Rating savedRating = ratingRepository.save(existingRating);
+        return ratingMapper.ratingToRatingResponse(savedRating);
     }
 
     private double calculateAverage(List<Rating> ratings) {
