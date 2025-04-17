@@ -19,10 +19,13 @@ import static org.internship.task.ratingservice.TestDataIT.DataForIT.WHO_RATE;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.internship.task.ratingservice.dto.RatingListResponse;
+import org.internship.task.ratingservice.dto.RatingRequest;
 import org.internship.task.ratingservice.entities.Rating;
+import org.internship.task.ratingservice.enums.WhoRate;
 import org.internship.task.ratingservice.repositories.RatingRepository;
 import org.internship.task.ratingservice.testContainerConfig.PostgresTestContainer;
 import org.junit.jupiter.api.BeforeAll;
@@ -60,12 +63,17 @@ class RatingControllerTestIT {
     @LocalServerPort
     private int port;
 
+
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", PostgresTestContainer.getInstance()::getJdbcUrl);
         registry.add("spring.datasource.username", PostgresTestContainer.getInstance()::getUsername);
         registry.add("spring.datasource.password", PostgresTestContainer.getInstance()::getPassword);
         registry.add("server.url.ride", () -> wireMockExtension.baseUrl());
+
+        registry.add("spring.kafka.bootstrap-servers", () -> "localhost:9092");
+        registry.add("spring.kafka.consumer.group-id", () -> "test-group");
+        registry.add("spring.kafka.consumer.auto-offset-reset", () -> "earliest");
     }
 
     @BeforeAll
@@ -79,40 +87,87 @@ class RatingControllerTestIT {
         ratingRepository.deleteAll();
     }
 
-//    @Test
-//    @Order(1)
-//    public void testCreateRating_Success() {
-//        WireMockStubs.setupGetRideByIdAndAbilityToRate(wireMockExtension, RIDE_ID, RIDE_RESPONSE);
-//
-//        given()
-//            .contentType(ContentType.JSON)
-//            .body(RATING_REQUEST)
-//            .when()
-//            .post("/api/v1/rating")
-//            .then()
-//            .statusCode(200)
-//            .body("rideId", equalTo(RIDE_ID.intValue()))
-//            .body("driverId", equalTo(DRIVER_ID.intValue()))
-//            .body("passengerId", equalTo(PASSENGER_ID.intValue()))
-//            .body("score", equalTo(SCORE.intValue()))
-//            .body("comment", equalTo(COMMENT))
-//            .body("whoRate", equalTo(WHO_RATE.name()));
-//    }
-//
-//    @Test
-//    @Order(2)
-//    public void testCreateRating_AlreadyRated() {
-//        WireMockStubs.setupGetRideByIdAndAbilityToRate(wireMockExtension, RIDE_ID, RIDE_RESPONSE);
-//        ratingRepository.save(DataForIT.CREATE_RATING());
-//
-//        given()
-//            .contentType(ContentType.JSON)
-//            .body(RATING_REQUEST)
-//            .when()
-//            .post("/api/v1/rating")
-//            .then()
-//            .statusCode(HttpStatus.BAD_REQUEST.value());
-//    }
+    @Test
+    @Order(1)
+    public void testCreateRating_Success() {
+        Rating initialRating = new Rating();
+        initialRating.setRideId(RIDE_ID);
+        initialRating.setPassengerId(PASSENGER_ID);
+        initialRating.setDriverId(DRIVER_ID);
+        initialRating.setIsDeleted(false);
+        ratingRepository.save(initialRating);
+
+        RatingRequest ratingRequest = new RatingRequest(
+            RIDE_ID,
+            SCORE,
+            COMMENT,
+            WhoRate.DRIVER
+        );
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(ratingRequest)
+            .when()
+            .post("/api/v1/rating")
+            .then()
+            .statusCode(200)
+            .body("rideId", equalTo(RIDE_ID.intValue()))
+            .body("driverId", equalTo(DRIVER_ID.intValue()))
+            .body("passengerId", equalTo(PASSENGER_ID.intValue()))
+            .body("score", equalTo(SCORE.intValue()))
+            .body("comment", equalTo(COMMENT))
+            .body("whoRate", equalTo(WhoRate.DRIVER.name()))
+            .body("isDeleted", equalTo(false));
+    }
+
+    @Test
+    @Order(2)
+    public void testCreateRating_AlreadyRated() {
+        Rating existingRating = new Rating();
+        existingRating.setRideId(RIDE_ID);
+        existingRating.setPassengerId(PASSENGER_ID);
+        existingRating.setDriverId(DRIVER_ID);
+        existingRating.setScore(SCORE);
+        existingRating.setComment(COMMENT);
+        existingRating.setWhoRate(WhoRate.DRIVER);
+        existingRating.setIsDeleted(false);
+        ratingRepository.save(existingRating);
+
+        RatingRequest ratingRequest = new RatingRequest(
+            RIDE_ID,
+            SCORE,
+            COMMENT,
+            WhoRate.DRIVER
+        );
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(ratingRequest)
+            .when()
+            .post("/api/v1/rating")
+            .then()
+            .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @Order(3)
+    public void testCreateRating_RideNotFound() {
+
+        RatingRequest ratingRequest = new RatingRequest(
+            RIDE_ID,
+            SCORE,
+            COMMENT,
+            WhoRate.DRIVER
+        );
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(ratingRequest)
+            .when()
+            .post("/api/v1/rating")
+            .then()
+            .statusCode(HttpStatus.NOT_FOUND.value());
+    }
 
     @Test
     @Order(3)

@@ -1,5 +1,6 @@
 package org.internship.task.ratingservice.repositories;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 import org.internship.task.ratingservice.entities.Rating;

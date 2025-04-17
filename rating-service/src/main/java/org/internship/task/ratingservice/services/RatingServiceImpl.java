@@ -88,7 +88,7 @@ public class RatingServiceImpl implements RatingService {
         if (rideRatings.isEmpty()) {
             throw new RatingNotFoundException(RATING_IS_NOT_FOUND_BY_ID + ratingRequest.getRideId());
         }
-        if (rideRatings.size() == 2) {
+        if(rideRatings.size() == 2) {
             throw new InvalidRatingOperationException(ALL_MEMBERS_ARE_ALREADY_RATE_THIS_RIDE);
         }
         if (ratingRepository.findByRideIdAndWhoRateAndIsDeletedFalse(ratingRequest.getRideId(),
