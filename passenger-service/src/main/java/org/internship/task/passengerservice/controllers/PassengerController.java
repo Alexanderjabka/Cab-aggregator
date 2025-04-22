@@ -60,4 +60,5 @@ public class PassengerController {
         passengerService.deletePassenger(id);
         return ResponseEntity.noContent().build();
     }
+
 }

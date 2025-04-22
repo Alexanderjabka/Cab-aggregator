@@ -1,5 +1,7 @@
 package com.example.apigateway.security;
 
+import com.example.apigateway.resources.ApiPaths;
+import com.example.apigateway.resources.Roles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,59 +20,50 @@ import org.springframework.core.convert.converter.Converter;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-    private static final String API_PREFIX = "/api/v1/";
-
     @Bean
     SecurityWebFilterChain filterChain(ServerHttpSecurity httpSecurity) throws Exception {
         httpSecurity
             .authorizeExchange(exchanges -> exchanges
-                // Debug endpoint
-                .pathMatchers(HttpMethod.GET, apiPath("drivers/debug-headers")).permitAll()
+                .pathMatchers(HttpMethod.GET, ApiPaths.DEBUG_HEADERS).permitAll()
 
-                // Passenger endpoints
-                .pathMatchers(HttpMethod.GET, apiPath("passengers")).hasRole("ADMIN")
-                .pathMatchers(HttpMethod.GET, apiPath("passengers/status/**")).hasRole("ADMIN")
-                .pathMatchers(HttpMethod.GET, apiPath("passengers/{id}")).hasRole("PASSENGER")
-                .pathMatchers(HttpMethod.GET, apiPath("passengers/isFree/**")).hasRole("ADMIN")
-                .pathMatchers(HttpMethod.POST, apiPath("passengers")).hasRole("PASSENGER")
-                .pathMatchers(HttpMethod.PUT, apiPath("passengers/**")).hasRole("PASSENGER")
-                .pathMatchers(HttpMethod.DELETE, apiPath("passengers/**")).hasRole("PASSENGER")
+                .pathMatchers(HttpMethod.GET, ApiPaths.PASSENGERS).hasRole(Roles.ADMIN)
+                .pathMatchers(HttpMethod.GET, ApiPaths.PASSENGERS_STATUS).hasRole(Roles.ADMIN)
+                .pathMatchers(HttpMethod.GET, ApiPaths.PASSENGER_BY_ID).hasRole(Roles.PASSENGER)
+                .pathMatchers(HttpMethod.GET, ApiPaths.PASSENGERS_IS_FREE).hasRole(Roles.ADMIN)
+                .pathMatchers(HttpMethod.POST, ApiPaths.PASSENGERS).hasRole(Roles.PASSENGER)
+                .pathMatchers(HttpMethod.PUT, ApiPaths.PASSENGERS + "/**").hasRole(Roles.PASSENGER)
+                .pathMatchers(HttpMethod.DELETE, ApiPaths.PASSENGERS + "/**").hasRole(Roles.PASSENGER)
 
-                // Car endpoints
-                .pathMatchers(HttpMethod.GET, apiPath("cars")).hasRole("ADMIN")
-                .pathMatchers(HttpMethod.GET, apiPath("cars/status/**")).hasRole("ADMIN")
-                .pathMatchers(HttpMethod.GET, apiPath("cars/{id}")).hasRole("DRIVER")
-                .pathMatchers(HttpMethod.POST, apiPath("cars/**")).hasRole("DRIVER")
-                .pathMatchers(HttpMethod.PUT, apiPath("cars/**")).hasRole("DRIVER")
-                .pathMatchers(HttpMethod.DELETE, apiPath("cars/**")).hasRole("DRIVER")
+                .pathMatchers(HttpMethod.GET, ApiPaths.CARS).hasRole(Roles.ADMIN)
+                .pathMatchers(HttpMethod.GET, ApiPaths.CARS_STATUS).hasRole(Roles.ADMIN)
+                .pathMatchers(HttpMethod.GET, ApiPaths.CAR_BY_ID).hasRole(Roles.DRIVER)
+                .pathMatchers(HttpMethod.POST, ApiPaths.CARS + "/**").hasRole(Roles.DRIVER)
+                .pathMatchers(HttpMethod.PUT, ApiPaths.CARS + "/**").hasRole(Roles.DRIVER)
+                .pathMatchers(HttpMethod.DELETE, ApiPaths.CARS + "/**").hasRole(Roles.DRIVER)
 
-                // Driver endpoints
-                .pathMatchers(HttpMethod.GET, apiPath("drivers")).hasRole("ADMIN")
-                .pathMatchers(HttpMethod.GET, apiPath("drivers/status/**")).hasRole("ADMIN")
-                .pathMatchers(HttpMethod.GET, apiPath("drivers/{id}")).hasRole("DRIVER")
-                .pathMatchers(HttpMethod.POST, apiPath("drivers")).hasRole("DRIVER")
-                .pathMatchers(HttpMethod.PUT, apiPath("drivers/**")).hasRole("DRIVER")
-                .pathMatchers(HttpMethod.PUT, apiPath("drivers/assign")).hasRole("ADMIN")
-                .pathMatchers(HttpMethod.PUT, apiPath("drivers/release/**")).hasRole("ADMIN")
-                .pathMatchers(HttpMethod.DELETE, apiPath("drivers/**")).hasRole("DRIVER")
+                .pathMatchers(HttpMethod.GET, ApiPaths.DRIVERS).hasRole(Roles.ADMIN)
+                .pathMatchers(HttpMethod.GET, ApiPaths.DRIVERS_STATUS).hasRole(Roles.ADMIN)
+                .pathMatchers(HttpMethod.GET, ApiPaths.DRIVER_BY_ID).hasRole(Roles.DRIVER)
+                .pathMatchers(HttpMethod.POST, ApiPaths.DRIVERS).hasRole(Roles.DRIVER)
+                .pathMatchers(HttpMethod.PUT, ApiPaths.DRIVERS + "/**").hasRole(Roles.DRIVER)
+                .pathMatchers(HttpMethod.PUT, ApiPaths.DRIVERS_ASSIGN).hasRole(Roles.ADMIN)
+                .pathMatchers(HttpMethod.PUT, ApiPaths.DRIVERS_RELEASE).hasRole(Roles.ADMIN)
+                .pathMatchers(HttpMethod.DELETE, ApiPaths.DRIVERS + "/**").hasRole(Roles.DRIVER)
 
-                // Ride endpoints
-                .pathMatchers(HttpMethod.GET, apiPath("rides")).hasRole("ADMIN")
-                .pathMatchers(HttpMethod.GET, apiPath("rides/status")).hasRole("ADMIN")
-                .pathMatchers(HttpMethod.GET, apiPath("rides/{id}")).hasAnyRole("DRIVER", "PASSENGER")
-                .pathMatchers(HttpMethod.POST, apiPath("rides")).hasRole("PASSENGER")
-                .pathMatchers(HttpMethod.PUT, apiPath("rides/**")).hasRole("ADMIN")
-                .pathMatchers(HttpMethod.PUT, apiPath("rides/change-status/**")).hasRole("ADMIN")
+                .pathMatchers(HttpMethod.GET, ApiPaths.RIDES).hasRole(Roles.ADMIN)
+                .pathMatchers(HttpMethod.GET, ApiPaths.RIDES_STATUS).hasRole(Roles.ADMIN)
+                .pathMatchers(HttpMethod.GET, ApiPaths.RIDE_BY_ID).hasAnyRole(Roles.DRIVER, Roles.PASSENGER)
+                .pathMatchers(HttpMethod.POST, ApiPaths.RIDES).hasRole(Roles.PASSENGER)
+                .pathMatchers(HttpMethod.PUT, ApiPaths.RIDES + "/**").hasRole(Roles.ADMIN)
+                .pathMatchers(HttpMethod.PUT, ApiPaths.RIDES_CHANGE_STATUS).hasRole(Roles.ADMIN)
 
-                // Rating endpoints
-                .pathMatchers(HttpMethod.GET, apiPath("rating")).hasRole("ADMIN")
-                .pathMatchers(HttpMethod.POST, apiPath("rating")).hasAnyRole("PASSENGER", "DRIVER")
-                .pathMatchers(HttpMethod.GET, apiPath("rating/average/passenger-rating/**")).hasRole("ADMIN")
-                .pathMatchers(HttpMethod.GET, apiPath("rating/average/driver-rating/**")).hasRole("ADMIN")
-                .pathMatchers(HttpMethod.DELETE, apiPath("rating/**")).hasAnyRole("PASSENGER", "DRIVER")
+                .pathMatchers(HttpMethod.GET, ApiPaths.RATING).hasRole(Roles.ADMIN)
+                .pathMatchers(HttpMethod.POST, ApiPaths.RATING).hasAnyRole(Roles.PASSENGER, Roles.DRIVER)
+                .pathMatchers(HttpMethod.GET, ApiPaths.RATING_AVG_PASSENGER).hasRole(Roles.ADMIN)
+                .pathMatchers(HttpMethod.GET, ApiPaths.RATING_AVG_DRIVER).hasRole(Roles.ADMIN)
+                .pathMatchers(HttpMethod.DELETE, ApiPaths.RATING + "/**").hasAnyRole(Roles.PASSENGER, Roles.DRIVER)
 
-                // All other API endpoints require authentication
-                .pathMatchers(apiPath("**")).authenticated()
+                .pathMatchers(ApiPaths.API_PREFIX + "**").authenticated()
                 .anyExchange().permitAll()
             )
             .oauth2ResourceServer(oAuth2 -> oAuth2
@@ -78,10 +71,6 @@ public class SecurityConfig {
             .csrf(ServerHttpSecurity.CsrfSpec::disable);
 
         return httpSecurity.build();
-    }
-
-    private String apiPath(String path) {
-        return API_PREFIX + path;
     }
 
     private Converter<Jwt, Mono<AbstractAuthenticationToken>> grantedAuthoritiesExtractor() {
