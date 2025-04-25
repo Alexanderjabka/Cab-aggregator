@@ -8,8 +8,6 @@ import org.internship.task.driverservice.dto.drivers.DriverResponse;
 import org.internship.task.driverservice.services.DriverServiceImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,18 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class DriverController {
     private final DriverServiceImpl driverService;
-
-    @GetMapping("/debug-headers")
-    public ResponseEntity<?> debugHeaders(@RequestHeader HttpHeaders headers,
-                                          @RequestHeader(value = "X-User-Id", required = false) String userId,
-                                          @AuthenticationPrincipal Jwt jwt) {
-        String email = jwt.getClaim("email");
-
-        System.out.println("X-User-Id: " + userId);
-        System.out.println("email: " + email);
-        System.out.println("All headers: " + headers);
-        return ResponseEntity.ok("User ID: " + userId + "\nEmail: " + email + "\nheaders: " + headers);
-    }
 
     @GetMapping
     public ResponseEntity<DriverListResponse> getAllDrivers() {

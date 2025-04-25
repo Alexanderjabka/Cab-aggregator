@@ -19,7 +19,7 @@ public class JwtHeaderRelayFilter implements WebFilter {
             .filter(auth -> auth.getPrincipal() instanceof Jwt)
             .map(auth -> (Jwt) auth.getPrincipal())
             .flatMap(jwt -> {
-                String userId = jwt.getSubject(); // или jwt.getClaim("sub")
+                String userId = jwt.getSubject();
                 ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                     .header("X-User-Id", userId)
                     .build();

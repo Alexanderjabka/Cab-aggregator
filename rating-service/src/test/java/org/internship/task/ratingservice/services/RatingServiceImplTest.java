@@ -176,7 +176,8 @@ class RatingServiceImplTest {
         savedRating.setWhoRate(WhoRate.DRIVER);
         savedRating.setIsDeleted(false);
 
-        RatingResponse expectedResponse = new RatingResponse(1L, 1L, 2L, 3L, (short) 5, "Great ride!", WhoRate.DRIVER, false);
+        RatingResponse expectedResponse =
+            new RatingResponse(1L, 1L, 2L, 3L, (short) 5, "Great ride!", WhoRate.DRIVER, false);
 
         when(ratingRepository.findAllByRideIdAndIsDeletedFalse(1L))
             .thenReturn(List.of(existingRating));
@@ -220,7 +221,8 @@ class RatingServiceImplTest {
         expectedSaved.setWhoRate(WhoRate.DRIVER);
         expectedSaved.setIsDeleted(false);
 
-        RatingResponse expectedResponse = new RatingResponse(1L, 1L, 2L, 3L, (short) 5, "Great!", WhoRate.DRIVER, false);
+        RatingResponse expectedResponse =
+            new RatingResponse(1L, 1L, 2L, 3L, (short) 5, "Great!", WhoRate.DRIVER, false);
 
         when(ratingRepository.findAllByRideIdAndIsDeletedFalse(1L))
             .thenReturn(List.of(emptyRating));
@@ -275,7 +277,8 @@ class RatingServiceImplTest {
         savedRating.setWhoRate(WhoRate.PASSENGER);
         savedRating.setIsDeleted(false);
 
-        RatingResponse expectedResponse = new RatingResponse(2L, 1L, 2L, 3L, (short) 4, "Good", WhoRate.PASSENGER, false);
+        RatingResponse expectedResponse =
+            new RatingResponse(2L, 1L, 2L, 3L, (short) 4, "Good", WhoRate.PASSENGER, false);
 
         when(ratingRepository.findAllByRideIdAndIsDeletedFalse(1L))
             .thenReturn(List.of(driverRating));
