@@ -1,0 +1,186 @@
+{
+	"info": {
+		"_postman_id": "73ae1642-b004-46ff-b3a4-c687b52fd516",
+		"name": "RideService API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34197641"
+	},
+	"item": [
+		{
+			"name": "Get All Rides",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/rides",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"rides"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Rides By Status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/rides/status?Status=CREATED",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"rides",
+						"status"
+					],
+					"query": [
+						{
+							"key": "Status",
+							"value": "CREATED"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ride By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/rides/{id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"rides",
+						"{id}"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Ride",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"passengerId\": 1,\n\t\"driverId\": 2,\n\t\"startAddress\": \"Address 1\",\n\t\"finishAddress\": \"Address 2\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/rides",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"rides"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Ride",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"passengerId\": 1,\n\t\"driverId\": 2,\n\t\"startAddress\": \"Updated Address 1\",\n\t\"finishAddress\": \"Updated Address 2\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/rides/{id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"rides",
+						"{id}"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change Ride Status",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\"COMPLETED\""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/rides/change-status/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"rides",
+						"change-status",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -383,7 +383,9 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:22.0.5
     container_name: keycloak
-    command: [ "start-dev" ]
+    command:
+      - start-dev
+      - --import-realm
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -395,6 +397,8 @@ services:
       KC_HTTP_ENABLED: "true"
       KC_HOSTNAME_STRICT: "false"
       JAVA_OPTS: "-Djboss.bind.address=0.0.0.0 -Xmx1024m"
+    volumes:
+      - ./keycloak-config:/opt/keycloak/data/import
     ports:
       - "8080:8080"
       - "8443:8443"

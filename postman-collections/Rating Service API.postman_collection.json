@@ -1,0 +1,132 @@
+{
+	"info": {
+		"_postman_id": "de4df233-a447-46df-bb9d-44bc8a33c673",
+		"name": "Rating Service API",
+		"description": "API for rating functionality",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34197641"
+	},
+	"item": [
+		{
+			"name": "Create Rating",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"rideId\": 123,\n  \"driverId\": 1,\n  \"passengerId\": 2,\n  \"score\": 5,\n  \"comment\": \"Great ride!\",\n  \"whoRate\": 0\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/rating",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"rating"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Average Passenger Rating",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/rating/average/passenger-rating/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"rating",
+						"average",
+						"passenger-rating",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Average Driver Rating",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/rating/average/driver-rating/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"rating",
+						"average",
+						"driver-rating",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Ratings",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/rating",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"rating"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Rating",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/rating/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"rating",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
